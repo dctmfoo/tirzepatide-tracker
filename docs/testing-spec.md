@@ -29,7 +29,7 @@ When setting up tests for this project, complete these steps in order:
 | @testing-library/jest-dom | ^6.0.0 | Custom DOM matchers for testing |
 | @testing-library/user-event | ^14.0.0 | User interaction simulation |
 | Playwright | ^1.57.0 | E2E browser testing |
-| next-test-api-route-handler | ^4.0.0 | API route testing |
+| next-test-api-route-handler | ^5.0.0 | API route testing (v5+ for Next.js 14+) |
 | @faker-js/faker | ^10.0.0 | Test data generation (requires Node.js 20+) |
 
 ---
