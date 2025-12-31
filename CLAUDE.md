@@ -394,7 +394,7 @@ All API routes are now implemented. Next: Testing or UI pages.
 
 ### Testing Infrastructure (2025-12-31)
 
-**253 tests passing** - Testing infrastructure is operational.
+**285 tests passing** - Testing infrastructure is operational.
 
 | Category | Files | Tests |
 |----------|-------|-------|
@@ -402,6 +402,7 @@ All API routes are now implemented. Next: Testing or UI pages.
 | API Tests - Weight | `src/app/api/weight/__tests__/*` | 14 |
 | API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
 | API Tests - Daily Logs | `src/app/api/daily-logs/__tests__/*` | 58 |
+| API Tests - Stats | `src/app/api/stats/__tests__/*` | 32 |
 | E2E Tests | `e2e/example.spec.ts` | placeholder |
 
 **Test Configuration:**
@@ -435,7 +436,7 @@ pnpm test:e2e       # E2E tests (requires running app)
 |----------|------|--------|---------|
 | P1 | API tests for `/api/injections/*` | ✅ Complete (55 tests) | - |
 | P1 | API tests for `/api/daily-logs/*` | ✅ Complete (58 tests) | - |
-| P1 | API tests for `/api/stats/*` | Not started | - |
+| P1 | API tests for `/api/stats/*` | ✅ Complete (32 tests) | - |
 | P2 | API tests for remaining routes | Not started | - |
 | P2 | Component tests for forms | Blocked | UI components |
 | P2 | E2E tests for critical flows | Blocked | UI pages |
