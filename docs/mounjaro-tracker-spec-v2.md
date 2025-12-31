@@ -18,41 +18,204 @@ A Progressive Web App (PWA) for monitoring Mounjaro (Tirzepatide) treatment prog
 | Styling | Tailwind CSS |
 | Charts | Recharts |
 | Authentication | NextAuth.js |
-| PWA | next-pwa / @ducanh2912/next-pwa |
+| PWA | Serwist (@serwist/next) |
 | Image Generation | @vercel/og or html-to-image (for export) |
 
 ---
 
 ## PWA Configuration
 
-### Manifest Requirements
+> **Note:** We use [Serwist](https://serwist.pages.dev/) (the maintained successor to next-pwa) as recommended by the [official Next.js documentation](https://nextjs.org/docs/app/guides/progressive-web-apps).
 
-```json
-{
-  "name": "Mounjaro Tracker",
-  "short_name": "MounjaroRx",
-  "description": "Track your Mounjaro treatment progress",
-  "start_url": "/results",
-  "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
-  "orientation": "portrait",
-  "icons": [
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+### Installation
+
+```bash
+# Install Serwist packages
+npm i @serwist/next && npm i -D serwist
+
+# For Vercel deployments, also add minimatch
+npm i minimatch
+```
+
+### TypeScript Manifest (app/manifest.ts)
+
+Use Next.js's native TypeScript manifest instead of JSON:
+
+```typescript
+// app/manifest.ts
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'Mounjaro Tracker',
+    short_name: 'MounjaroRx',
+    description: 'Track your Mounjaro treatment progress',
+    start_url: '/summary',
+    display: 'standalone',
+    background_color: '#0a0a0a',
+    theme_color: '#0a0a0a',
+    orientation: 'portrait',
+    icons: [
+      {
+        src: '/icons/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/icons/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: '/icons/icon-maskable.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
+  };
 }
 ```
 
-### Service Worker Strategy
+### Next.js Configuration (next.config.ts)
+
+```typescript
+// next.config.ts
+import { spawnSync } from 'node:child_process';
+import withSerwistInit from '@serwist/next';
+import type { NextConfig } from 'next';
+
+// Use git commit hash for cache busting
+const revision = spawnSync('git', ['rev-parse', 'HEAD'], {
+  encoding: 'utf-8',
+}).stdout?.trim() ?? crypto.randomUUID();
+
+const withSerwist = withSerwistInit({
+  swSrc: 'app/sw.ts',
+  swDest: 'public/sw.js',
+  additionalPrecacheEntries: [{ url: '/~offline', revision }],
+  // Disable in development for convenience
+  disable: process.env.NODE_ENV === 'development',
+});
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
+      },
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Content-Type', value: 'application/javascript; charset=utf-8' },
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self'" },
+        ],
+      },
+    ];
+  },
+};
+
+export default withSerwist(nextConfig);
+```
+
+### Service Worker (app/sw.ts)
+
+```typescript
+// app/sw.ts
+import { defaultCache } from '@serwist/next/worker';
+import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
+import { Serwist } from 'serwist';
+
+declare global {
+  interface WorkerGlobalScope extends SerwistGlobalConfig {
+    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  }
+}
+
+declare const self: ServiceWorkerGlobalScope;
+
+const serwist = new Serwist({
+  precacheEntries: self.__SW_MANIFEST,
+  skipWaiting: true,
+  clientsClaim: true,
+  navigationPreload: true,
+  runtimeCaching: defaultCache,
+  fallbacks: {
+    entries: [
+      {
+        url: '/~offline',
+        matcher({ request }) {
+          return request.destination === 'document';
+        },
+      },
+    ],
+  },
+});
+
+serwist.addEventListeners();
+```
+
+### TypeScript Configuration (tsconfig.json)
+
+Add these compiler options for service worker types:
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext", "webworker"],
+    "types": ["@serwist/next/typings"]
+  },
+  "exclude": ["public/sw.js"]
+}
+```
+
+### Git Ignore
+
+Add to `.gitignore`:
+
+```
+# Serwist generated files
+public/sw*
+public/swe-worker*
+```
+
+### Offline Fallback Page (app/~offline/page.tsx)
+
+```typescript
+// app/~offline/page.tsx
+export default function OfflinePage() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0a0a] text-white p-4">
+      <h1 className="text-2xl font-bold mb-4">You're offline</h1>
+      <p className="text-gray-400 text-center mb-6">
+        Please check your internet connection to access Mounjaro Tracker.
+      </p>
+      <button
+        onClick={() => window.location.reload()}
+        className="px-6 py-2 bg-cyan-500 text-black rounded-lg font-medium"
+      >
+        Try Again
+      </button>
+    </div>
+  );
+}
+```
+
+### Service Worker Caching Strategy
 
 | Route | Strategy | Rationale |
 |-------|----------|-----------|
-| Static assets | Cache First | Icons, fonts, CSS - rarely change |
-| App shell | Stale While Revalidate | HTML pages - fast load, background update |
+| Static assets (CSS, JS, fonts) | Cache First | Rarely change, fast load |
+| App shell (HTML pages) | Stale While Revalidate | Fast load, background update |
 | API GET requests | Network First, Cache Fallback | Fresh data preferred, offline fallback |
 | API POST/PUT/DELETE | Network Only | Must sync to server |
+| Images/icons | Cache First | Rarely change |
 
 ### Offline Capabilities
 
@@ -73,6 +236,24 @@ Show custom install banner after:
 - User has visited 2+ times
 - User has logged at least one weight entry
 - Not already installed
+
+### Development Tips
+
+1. **Disable in dev**: Set `disable: process.env.NODE_ENV === 'development'` to avoid cache issues during development
+2. **Testing PWA**: Run `npm run build && npm run start` to test PWA functionality
+3. **HTTPS required**: PWAs require HTTPS; use `next dev --experimental-https` for local testing
+4. **Set `reloadOnOnline: false`**: Avoids forced page refresh when users reconnect, preventing form data loss
+5. **Generated files**: After build, `sw.js` and `workbox-*.js` are created in `/public`
+
+### Platform Support
+
+| Platform | PWA Support |
+|----------|-------------|
+| iOS 16.4+ | ✅ Home screen installation |
+| Safari 16+ (macOS 13+) | ✅ Full support |
+| Chrome/Chromium | ✅ Full support |
+| Firefox | ✅ Service workers, limited install |
+| Android | ✅ Full support |
 
 ---
 
@@ -1153,6 +1334,8 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     /onboarding/page.tsx
     /onboarding/[step]/page.tsx
     layout.tsx
+  /~offline
+    page.tsx              (PWA offline fallback page)
   /api
     /auth/[...nextauth]/route.ts
     /profile/route.ts
@@ -1178,7 +1361,8 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     /notifications/preferences/route.ts
     /cron/send-notifications/route.ts
   layout.tsx
-  manifest.ts (PWA manifest)
+  manifest.ts             (PWA manifest - TypeScript)
+  sw.ts                   (Serwist service worker source)
   
 /components
   /ui
@@ -1274,8 +1458,8 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
 /styles
   globals.css
 
-next.config.js (with PWA config)
-tailwind.config.js
+next.config.ts          (with Serwist PWA config)
+tailwind.config.ts
 drizzle.config.ts
 ```
 
