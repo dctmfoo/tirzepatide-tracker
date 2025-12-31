@@ -1600,3 +1600,13 @@ export function ResultsSkeleton() {
 16. ✅ Unit conversions display correctly (kg/lbs/stone)
 17. ✅ Empty states guide new users
 18. ✅ Loading skeletons provide feedback during data fetch
+19. ✅ Unit test coverage ≥80% for utility functions
+20. ✅ E2E tests pass for all critical user flows
+
+---
+
+## Related Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [Testing Specification](./testing-spec.md) | Complete testing setup, configuration, and examples |
