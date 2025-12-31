@@ -313,7 +313,7 @@ Track overall progress here:
 - [ ] PWA configuration
 - [ ] Email notifications
 - [ ] Data export
-- [~] Testing (unit) - infrastructure complete, 140 tests passing
+- [~] Testing (unit) - infrastructure complete, 285 tests passing (P1 API tests done)
 - [ ] Testing (E2E) - placeholder in place
 - [ ] Production deployment
 

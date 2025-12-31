@@ -332,6 +332,16 @@ Show custom install banner after:
 > - `bg-error` / `bg-success` / `bg-warning` - Semantic colors
 > - `bg-dose-2-5`, `bg-dose-5-0`, etc. - Dose marker colors
 
+> **Implementation Note (2025-12-31) - Results Page [x]:**
+> - Files:
+>   - `src/app/(app)/results/page.tsx` - Main Results page (client component for period switching)
+>   - `src/components/results/PeriodTabs.tsx` - Period selector (1m, 3m, 6m, All Time) with cyan underline
+>   - `src/components/results/ResultsStatCard.tsx` - Stat card with cyan icon
+>   - `src/components/charts/WeightChart.tsx` - Recharts line chart with dose-colored segments
+> - 6 stat cards: Total change, Current BMI, Weight, Percent, Weekly avg, To goal
+> - Chart features: dose-colored line segments (gray 2.5mg, purple 5.0mg, etc.), dose badges, Y-axis on right side
+> - Uses `/api/stats/results` for data with period filtering
+
 ---
 
 ## Summary Page
@@ -467,6 +477,16 @@ Show custom install banner after:
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
+
+> **Implementation Note (2025-12-31) - Summary Page [x]:**
+> - Files:
+>   - `src/app/(app)/layout.tsx` - App shell with auth check and bottom navigation
+>   - `src/app/(app)/summary/page.tsx` - Main Summary page (server component)
+>   - `src/components/layout/BottomNav.tsx` - 5-tab bottom navigation with pill-style active indicator
+>   - `src/components/summary/` - Section components (NextInjectionCard, TodaysLogCard, CurrentStateSection, JourneyProgressSection, RecentActivitySection, EmptyState)
+>   - `src/components/ui/` - Shared UI components (StatCard, Section, ProgressBar, ActionCard)
+> - All 4 sections implemented per wireframe: Action Required, Current State, Journey Progress, Recent Activity
+> - Empty state for new users with onboarding prompts
 
 ---
 

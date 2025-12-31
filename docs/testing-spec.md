@@ -19,11 +19,15 @@ When setting up tests for this project, complete these steps in order:
 
 > **Implementation Note (2025-12-31):**
 > Testing infrastructure is now set up and operational. Current status:
-> - **140 tests passing** (126 unit + 14 API)
+> - **285 tests passing** (126 unit + 159 API)
 > - Configuration: `vitest.config.ts`, `playwright.config.ts`
 > - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
 > - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
-> - API tests: `src/app/api/weight/__tests__/route.api.test.ts`
+> - API tests:
+>   - `src/app/api/weight/__tests__/*` (14 tests)
+>   - `src/app/api/injections/__tests__/*` (55 tests)
+>   - `src/app/api/daily-logs/__tests__/*` (58 tests)
+>   - `src/app/api/stats/__tests__/*` (32 tests)
 > - E2E placeholder: `e2e/example.spec.ts`
 > - Utility functions created: `src/lib/utils/{conversions,calculations,dates,injection-logic}.ts`
 
