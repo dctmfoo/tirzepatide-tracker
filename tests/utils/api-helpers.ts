@@ -19,17 +19,14 @@ export const createMockRequest = (
   });
 
   // Create request init
-  const init: RequestInit = {
+  const init = {
     method,
     headers: {
       'Content-Type': 'application/json',
       ...headers,
     },
+    body: body && method !== 'GET' ? JSON.stringify(body) : undefined,
   };
-
-  if (body && method !== 'GET') {
-    init.body = JSON.stringify(body);
-  }
 
   return new NextRequest(urlObj, init);
 };

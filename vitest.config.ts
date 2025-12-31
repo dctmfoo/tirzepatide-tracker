@@ -10,11 +10,6 @@ export default defineConfig({
 
     // Environment configuration
     environment: 'jsdom',
-    environmentMatchGlobs: [
-      // Use node environment for API route tests
-      ['**/*.api.test.ts', 'node'],
-      ['**/api/**/*.test.ts', 'node'],
-    ],
 
     // Setup files
     setupFiles: ['./tests/setup.ts'],
