@@ -309,7 +309,7 @@ Track overall progress here:
 - [x] Jabs page (injection history and log form)
 - [x] Calendar page (month grid with day details and log modals)
 - [x] Settings page (profile, treatment, preferences, data export)
-- [ ] Daily log forms
+- [x] Daily log forms (/log page with diet, activity, mental, side effects)
 - [ ] PWA configuration
 - [ ] Email notifications
 - [ ] Data export
@@ -461,12 +461,22 @@ Settings page with grouped sections and edit modals (spec lines 646-765):
 - **Link prefetching**: BottomNav uses `prefetch={true}` on all navigation links
 - **Parallel queries**: Summary page uses `Promise.all()` for 6 parallel DB queries (was 10+ sequential)
 
-### Pending: Daily Log Forms
+### Daily Log Page Implementation (2025-12-31)
 
-The "Log Now" button in `TodaysLogCard.tsx` links to `/log` which needs implementation:
-- Create `/app/(app)/log/page.tsx` - Daily log form page
-- Sections: Diet, Activity, Mental wellness, Side effects
-- API: Uses existing `/api/daily-logs` endpoints
+The `/log` page for daily wellness tracking:
+- **Files:**
+  - `src/app/(app)/log/page.tsx` - Main log form page (client component)
+  - `src/app/(app)/log/loading.tsx` - Loading skeleton
+- **Sections (collapsible):**
+  - Diet: Hunger level, meals count, protein grams, water liters
+  - Activity: Workout type, duration minutes, steps
+  - Mental: Motivation, cravings, mood levels
+  - Side Effects: Dynamic list with type and severity
+- **Features:**
+  - Pre-populates from existing log for today
+  - Completion indicators on each section
+  - Saves all sections in single API call to `/api/daily-logs`
+  - Redirects to /summary on successful save
 
 ### Backend API Status: COMPLETE
 
