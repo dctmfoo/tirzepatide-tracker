@@ -313,7 +313,7 @@ Track overall progress here:
 - [ ] PWA configuration
 - [ ] Email notifications
 - [ ] Data export
-- [~] Testing (unit) - infrastructure complete, 285 tests passing (P1 API tests done)
+- [~] Testing (unit) - infrastructure complete, 361 tests passing (P1+P2 API tests done)
 - [ ] Testing (E2E) - placeholder in place
 - [ ] Production deployment
 
@@ -432,7 +432,7 @@ All API routes are now implemented. Next: Testing or UI pages.
 
 ### Testing Infrastructure (2025-12-31)
 
-**285 tests passing** - Testing infrastructure is operational.
+**361 tests passing** - Testing infrastructure is operational.
 
 | Category | Files | Tests |
 |----------|-------|-------|
@@ -441,6 +441,10 @@ All API routes are now implemented. Next: Testing or UI pages.
 | API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
 | API Tests - Daily Logs | `src/app/api/daily-logs/__tests__/*` | 58 |
 | API Tests - Stats | `src/app/api/stats/__tests__/*` | 32 |
+| API Tests - Profile | `src/app/api/profile/__tests__/*` | 16 |
+| API Tests - Preferences | `src/app/api/preferences/__tests__/*` | 16 |
+| API Tests - Calendar | `src/app/api/calendar/__tests__/*` | 18 |
+| API Tests - Export | `src/app/api/export/**/__tests__/*` | 25 |
 | E2E Tests | `e2e/example.spec.ts` | placeholder |
 
 **Test Configuration:**
@@ -475,7 +479,10 @@ pnpm test:e2e       # E2E tests (requires running app)
 | P1 | API tests for `/api/injections/*` | ✅ Complete (55 tests) | - |
 | P1 | API tests for `/api/daily-logs/*` | ✅ Complete (58 tests) | - |
 | P1 | API tests for `/api/stats/*` | ✅ Complete (32 tests) | - |
-| P2 | API tests for remaining routes | Not started | - |
+| P2 | API tests for `/api/profile` | ✅ Complete (16 tests) | - |
+| P2 | API tests for `/api/preferences` | ✅ Complete (16 tests) | - |
+| P2 | API tests for `/api/calendar/*` | ✅ Complete (18 tests) | - |
+| P2 | API tests for `/api/export/*` | ✅ Complete (25 tests) | - |
 | P2 | Component tests for forms | Blocked | UI components |
 | P2 | E2E tests for critical flows | Blocked | UI pages |
 | P3 | CI/CD pipeline (GitHub Actions) | Not started | - |

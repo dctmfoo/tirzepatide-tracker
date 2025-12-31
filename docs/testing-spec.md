@@ -19,7 +19,7 @@ When setting up tests for this project, complete these steps in order:
 
 > **Implementation Note (2025-12-31):**
 > Testing infrastructure is now set up and operational. Current status:
-> - **285 tests passing** (126 unit + 159 API)
+> - **361 tests passing** (126 unit + 235 API)
 > - Configuration: `vitest.config.ts`, `playwright.config.ts`
 > - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
 > - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
@@ -28,6 +28,10 @@ When setting up tests for this project, complete these steps in order:
 >   - `src/app/api/injections/__tests__/*` (55 tests)
 >   - `src/app/api/daily-logs/__tests__/*` (58 tests)
 >   - `src/app/api/stats/__tests__/*` (32 tests)
+>   - `src/app/api/profile/__tests__/*` (16 tests)
+>   - `src/app/api/preferences/__tests__/*` (16 tests)
+>   - `src/app/api/calendar/**/__tests__/*` (18 tests)
+>   - `src/app/api/export/**/__tests__/*` (25 tests)
 > - E2E placeholder: `e2e/example.spec.ts`
 > - Utility functions created: `src/lib/utils/{conversions,calculations,dates,injection-logic}.ts`
 
@@ -296,6 +300,18 @@ vi.mock('next/headers', () => ({
     /stats/__tests__
       /summary.api.test.ts
       /results.api.test.ts
+    /profile/__tests__
+      /route.api.test.ts
+    /preferences/__tests__
+      /route.api.test.ts
+    /calendar/[year]/[month]/__tests__
+      /route.api.test.ts
+    /export/json/__tests__
+      /route.api.test.ts
+    /export/text/__tests__
+      /route.api.test.ts
+    /export/full/__tests__
+      /route.api.test.ts
 
 /e2e
   /onboarding.spec.ts
@@ -1486,17 +1502,17 @@ npm run test:all
      - `components/forms/InjectionForm.test.tsx`
      - `components/forms/DailyLogForm.test.tsx`
 
-4. ~~**Fourth**: Add API route tests~~ 🔄 IN PROGRESS (P1 complete)
+4. ~~**Fourth**: Add API route tests~~ ✅ COMPLETE (P1+P2)
    - ~~Test CRUD operations~~ ✅ (weight routes done - 14 tests)
    - **P1 API tests complete** (2025-12-31):
      - [x] `/api/injections/*` - 55 tests (route, [id], latest, next-due)
      - [x] `/api/daily-logs/*` - 58 tests (route, [date], week-summary)
      - [x] `/api/stats/*` - 32 tests (summary, results)
-   - **P2 API routes to test**:
-     - [ ] `/api/profile` - GET, PUT
-     - [ ] `/api/preferences` - GET, PUT
-     - [ ] `/api/calendar/*` - month data
-     - [ ] `/api/export/*` - json, text, image, full
+   - **P2 API tests complete** (2025-12-31):
+     - [x] `/api/profile` - 16 tests (GET, PUT)
+     - [x] `/api/preferences` - 16 tests (GET, PUT)
+     - [x] `/api/calendar/*` - 18 tests (month data)
+     - [x] `/api/export/*` - 25 tests (json 11, text 12, full 2)
 
 5. **Fifth**: Add E2E tests for critical flows ⏳ PENDING (blocked by UI)
    - Placeholder created: `e2e/example.spec.ts`
