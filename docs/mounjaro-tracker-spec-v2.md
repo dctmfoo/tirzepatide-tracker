@@ -1476,15 +1476,15 @@ POST   /api/onboarding/complete       → Complete onboarding (create profile + 
   /(app)
     /summary/page.tsx
     /results/page.tsx
-    /jabs/page.tsx
-    /jabs/new/page.tsx
+    /jabs/page.tsx            (implemented)
+    /jabs/new/page.tsx        (implemented)
     /jabs/[id]/edit/page.tsx
     /calendar/page.tsx
     /settings/page.tsx
     /settings/[section]/page.tsx
     /log/page.tsx
     /log/[date]/page.tsx
-    /weight/new/page.tsx
+    /weight/new/page.tsx      (implemented)
     layout.tsx
   /(onboarding)
     /onboarding/page.tsx      (single-screen form - implemented)

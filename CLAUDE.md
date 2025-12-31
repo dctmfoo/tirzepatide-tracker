@@ -478,6 +478,28 @@ The `/log` page for daily wellness tracking:
   - Saves all sections in single API call to `/api/daily-logs`
   - Redirects to /summary on successful save
 
+### Quick Entry Pages Implementation (2025-12-31)
+
+Dedicated pages for quick data entry from Summary dashboard:
+
+**`/jabs/new` - New Injection Page:**
+- **File:** `src/app/(app)/jabs/new/page.tsx`
+- **Features:**
+  - Dose selection grid (2.5mg - 15mg)
+  - Site rotation suggestions based on last injection
+  - Date/time picker, optional notes
+  - Fetches last injection for smart defaults
+  - Redirects to `/jabs` on successful save
+
+**`/weight/new` - New Weight Page:**
+- **File:** `src/app/(app)/weight/new/page.tsx`
+- **Features:**
+  - Weight input with kg/lbs toggle
+  - Respects user's unit preference from `/api/preferences`
+  - Date picker, optional notes
+  - Converts lbs to kg before saving
+  - Redirects to `/summary` on successful save
+
 ### Backend API Status: COMPLETE
 
 All API routes are now implemented. Next: Testing or UI pages.
