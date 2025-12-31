@@ -14,43 +14,59 @@ import {
 import { getSuggestedSite } from '@/lib/utils/injection-logic';
 
 async function getSummaryData(userId: string) {
-  // Get profile for starting weight and goal
-  const profile = await db.query.profiles.findFirst({
-    where: eq(schema.profiles.userId, userId),
-  });
+  const today = new Date().toISOString().split('T')[0];
 
-  // Get user preferences for unit display
-  const preferences = await db.query.userPreferences.findFirst({
-    where: eq(schema.userPreferences.userId, userId),
-  });
+  // Fetch all independent data in parallel for better performance
+  const [
+    profile,
+    preferences,
+    recentWeightEntries,
+    latestInjection,
+    allInjections,
+    todayLog,
+  ] = await Promise.all([
+    // Profile for starting weight and goal
+    db.query.profiles.findFirst({
+      where: eq(schema.profiles.userId, userId),
+    }),
+    // User preferences for unit display
+    db.query.userPreferences.findFirst({
+      where: eq(schema.userPreferences.userId, userId),
+    }),
+    // Recent weight entries (for current, previous, and activity list)
+    db
+      .select()
+      .from(schema.weightEntries)
+      .where(eq(schema.weightEntries.userId, userId))
+      .orderBy(desc(schema.weightEntries.recordedAt))
+      .limit(3),
+    // Latest injection
+    db.query.injections.findFirst({
+      where: eq(schema.injections.userId, userId),
+      orderBy: [desc(schema.injections.injectionDate)],
+    }),
+    // All injections (for count and activity list)
+    db
+      .select()
+      .from(schema.injections)
+      .where(eq(schema.injections.userId, userId))
+      .orderBy(desc(schema.injections.injectionDate))
+      .limit(10),
+    // Today's log with relations
+    db.query.dailyLogs.findFirst({
+      where: eq(schema.dailyLogs.logDate, today),
+      with: {
+        sideEffects: true,
+        activityLog: true,
+        mentalLog: true,
+        dietLog: true,
+      },
+    }),
+  ]);
 
-  // Get latest weight
-  const latestWeight = await db.query.weightEntries.findFirst({
-    where: eq(schema.weightEntries.userId, userId),
-    orderBy: [desc(schema.weightEntries.recordedAt)],
-  });
-
-  // Get previous weight for change calculation
-  const recentWeights = await db
-    .select()
-    .from(schema.weightEntries)
-    .where(eq(schema.weightEntries.userId, userId))
-    .orderBy(desc(schema.weightEntries.recordedAt))
-    .limit(2);
-
-  const previousWeight = recentWeights.length > 1 ? recentWeights[1] : null;
-
-  // Get latest injection
-  const latestInjection = await db.query.injections.findFirst({
-    where: eq(schema.injections.userId, userId),
-    orderBy: [desc(schema.injections.injectionDate)],
-  });
-
-  // Count total injections
-  const allInjections = await db
-    .select()
-    .from(schema.injections)
-    .where(eq(schema.injections.userId, userId));
+  // Extract latest and previous weight from recentWeightEntries
+  const latestWeight = recentWeightEntries[0] || null;
+  const previousWeight = recentWeightEntries[1] || null;
 
   // Calculate next injection due
   let nextInjectionDue = null;
@@ -78,18 +94,6 @@ async function getSummaryData(userId: string) {
       injectionStatus = 'on_track';
     }
   }
-
-  // Get today's log
-  const today = new Date().toISOString().split('T')[0];
-  const todayLog = await db.query.dailyLogs.findFirst({
-    where: eq(schema.dailyLogs.logDate, today),
-    with: {
-      sideEffects: true,
-      activityLog: true,
-      mentalLog: true,
-      dietLog: true,
-    },
-  });
 
   // Calculate weight stats
   const startingWeight = profile
@@ -149,7 +153,7 @@ async function getSummaryData(userId: string) {
     }
   }
 
-  // Build recent activities
+  // Build recent activities from already-fetched data
   const activities: Array<{
     id: string;
     type: 'weight' | 'injection' | 'log';
@@ -157,14 +161,7 @@ async function getSummaryData(userId: string) {
     details: string;
   }> = [];
 
-  // Add recent weights
-  const recentWeightEntries = await db
-    .select()
-    .from(schema.weightEntries)
-    .where(eq(schema.weightEntries.userId, userId))
-    .orderBy(desc(schema.weightEntries.recordedAt))
-    .limit(3);
-
+  // Add recent weights (already fetched)
   recentWeightEntries.forEach((w) => {
     activities.push({
       id: `weight-${w.id}`,
@@ -174,15 +171,8 @@ async function getSummaryData(userId: string) {
     });
   });
 
-  // Add recent injections
-  const recentInjections = await db
-    .select()
-    .from(schema.injections)
-    .where(eq(schema.injections.userId, userId))
-    .orderBy(desc(schema.injections.injectionDate))
-    .limit(3);
-
-  recentInjections.forEach((inj) => {
+  // Add recent injections (use first 3 from allInjections)
+  allInjections.slice(0, 3).forEach((inj) => {
     activities.push({
       id: `injection-${inj.id}`,
       type: 'injection',
