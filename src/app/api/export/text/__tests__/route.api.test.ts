@@ -7,12 +7,10 @@ vi.mock('@/lib/auth', () => ({
   auth: () => mockAuth(),
 }));
 
-// Mock database
+// Mock database with more control
 const mockProfileFindFirst = vi.fn();
-const mockSelect = vi.fn();
-const mockFrom = vi.fn();
-const mockWhere = vi.fn();
-const mockOrderBy = vi.fn();
+let mockWeightEntries: unknown[] = [];
+let mockInjections: unknown[] = [];
 
 vi.mock('@/lib/db', () => ({
   db: {
@@ -21,30 +19,27 @@ vi.mock('@/lib/db', () => ({
         findFirst: (...args: unknown[]) => mockProfileFindFirst(...args),
       },
     },
-    select: () => {
-      mockSelect();
-      return {
-        from: () => {
-          mockFrom();
-          return {
-            where: () => {
-              mockWhere();
-              return {
-                orderBy: () => {
-                  mockOrderBy();
-                  return Promise.resolve([]);
-                },
-              };
-            },
-          };
-        },
-      };
-    },
+    select: () => ({
+      from: (table: { userId?: string }) => ({
+        where: () => ({
+          orderBy: () => {
+            // Return different data based on which table is being queried
+            if (table === 'weightEntries') {
+              return Promise.resolve(mockWeightEntries);
+            }
+            if (table === 'injections') {
+              return Promise.resolve(mockInjections);
+            }
+            return Promise.resolve([]);
+          },
+        }),
+      }),
+    }),
   },
   schema: {
     profiles: { userId: 'userId' },
-    weightEntries: { userId: 'userId', recordedAt: 'recordedAt' },
-    injections: { userId: 'userId', injectionDate: 'injectionDate' },
+    weightEntries: 'weightEntries',
+    injections: 'injections',
   },
 }));
 
@@ -58,144 +53,445 @@ describe('GET /api/export/text', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockProfileFindFirst.mockResolvedValue(null);
+    mockWeightEntries = [];
+    mockInjections = [];
   });
 
-  it('returns 401 when not authenticated', async () => {
-    mockAuth.mockResolvedValue(null);
+  describe('Authentication', () => {
+    it('returns 401 when not authenticated', async () => {
+      mockAuth.mockResolvedValue(null);
 
-    const response = await GET();
-    const data = await response.json();
+      const response = await GET();
+      const data = await response.json();
 
-    expect(response.status).toBe(401);
-    expect(data.error).toBe('Unauthorized');
-  });
-
-  it('returns text export for authenticated user', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get('Content-Type')).toBe('text/plain; charset=utf-8');
-  });
-
-  it('sets correct Content-Disposition header', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-    const disposition = response.headers.get('Content-Disposition');
-
-    expect(disposition).toContain('attachment');
-    expect(disposition).toContain('mounjaro-summary');
-    expect(disposition).toContain('.txt');
-  });
-
-  it('includes header in text output', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-    const text = await response.text();
-
-    expect(text).toContain('MOUNJARO TRACKER SUMMARY');
-  });
-
-  it('includes generated timestamp', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-    const text = await response.text();
-
-    expect(text).toContain('Generated:');
-  });
-
-  it('includes weight progress section', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-    const text = await response.text();
-
-    expect(text).toContain('WEIGHT PROGRESS');
-  });
-
-  it('includes treatment info section', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-
-    const response = await GET();
-    const text = await response.text();
-
-    expect(text).toContain('TREATMENT INFO');
-  });
-
-  it('shows starting weight when profile exists', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-    mockProfileFindFirst.mockResolvedValue({
-      startingWeightKg: '95.5',
-      goalWeightKg: '75.0',
-      treatmentStartDate: '2025-01-01',
+      expect(response.status).toBe(401);
+      expect(data.error).toBe('Unauthorized');
     });
 
-    const response = await GET();
-    const text = await response.text();
+    it('returns 401 when session has no user id', async () => {
+      mockAuth.mockResolvedValue({ user: {} });
 
-    expect(text).toContain('Starting Weight:');
-    expect(text).toContain('95.5 kg');
+      const response = await GET();
+      const data = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(data.error).toBe('Unauthorized');
+    });
   });
 
-  it('shows goal weight when profile exists', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-    mockProfileFindFirst.mockResolvedValue({
-      startingWeightKg: '95.5',
-      goalWeightKg: '75.0',
-      treatmentStartDate: '2025-01-01',
+  describe('Response Headers', () => {
+    it('returns text export with correct content type', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+
+      const response = await GET();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('Content-Type')).toBe('text/plain; charset=utf-8');
     });
 
-    const response = await GET();
-    const text = await response.text();
+    it('sets correct Content-Disposition header with date', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
 
-    expect(text).toContain('Goal Weight:');
-    expect(text).toContain('75.0 kg');
+      const response = await GET();
+      const disposition = response.headers.get('Content-Disposition');
+
+      expect(disposition).toContain('attachment');
+      expect(disposition).toContain('mounjaro-summary');
+      expect(disposition).toContain('.txt');
+      // Should contain today's date
+      const today = new Date().toISOString().split('T')[0];
+      expect(disposition).toContain(today);
+    });
   });
 
-  it('shows treatment start date when available', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
-    mockProfileFindFirst.mockResolvedValue({
-      startingWeightKg: '95.5',
-      goalWeightKg: '75.0',
-      treatmentStartDate: '2025-01-01',
+  describe('Text Structure', () => {
+    it('includes header section with decorative borders', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('═══════════════════════════════════════');
+      expect(text).toContain('MOUNJARO TRACKER SUMMARY');
     });
 
-    const response = await GET();
-    const text = await response.text();
+    it('includes generated timestamp', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
 
-    expect(text).toContain('Started:');
-    expect(text).toContain('2025-01-01');
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Generated:');
+    });
+
+    it('includes weight progress section', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('📊 WEIGHT PROGRESS');
+      expect(text).toContain('───────────────────────────────────────');
+    });
+
+    it('includes treatment info section', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('💉 TREATMENT INFO');
+    });
+
+    it('includes footer with app name', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Generated by Mounjaro Tracker');
+    });
   });
 
-  it('shows total injections count', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+  describe('Profile Data', () => {
+    it('shows starting weight when profile exists', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
 
-    const response = await GET();
-    const text = await response.text();
+      const response = await GET();
+      const text = await response.text();
 
-    expect(text).toContain('Total Injections:');
+      expect(text).toContain('Starting Weight:');
+      expect(text).toContain('95.5 kg');
+    });
+
+    it('shows goal weight when profile exists', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Goal Weight:');
+      expect(text).toContain('75.0 kg');
+    });
+
+    it('shows treatment start date when available', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Started:');
+      expect(text).toContain('2025-01-01');
+    });
+
+    it('calculates and shows treatment duration in weeks', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      // Set start date to 8 weeks ago
+      const eightWeeksAgo = new Date();
+      eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: eightWeeksAgo.toISOString().split('T')[0],
+      });
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Duration:');
+      expect(text).toContain('8 weeks');
+    });
+
+    it('handles missing profile gracefully', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue(null);
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(response.status).toBe(200);
+      // Should not include weight stats without profile
+      expect(text).not.toContain('Starting Weight:');
+      expect(text).not.toContain('Goal Weight:');
+    });
   });
 
-  it('includes footer', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+  describe('Weight Progress Calculations', () => {
+    it('shows current weight from most recent entry', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '93.0', recordedAt: new Date('2025-01-08') },
+        { weightKg: '90.5', recordedAt: new Date('2025-01-15') },
+        { weightKg: '88.2', recordedAt: new Date('2025-01-22') },
+      ];
 
-    const response = await GET();
-    const text = await response.text();
+      const response = await GET();
+      const text = await response.text();
 
-    expect(text).toContain('Generated by Mounjaro Tracker');
+      expect(text).toContain('Current Weight:');
+      expect(text).toContain('88.2 kg');
+    });
+
+    it('shows total weight lost with down arrow', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '88.2', recordedAt: new Date('2025-01-22') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      // 95.5 - 88.2 = 7.3 kg lost
+      expect(text).toContain('Total Change:');
+      expect(text).toContain('↓');
+      expect(text).toContain('7.3 kg');
+    });
+
+    it('shows weight gain with up arrow', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '85.0',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '87.5', recordedAt: new Date('2025-01-22') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      // 85.0 - 87.5 = -2.5 (gain)
+      expect(text).toContain('Total Change:');
+      expect(text).toContain('↑');
+      expect(text).toContain('2.5 kg');
+    });
+
+    it('shows remaining weight to goal', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '88.2', recordedAt: new Date('2025-01-22') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      // 88.2 - 75.0 = 13.2 kg remaining
+      expect(text).toContain('Remaining:');
+      expect(text).toContain('13.2 kg to goal');
+    });
+
+    it('shows goal reached celebration message', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '73.5', recordedAt: new Date('2025-06-01') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      // 73.5 - 75.0 = -1.5 (below goal)
+      expect(text).toContain('🎉 GOAL REACHED!');
+      expect(text).toContain('1.5 kg below goal');
+    });
+
+    it('shows goal reached when exactly at goal', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockResolvedValue({
+        startingWeightKg: '95.5',
+        goalWeightKg: '75.0',
+        treatmentStartDate: '2025-01-01',
+      });
+      mockWeightEntries = [
+        { weightKg: '75.0', recordedAt: new Date('2025-06-01') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('🎉 GOAL REACHED!');
+      expect(text).toContain('0.0 kg below goal');
+    });
   });
 
-  it('uses decorative borders', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+  describe('Injection Data', () => {
+    it('shows total injection count', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockInjections = [
+        { doseMg: '2.5', injectionSite: 'thigh_left', injectionDate: new Date('2025-01-01') },
+        { doseMg: '2.5', injectionSite: 'thigh_right', injectionDate: new Date('2025-01-08') },
+        { doseMg: '5.0', injectionSite: 'abdomen_left', injectionDate: new Date('2025-01-15') },
+      ];
 
-    const response = await GET();
-    const text = await response.text();
+      const response = await GET();
+      const text = await response.text();
 
-    expect(text).toContain('═');
-    expect(text).toContain('─');
+      expect(text).toContain('Total Injections: 3');
+    });
+
+    it('shows current dose from latest injection', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      // Latest injection first (desc order)
+      mockInjections = [
+        { doseMg: '7.5', injectionSite: 'thigh_left', injectionDate: new Date('2025-01-22') },
+        { doseMg: '5.0', injectionSite: 'abdomen_left', injectionDate: new Date('2025-01-15') },
+        { doseMg: '2.5', injectionSite: 'thigh_right', injectionDate: new Date('2025-01-08') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('Current Dose:');
+      expect(text).toContain('7.5 mg');
+    });
+
+    it('shows recent injections section with data', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockInjections = [
+        { doseMg: '5.0', injectionSite: 'thigh_left', injectionDate: new Date('2025-01-15') },
+        { doseMg: '2.5', injectionSite: 'abdomen_right', injectionDate: new Date('2025-01-08') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('📅 RECENT INJECTIONS');
+      // Number() removes trailing zeros, so 5.0 becomes 5
+      expect(text).toContain('5 mg');
+      expect(text).toContain('thigh_left');
+      expect(text).toContain('2.5 mg');
+      expect(text).toContain('abdomen_right');
+    });
+
+    it('limits recent injections to 5 entries', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockInjections = [
+        { doseMg: '7.5', injectionSite: 'site1', injectionDate: new Date('2025-01-29') },
+        { doseMg: '7.5', injectionSite: 'site2', injectionDate: new Date('2025-01-22') },
+        { doseMg: '5.0', injectionSite: 'site3', injectionDate: new Date('2025-01-15') },
+        { doseMg: '5.0', injectionSite: 'site4', injectionDate: new Date('2025-01-08') },
+        { doseMg: '2.5', injectionSite: 'site5', injectionDate: new Date('2025-01-01') },
+        { doseMg: '2.5', injectionSite: 'site6', injectionDate: new Date('2024-12-25') },
+        { doseMg: '2.5', injectionSite: 'site7', injectionDate: new Date('2024-12-18') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      // Should show first 5 only
+      expect(text).toContain('site1');
+      expect(text).toContain('site5');
+      expect(text).not.toContain('site6');
+      expect(text).not.toContain('site7');
+    });
+
+    it('does not show recent injections section when no injections', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockInjections = [];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).not.toContain('📅 RECENT INJECTIONS');
+      expect(text).toContain('Total Injections: 0');
+    });
+  });
+
+  describe('Weight History', () => {
+    it('shows recent weights section with data', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockWeightEntries = [
+        { weightKg: '93.0', recordedAt: new Date('2025-01-08') },
+        { weightKg: '90.5', recordedAt: new Date('2025-01-15') },
+        { weightKg: '88.2', recordedAt: new Date('2025-01-22') },
+      ];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).toContain('📈 RECENT WEIGHTS');
+      expect(text).toContain('93.0 kg');
+      expect(text).toContain('90.5 kg');
+      expect(text).toContain('88.2 kg');
+    });
+
+    it('limits recent weights to 10 entries (most recent)', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      // Create 15 weight entries
+      mockWeightEntries = [];
+      for (let i = 1; i <= 15; i++) {
+        mockWeightEntries.push({
+          weightKg: `${100 - i}.0`,
+          recordedAt: new Date(`2025-01-${i.toString().padStart(2, '0')}`),
+        });
+      }
+
+      const response = await GET();
+      const text = await response.text();
+
+      // Should show last 10 in reverse order (most recent first)
+      expect(text).toContain('85.0 kg'); // Entry 15
+      expect(text).toContain('86.0 kg'); // Entry 14
+      expect(text).toContain('94.0 kg'); // Entry 6
+      expect(text).not.toContain('95.0 kg'); // Entry 5 should not appear
+    });
+
+    it('does not show weight history section when no weights', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockWeightEntries = [];
+
+      const response = await GET();
+      const text = await response.text();
+
+      expect(text).not.toContain('📈 RECENT WEIGHTS');
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('returns 500 for database errors', async () => {
+      mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+      mockProfileFindFirst.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await GET();
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe('Internal server error');
+    });
   });
 });

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { Section } from '@/components/ui';
 import {
   NextInjectionCard,
@@ -54,7 +54,10 @@ async function getSummaryData(userId: string) {
       .limit(10),
     // Today's log with relations
     db.query.dailyLogs.findFirst({
-      where: eq(schema.dailyLogs.logDate, today),
+      where: and(
+        eq(schema.dailyLogs.userId, userId),
+        eq(schema.dailyLogs.logDate, today)
+      ),
       with: {
         sideEffects: true,
         activityLog: true,

@@ -37,7 +37,7 @@ vi.mock('@/lib/db', () => ({
     profiles: { userId: 'userId' },
     weightEntries: { userId: 'userId', recordedAt: 'recordedAt' },
     injections: { userId: 'userId', injectionDate: 'injectionDate' },
-    dailyLogs: { logDate: 'logDate' },
+    dailyLogs: { userId: 'userId', logDate: 'logDate' },
   },
 }));
 
@@ -47,6 +47,7 @@ vi.mock('drizzle-orm', () => ({
   desc: vi.fn((field) => ({ type: 'desc', field })),
   asc: vi.fn((field) => ({ type: 'asc', field })),
   count: vi.fn(() => ({ type: 'count' })),
+  and: vi.fn((...conditions) => ({ type: 'and', conditions })),
 }));
 
 describe('GET /api/stats/summary', () => {

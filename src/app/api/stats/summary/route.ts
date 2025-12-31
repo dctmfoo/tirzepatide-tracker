@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
-import { eq, desc, asc, count } from 'drizzle-orm';
+import { eq, desc, asc, count, and } from 'drizzle-orm';
 
 // GET /api/stats/summary - Get summary page data
 export async function GET() {
@@ -112,7 +112,10 @@ export async function GET() {
     // Get today's log summary
     const today = new Date().toISOString().split('T')[0];
     const todayLog = await db.query.dailyLogs.findFirst({
-      where: eq(schema.dailyLogs.logDate, today),
+      where: and(
+        eq(schema.dailyLogs.userId, session.user.id),
+        eq(schema.dailyLogs.logDate, today)
+      ),
       with: {
         sideEffects: true,
         activityLog: true,

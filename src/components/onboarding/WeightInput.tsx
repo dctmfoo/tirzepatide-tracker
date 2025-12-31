@@ -70,7 +70,7 @@ export function WeightInput({
             inputMode="decimal"
             step="0.1"
             min="0"
-            value={displayValue !== '' ? Number(displayValue).toFixed(1) : ''}
+            value={displayValue}
             onChange={handleInputChange}
             placeholder={placeholder}
             className={`w-full px-4 py-3 bg-background border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all pr-16 ${
