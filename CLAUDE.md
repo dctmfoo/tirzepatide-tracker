@@ -455,6 +455,19 @@ Settings page with grouped sections and edit modals (spec lines 646-765):
   - Skeleton loading state
   - Unit conversion display (kg/lbs/stone, cm/ft-in)
 
+### Performance Optimizations (2025-12-31)
+
+- **Loading skeletons**: All 5 main routes have `loading.tsx` for instant navigation feedback
+- **Link prefetching**: BottomNav uses `prefetch={true}` on all navigation links
+- **Parallel queries**: Summary page uses `Promise.all()` for 6 parallel DB queries (was 10+ sequential)
+
+### Pending: Daily Log Forms
+
+The "Log Now" button in `TodaysLogCard.tsx` links to `/log` which needs implementation:
+- Create `/app/(app)/log/page.tsx` - Daily log form page
+- Sections: Diet, Activity, Mental wellness, Side effects
+- API: Uses existing `/api/daily-logs` endpoints
+
 ### Backend API Status: COMPLETE
 
 All API routes are now implemented. Next: Testing or UI pages.
