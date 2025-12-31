@@ -304,7 +304,7 @@ Track overall progress here:
 - [x] Password reset flow (forgot-password, reset-password API + pages)
 - [x] API routes (all 27 endpoints complete)
 - [x] Onboarding flow (single-screen setup)
-- [ ] Summary page
+- [x] Summary page (dashboard with all 4 sections)
 - [ ] Results page (reference UI)
 - [ ] Jabs page
 - [ ] Calendar page
@@ -360,19 +360,32 @@ Single-screen onboarding with collapsible sections:
 - **Flow:** Register → /onboarding → Fill form → Submit → /summary
 - **Sections:** About You (age, gender, height), Goals (weights, start date), First Injection
 
+### Summary Page Implementation (2025-12-31)
+
+Dashboard with 4 sections per wireframe (spec lines 337-469):
+- **Files:**
+  - `src/app/(app)/layout.tsx` - Auth check, profile redirect, bottom nav
+  - `src/app/(app)/summary/page.tsx` - Main Summary page (SSR)
+  - `src/components/layout/BottomNav.tsx` - 5-tab bottom navigation
+  - `src/components/summary/` - Section components
+  - `src/components/ui/` - Shared UI components (StatCard, Section, ProgressBar, ActionCard)
+- **Sections:** Action Required (injection + log), Current State (weight cards), Journey Progress (goal + timeline), Recent Activity
+- **Features:** Empty state for new users, responsive layout, unit conversion display
+
 ### Backend API Status: COMPLETE
 
 All API routes are now implemented. Next: Testing or UI pages.
 
 ### Testing Infrastructure (2025-12-31)
 
-**195 tests passing** - Testing infrastructure is operational.
+**218 tests passing** - Testing infrastructure is operational.
 
 | Category | Files | Tests |
 |----------|-------|-------|
 | Unit Tests | `src/lib/utils/__tests__/*` | 126 |
 | API Tests - Weight | `src/app/api/weight/__tests__/*` | 14 |
 | API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
+| API Tests - Daily Logs | `src/app/api/daily-logs/__tests__/*` | 23 |
 | E2E Tests | `e2e/example.spec.ts` | placeholder |
 
 **Test Configuration:**
@@ -405,7 +418,7 @@ pnpm test:e2e       # E2E tests (requires running app)
 | Priority | Task | Status | Blocker |
 |----------|------|--------|---------|
 | P1 | API tests for `/api/injections/*` | ✅ Complete (55 tests) | - |
-| P1 | API tests for `/api/daily-logs/*` | Not started | - |
+| P1 | API tests for `/api/daily-logs/*` | ✅ Complete (23 tests) | - |
 | P1 | API tests for `/api/stats/*` | Not started | - |
 | P2 | API tests for remaining routes | Not started | - |
 | P2 | Component tests for forms | Blocked | UI components |
