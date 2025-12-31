@@ -48,7 +48,7 @@ export const firstInjectionSchema = z.object({
     message: 'Please select a valid dose',
   }),
   injectionSite: z.enum(INJECTION_SITES, {
-    required_error: 'Please select an injection site',
+    message: 'Please select an injection site',
   }),
   injectionDate: z.string().min(1, 'Please select an injection date'),
 });
@@ -58,31 +58,31 @@ export const onboardingSchema = z
   .object({
     // Profile - About You
     age: z
-      .number({ required_error: 'Age is required' })
+      .number({ message: 'Age is required' })
       .int('Age must be a whole number')
       .min(18, 'You must be at least 18 years old')
       .max(120, 'Please enter a valid age'),
     gender: z.enum(GENDERS, {
-      required_error: 'Please select your gender',
+      message: 'Please select your gender',
     }),
     heightCm: z
-      .number({ required_error: 'Height is required' })
+      .number({ message: 'Height is required' })
       .min(100, 'Height must be at least 100cm')
       .max(250, 'Height must be less than 250cm'),
     heightUnit: z.enum(HEIGHT_UNITS).default('cm'),
 
     // Goals
     startingWeightKg: z
-      .number({ required_error: 'Starting weight is required' })
+      .number({ message: 'Starting weight is required' })
       .min(20, 'Weight must be at least 20kg')
       .max(500, 'Weight must be less than 500kg'),
     goalWeightKg: z
-      .number({ required_error: 'Goal weight is required' })
+      .number({ message: 'Goal weight is required' })
       .min(20, 'Goal weight must be at least 20kg')
       .max(500, 'Goal weight must be less than 500kg'),
     weightUnit: z.enum(WEIGHT_UNITS).default('kg'),
     treatmentStartDate: z
-      .string({ required_error: 'Treatment start date is required' })
+      .string({ message: 'Treatment start date is required' })
       .min(1, 'Please select a treatment start date'),
 
     // First Injection
