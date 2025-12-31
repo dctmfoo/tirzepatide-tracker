@@ -1674,6 +1674,19 @@ NEXT_PUBLIC_APP_NAME=Mounjaro Tracker
 CRON_SECRET=your-cron-secret
 ```
 
+> **Implementation Note (2025-12-31):**
+> Production deployment completed on Vercel.
+>
+> **Production URL:** https://mj-tracker-xi.vercel.app
+>
+> **Vercel Configuration (`vercel.json`):**
+> - Framework: Next.js (auto-detected)
+> - Cron: Daily at 9:00 AM UTC (`/api/cron/send-notifications`)
+> - Note: Hobby plan limits cron to once daily; Pro allows hourly
+>
+> **Environment Variable Naming:**
+> - Use `RESEND_FROM_EMAIL` (not `EMAIL_FROM`) for consistency with code
+
 ---
 
 ## Loading & Error States

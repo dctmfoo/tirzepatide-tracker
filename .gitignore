@@ -62,3 +62,5 @@ public/workbox-*.js.map
 # Local development
 *.local
 nul
+
+.vercel

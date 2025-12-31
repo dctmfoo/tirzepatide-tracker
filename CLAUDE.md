@@ -315,7 +315,7 @@ Track overall progress here:
 - [ ] Data export
 - [~] Testing (unit) - infrastructure complete, 361 tests passing (P1+P2 API tests done)
 - [ ] Testing (E2E) - placeholder in place
-- [ ] Production deployment
+- [x] Production deployment (Vercel)
 
 ### Completed API Routes (2025-12-31)
 
@@ -539,6 +539,39 @@ CRON_SECRET=your-cron-secret-key
 **Cron Setup:**
 - Call `POST /api/cron/send-notifications` with `Authorization: Bearer {CRON_SECRET}`
 - Recommended: Run every hour via Vercel Cron or external scheduler
+
+### Vercel Deployment (2025-12-31)
+
+Production deployment on Vercel with automated cron job:
+
+**URLs:**
+- **Production:** https://mj-tracker-xi.vercel.app
+- **Dashboard:** https://vercel.com/dctmfoos-projects/mj-tracker
+
+**Configuration:**
+- `vercel.json` - Framework and cron configuration
+- Cron: Daily at 9:00 AM UTC (Hobby plan limit)
+- All environment variables configured for production
+
+**Environment Variables (Vercel):**
+| Variable | Environment |
+|----------|-------------|
+| `DATABASE_URL` | Preview, Production |
+| `NEXTAUTH_SECRET` | Preview, Production |
+| `NEXTAUTH_URL` | Preview, Production |
+| `RESEND_API_KEY` | Preview, Production |
+| `RESEND_FROM_EMAIL` | Preview, Production |
+| `NEXT_PUBLIC_APP_URL` | Preview, Production |
+| `NEXT_PUBLIC_APP_NAME` | Preview, Production |
+| `CRON_SECRET` | Preview, Production |
+
+**Commands:**
+```bash
+vercel              # Deploy preview
+vercel --prod       # Deploy production
+vercel env ls       # List environment variables
+vercel logs         # View deployment logs
+```
 
 ### Backend API Status: COMPLETE
 
