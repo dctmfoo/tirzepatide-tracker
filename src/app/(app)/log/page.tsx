@@ -194,13 +194,18 @@ export default function LogPage() {
         };
       }
 
-      // Add side effects
+      // Add side effects (filter out incomplete entries and convert null to undefined)
       if (sideEffects.length > 0) {
-        body.sideEffects = sideEffects.map((se) => ({
-          effectType: se.effectType,
-          severity: se.severity,
-          notes: se.notes,
-        }));
+        const validSideEffects = sideEffects
+          .filter((se) => se.effectType) // Only include side effects with a type selected
+          .map((se) => ({
+            effectType: se.effectType,
+            severity: se.severity,
+            notes: se.notes || undefined, // Convert null to undefined for Zod validation
+          }));
+        if (validSideEffects.length > 0) {
+          body.sideEffects = validSideEffects;
+        }
       }
 
       const response = await fetch('/api/daily-logs', {
