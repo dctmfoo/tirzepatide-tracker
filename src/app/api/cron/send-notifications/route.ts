@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, schema } from '@/lib/db';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
+import {
+  sendEmail,
+  isEmailConfigured,
+  injectionReminderTemplate,
+  injectionOverdueTemplate,
+  weightReminderTemplate,
+  weeklySummaryTemplate,
+} from '@/lib/email';
 
 // Verify cron secret to prevent unauthorized access
 const CRON_SECRET = process.env.CRON_SECRET;
+
+type NotificationResults = {
+  injectionReminders: number;
+  injectionOverdue: number;
+  weightReminders: number;
+  weeklySummaries: number;
+  errors: string[];
+};
 
 // POST /api/cron/send-notifications - Cron endpoint for sending scheduled notifications
 export async function POST(request: NextRequest) {
@@ -14,11 +30,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const results = {
+    const results: NotificationResults = {
       injectionReminders: 0,
+      injectionOverdue: 0,
       weightReminders: 0,
       weeklySummaries: 0,
-      errors: [] as string[],
+      errors: [],
     };
 
     // Get all users with their profiles and notification preferences
@@ -32,6 +49,7 @@ export async function POST(request: NextRequest) {
 
     const now = new Date();
     const today = now.toISOString().split('T')[0];
+    const isSunday = now.getDay() === 0;
 
     for (const user of users) {
       if (!user.profile) continue;
@@ -41,17 +59,17 @@ export async function POST(request: NextRequest) {
         user.notificationPreferences.map((p) => [p.notificationType, p.enabled])
       );
 
-      // Check injection reminders
+      // Check injection reminders and overdue
       if (notifPrefs.get('injection_reminder') !== false) {
         try {
-          await checkInjectionReminder(user, results);
+          await checkInjectionNotifications(user, results);
         } catch (error) {
-          results.errors.push(`Injection reminder failed for ${user.email}: ${error}`);
+          results.errors.push(`Injection notification failed for ${user.email}: ${error}`);
         }
       }
 
-      // Check weight reminders (only if they haven't logged today)
-      if (notifPrefs.get('weight_reminder') !== false) {
+      // Check weight reminders (only if they haven't logged today and it's after noon)
+      if (notifPrefs.get('weight_reminder') !== false && now.getHours() >= 12) {
         try {
           await checkWeightReminder(user, today, results);
         } catch (error) {
@@ -60,7 +78,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Check weekly summaries (on Sundays)
-      if (notifPrefs.get('weekly_summary') !== false && now.getDay() === 0) {
+      if (notifPrefs.get('weekly_summary') !== false && isSunday) {
         try {
           await sendWeeklySummary(user, results);
         } catch (error) {
@@ -72,6 +90,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       timestamp: now.toISOString(),
+      emailConfigured: isEmailConfigured(),
       results,
     });
   } catch (error) {
@@ -80,9 +99,15 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function checkInjectionReminder(
-  user: { id: string; email: string; profile: { reminderDaysBefore: number | null } | null },
-  results: { injectionReminders: number }
+type UserWithProfile = {
+  id: string;
+  email: string;
+  profile: { reminderDaysBefore: number | null } | null;
+};
+
+async function checkInjectionNotifications(
+  user: UserWithProfile,
+  results: NotificationResults
 ) {
   // Get last injection
   const lastInjection = await db.query.injections.findFirst({
@@ -97,57 +122,65 @@ async function checkInjectionReminder(
   nextDue.setDate(nextDue.getDate() + 7);
 
   const now = new Date();
-  const daysUntilDue = Math.ceil((nextDue.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const msUntilDue = nextDue.getTime() - now.getTime();
+  const daysUntilDue = Math.ceil(msUntilDue / (1000 * 60 * 60 * 24));
   const reminderDays = user.profile?.reminderDaysBefore ?? 1;
 
-  if (daysUntilDue === reminderDays) {
-    await sendEmail(user.id, user.email, 'injection_reminder', {
-      subject: 'Injection Reminder - Mounjaro Tracker',
-      html: `
-        <h2>Injection Reminder</h2>
-        <p>Your next Mounjaro injection is due in ${daysUntilDue} day${daysUntilDue > 1 ? 's' : ''}.</p>
-        <p>Scheduled date: ${nextDue.toLocaleDateString()}</p>
-      `,
+  // Check if reminder should be sent
+  if (daysUntilDue === reminderDays && daysUntilDue > 0) {
+    const template = injectionReminderTemplate({
+      daysUntilDue,
+      dueDate: nextDue.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+      currentDose: `${Number(lastInjection.doseMg)}mg`,
     });
+
+    await sendAndLogEmail(user.id, user.email, 'injection_reminder', template);
     results.injectionReminders++;
+  }
+
+  // Check if overdue notification should be sent (1-3 days overdue)
+  if (daysUntilDue < 0 && daysUntilDue >= -3) {
+    const daysOverdue = Math.abs(daysUntilDue);
+    const template = injectionOverdueTemplate({
+      daysOverdue,
+      lastInjectionDate: lastDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+    });
+
+    await sendAndLogEmail(user.id, user.email, 'injection_overdue', template);
+    results.injectionOverdue++;
   }
 }
 
 async function checkWeightReminder(
   user: { id: string; email: string },
   today: string,
-  results: { weightReminders: number }
+  results: NotificationResults
 ) {
-  // If no weight logged today and it's after noon
-  const now = new Date();
-  if (now.getHours() >= 12) {
-    const lastWeight = await db.query.weightEntries.findFirst({
-      where: eq(schema.weightEntries.userId, user.id),
-      orderBy: [desc(schema.weightEntries.recordedAt)],
+  const lastWeight = await db.query.weightEntries.findFirst({
+    where: eq(schema.weightEntries.userId, user.id),
+    orderBy: [desc(schema.weightEntries.recordedAt)],
+  });
+
+  if (!lastWeight) return;
+
+  const lastDate = new Date(lastWeight.recordedAt).toISOString().split('T')[0];
+
+  // Only send if no weight logged today
+  if (lastDate !== today) {
+    const template = weightReminderTemplate({
+      lastWeight: `${Number(lastWeight.weightKg).toFixed(1)} kg`,
+      lastDate: new Date(lastWeight.recordedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     });
 
-    if (lastWeight) {
-      const lastDate = new Date(lastWeight.recordedAt).toISOString().split('T')[0];
-      if (lastDate !== today) {
-        await sendEmail(user.id, user.email, 'weight_reminder', {
-          subject: 'Weight Reminder - Mounjaro Tracker',
-          html: `
-            <h2>Daily Weight Reminder</h2>
-            <p>Don't forget to log your weight today!</p>
-            <p>Last recorded: ${lastWeight.recordedAt.toLocaleDateString()} - ${Number(lastWeight.weightKg).toFixed(1)} kg</p>
-          `,
-        });
-        results.weightReminders++;
-      }
-    }
+    await sendAndLogEmail(user.id, user.email, 'weight_reminder', template);
+    results.weightReminders++;
   }
 }
 
 async function sendWeeklySummary(
   user: { id: string; email: string },
-  results: { weeklySummaries: number }
+  results: NotificationResults
 ) {
-  // Get last 7 days of data
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
 
@@ -155,12 +188,7 @@ async function sendWeeklySummary(
     db
       .select()
       .from(schema.weightEntries)
-      .where(
-        and(
-          eq(schema.weightEntries.userId, user.id),
-          // gte would be used here for date filtering
-        )
-      )
+      .where(eq(schema.weightEntries.userId, user.id))
       .orderBy(desc(schema.weightEntries.recordedAt)),
     db
       .select()
@@ -176,57 +204,51 @@ async function sendWeeklySummary(
   const endWeight = weekWeights.length > 0 ? Number(weekWeights[0].weightKg) : null;
   const weeklyChange = startWeight && endWeight ? endWeight - startWeight : null;
 
-  await sendEmail(user.id, user.email, 'weekly_summary', {
-    subject: 'Weekly Summary - Mounjaro Tracker',
-    html: `
-      <h2>Your Weekly Summary</h2>
-      <p><strong>Weight Entries:</strong> ${weekWeights.length}</p>
-      <p><strong>Injections:</strong> ${weekInjections.length}</p>
-      ${weeklyChange !== null ? `<p><strong>Weekly Change:</strong> ${weeklyChange > 0 ? '+' : ''}${weeklyChange.toFixed(1)} kg</p>` : ''}
-      <p>Keep up the great work!</p>
-    `,
+  const now = new Date();
+  const weekStart = new Date(weekAgo);
+
+  const template = weeklySummaryTemplate({
+    weekStartDate: weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    weekEndDate: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    weightEntries: weekWeights.length,
+    injectionsCount: weekInjections.length,
+    startWeight: startWeight ? `${startWeight.toFixed(1)} kg` : undefined,
+    endWeight: endWeight ? `${endWeight.toFixed(1)} kg` : undefined,
+    weeklyChange: weeklyChange !== null ? `${Math.abs(weeklyChange).toFixed(1)} kg` : undefined,
+    changeDirection: weeklyChange === null ? undefined : weeklyChange < 0 ? 'down' : weeklyChange > 0 ? 'up' : 'same',
   });
+
+  await sendAndLogEmail(user.id, user.email, 'weekly_summary', template);
   results.weeklySummaries++;
 }
 
-async function sendEmail(
+async function sendAndLogEmail(
   userId: string,
   email: string,
   notificationType: string,
-  emailData: { subject: string; html: string }
+  template: { subject: string; html: string }
 ) {
-  // Check if Resend is configured
-  if (!process.env.RESEND_API_KEY) {
-    console.log(`[DEV] Would send ${notificationType} email to ${email}`);
+  const result = await sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+  });
+
+  // If email not configured (dev mode), result is null
+  if (result === null) {
     return;
   }
 
-  try {
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
+  // Log the email
+  await db.insert(schema.emailLogs).values({
+    userId,
+    notificationType,
+    status: result.success ? 'sent' : 'failed',
+    resendId: result.id || null,
+    errorMessage: result.error || null,
+  });
 
-    const result = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
-      to: email,
-      subject: emailData.subject,
-      html: emailData.html,
-    });
-
-    // Log success
-    await db.insert(schema.emailLogs).values({
-      userId,
-      notificationType,
-      status: 'sent',
-      resendId: result.data?.id || null,
-    });
-  } catch (error) {
-    // Log failure
-    await db.insert(schema.emailLogs).values({
-      userId,
-      notificationType,
-      status: 'failed',
-      errorMessage: error instanceof Error ? error.message : 'Unknown error',
-    });
-    throw error;
+  if (!result.success) {
+    throw new Error(result.error);
   }
 }

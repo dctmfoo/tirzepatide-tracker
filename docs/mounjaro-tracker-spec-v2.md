@@ -904,6 +904,29 @@ Use cron job or Vercel Cron:
 - Send via Resend
 - Log to `email_logs` table
 
+> **Implementation Note (2025-12-31):**
+> Email notifications fully implemented using Resend SDK.
+>
+> **Files:**
+> - `src/lib/email/resend.ts` - Resend client singleton
+> - `src/lib/email/templates/index.ts` - Styled HTML email templates
+> - `src/app/api/cron/send-notifications/route.ts` - Cron endpoint
+> - `src/app/api/notifications/preferences/route.ts` - User preferences API
+>
+> **Currently Implemented:**
+> - ✅ `injection_reminder` - Configurable days before due
+> - ✅ `injection_overdue` - 1-3 days after missed injection
+> - ✅ `weight_reminder` - Daily after noon if not logged
+> - ✅ `weekly_summary` - Sundays with stats
+> - ✅ `password_reset` - Password reset flow
+> - ✅ `milestone_reached` - Template ready, needs trigger logic
+> - ✅ `dose_escalation_reminder` - Template ready, needs trigger logic
+>
+> **Environment Variables Required:**
+> - `RESEND_API_KEY` - Resend API key
+> - `RESEND_FROM_EMAIL` - Sender email address
+> - `CRON_SECRET` - Secret for cron endpoint authentication
+
 ---
 
 ## Data Export Formats

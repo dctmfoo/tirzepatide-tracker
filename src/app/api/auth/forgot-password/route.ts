@@ -3,6 +3,7 @@ import { db, schema } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import crypto from 'crypto';
+import { sendEmail, passwordResetTemplate } from '@/lib/email';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email(),
@@ -52,40 +53,31 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
     const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
-    // Send email via Resend (if configured)
-    if (process.env.RESEND_API_KEY) {
-      try {
-        const { Resend } = await import('resend');
-        const resend = new Resend(process.env.RESEND_API_KEY);
+    // Generate email template
+    const template = passwordResetTemplate({
+      resetUrl,
+      expiryHours: TOKEN_EXPIRY_HOURS,
+    });
 
-        await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
-          to: email,
-          subject: 'Reset your Mounjaro Tracker password',
-          html: `
-            <h2>Password Reset Request</h2>
-            <p>You requested to reset your password for Mounjaro Tracker.</p>
-            <p>Click the link below to reset your password. This link expires in ${TOKEN_EXPIRY_HOURS} hour.</p>
-            <p><a href="${resetUrl}">Reset Password</a></p>
-            <p>If you didn't request this, you can safely ignore this email.</p>
-          `,
-        });
+    // Send email via Resend
+    const result = await sendEmail({
+      to: email,
+      subject: template.subject,
+      html: template.html,
+    });
 
-        // Log the email
-        await db.insert(schema.emailLogs).values({
-          userId: user.id,
-          notificationType: 'password_reset',
-          status: 'sent',
-        });
-      } catch (emailError) {
-        console.error('Failed to send reset email:', emailError);
-        // Log the failure
-        await db.insert(schema.emailLogs).values({
-          userId: user.id,
-          notificationType: 'password_reset',
-          status: 'failed',
-          errorMessage: emailError instanceof Error ? emailError.message : 'Unknown error',
-        });
+    // Log the email result
+    if (result !== null) {
+      await db.insert(schema.emailLogs).values({
+        userId: user.id,
+        notificationType: 'password_reset',
+        status: result.success ? 'sent' : 'failed',
+        resendId: result.id || null,
+        errorMessage: result.error || null,
+      });
+
+      if (!result.success) {
+        console.error('Failed to send reset email:', result.error);
       }
     } else {
       // Development mode - log the reset URL

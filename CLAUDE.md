@@ -311,7 +311,7 @@ Track overall progress here:
 - [x] Settings page (profile, treatment, preferences, data export)
 - [x] Daily log forms (/log page with diet, activity, mental, side effects)
 - [ ] PWA configuration
-- [ ] Email notifications
+- [x] Email notifications (Resend integration with styled templates)
 - [ ] Data export
 - [~] Testing (unit) - infrastructure complete, 361 tests passing (P1+P2 API tests done)
 - [ ] Testing (E2E) - placeholder in place
@@ -499,6 +499,46 @@ Dedicated pages for quick data entry from Summary dashboard:
   - Date picker, optional notes
   - Converts lbs to kg before saving
   - Redirects to `/summary` on successful save
+
+### Email Notifications Implementation (2025-12-31)
+
+Resend integration with styled HTML email templates:
+
+**Files:**
+- `src/lib/email/resend.ts` - Resend client singleton with error handling
+- `src/lib/email/templates/index.ts` - Styled HTML email templates
+- `src/lib/email/index.ts` - Barrel exports
+- `src/app/api/cron/send-notifications/route.ts` - Cron job for scheduled emails
+- `src/app/api/notifications/preferences/route.ts` - User notification preferences
+
+**Email Templates:**
+- `injectionReminderTemplate` - Reminder before injection due date
+- `injectionOverdueTemplate` - Warning when injection is overdue
+- `weightReminderTemplate` - Daily weight logging reminder
+- `weeklySummaryTemplate` - Weekly progress report
+- `passwordResetTemplate` - Password reset link
+- `milestoneReachedTemplate` - Achievement notifications
+- `doseEscalationReminderTemplate` - Dose review reminder
+
+**Notification Types:**
+| Type | Trigger | Description |
+|------|---------|-------------|
+| `injection_reminder` | X days before due | Configurable via `reminderDaysBefore` |
+| `injection_overdue` | 1-3 days after due | Overdue warning |
+| `weight_reminder` | After noon if not logged | Daily weight reminder |
+| `weekly_summary` | Sundays | Weekly progress summary |
+| `milestone_reached` | On achievement | Weight loss milestones |
+
+**Environment Variables:**
+```
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+RESEND_FROM_EMAIL=Mounjaro Tracker <notifications@yourdomain.com>
+CRON_SECRET=your-cron-secret-key
+```
+
+**Cron Setup:**
+- Call `POST /api/cron/send-notifications` with `Authorization: Bearer {CRON_SECRET}`
+- Recommended: Run every hour via Vercel Cron or external scheduler
 
 ### Backend API Status: COMPLETE
 
