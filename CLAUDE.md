@@ -366,12 +366,13 @@ All API routes are now implemented. Next: Testing or UI pages.
 
 ### Testing Infrastructure (2025-12-31)
 
-**140 tests passing** - Testing infrastructure is operational.
+**195 tests passing** - Testing infrastructure is operational.
 
 | Category | Files | Tests |
 |----------|-------|-------|
 | Unit Tests | `src/lib/utils/__tests__/*` | 126 |
-| API Tests | `src/app/api/weight/__tests__/*` | 14 |
+| API Tests - Weight | `src/app/api/weight/__tests__/*` | 14 |
+| API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
 | E2E Tests | `e2e/example.spec.ts` | placeholder |
 
 **Test Configuration:**
@@ -403,7 +404,7 @@ pnpm test:e2e       # E2E tests (requires running app)
 
 | Priority | Task | Status | Blocker |
 |----------|------|--------|---------|
-| P1 | API tests for `/api/injections/*` | Not started | - |
+| P1 | API tests for `/api/injections/*` | ✅ Complete (55 tests) | - |
 | P1 | API tests for `/api/daily-logs/*` | Not started | - |
 | P1 | API tests for `/api/stats/*` | Not started | - |
 | P2 | API tests for remaining routes | Not started | - |

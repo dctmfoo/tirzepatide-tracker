@@ -19,7 +19,7 @@ export const mockSession: MockSession = {
 };
 
 // Create a mock auth function
-const authMock = vi.fn<[], Promise<MockSession | null>>(() => Promise.resolve(mockSession));
+const authMock = vi.fn(() => Promise.resolve(mockSession as MockSession | null));
 
 // Helper to set unauthenticated state
 export const mockUnauthenticated = () => {
