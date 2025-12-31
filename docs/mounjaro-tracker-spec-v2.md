@@ -1313,7 +1313,19 @@ PUT    /api/weight/[id]               → Update entry
 DELETE /api/weight/[id]               → Delete entry
 GET    /api/weight/latest             → Most recent entry
 GET    /api/weight/stats              → Calculated stats for period
+```
 
+> **Implementation Note (2025-12-31) - Weight API [x]:**
+> - Files:
+>   - `src/app/api/weight/route.ts` - GET (list with pagination/filters) + POST
+>   - `src/app/api/weight/[id]/route.ts` - GET/PUT/DELETE single entry
+>   - `src/app/api/weight/latest/route.ts` - GET most recent
+>   - `src/app/api/weight/stats/route.ts` - GET period + overall stats
+> - Pagination: limit (max 100), offset, startDate, endDate filters
+> - Stats include: period stats (min/max/avg/change) + overall progress toward goal
+> - Zod validation: weightKg (20-500), recordedAt (ISO datetime), notes (max 500)
+
+```
 GET    /api/injections                → List all
 POST   /api/injections                → Create
 GET    /api/injections/[id]           → Single
@@ -1321,7 +1333,20 @@ PUT    /api/injections/[id]           → Update
 DELETE /api/injections/[id]           → Delete
 GET    /api/injections/latest         → Most recent
 GET    /api/injections/next-due       → Next due date + status
+```
 
+> **Implementation Note (2025-12-31) - Injections API [x]:**
+> - Files:
+>   - `src/app/api/injections/route.ts` - GET (list) + POST
+>   - `src/app/api/injections/[id]/route.ts` - GET/PUT/DELETE single
+>   - `src/app/api/injections/latest/route.ts` - GET most recent
+>   - `src/app/api/injections/next-due/route.ts` - GET next due with status
+> - Valid doses: 2.5, 5, 7.5, 10, 12.5, 15 (mg)
+> - Valid sites: abdomen, thigh_left, thigh_right, arm_left, arm_right
+> - Next-due status: not_started, on_track, due_soon, due_today, overdue
+> - Weekly injection interval (7 days)
+
+```
 GET    /api/daily-logs                → List with date range
 POST   /api/daily-logs                → Create/update for date
 GET    /api/daily-logs/[date]         → Single day
