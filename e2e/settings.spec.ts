@@ -16,13 +16,13 @@ test.describe('Settings Page', () => {
 
   // These tests require authentication
   test.describe('Page Structure (Authenticated)', () => {
-    test.skip('displays page header', async ({ page }) => {
+    test('displays page header', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('h1')).toContainText('Settings');
     });
 
-    test.skip('displays Profile section', async ({ page }) => {
+    test('displays Profile section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Profile')).toBeVisible();
@@ -31,14 +31,14 @@ test.describe('Settings Page', () => {
       await expect(page.locator('text=Account')).toBeVisible();
     });
 
-    test.skip('displays Treatment section', async ({ page }) => {
+    test('displays Treatment section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Treatment')).toBeVisible();
       await expect(page.locator('text=Injection Schedule')).toBeVisible();
     });
 
-    test.skip('displays Preferences section', async ({ page }) => {
+    test('displays Preferences section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Preferences')).toBeVisible();
@@ -47,7 +47,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('text=Appearance')).toBeVisible();
     });
 
-    test.skip('displays Data section', async ({ page }) => {
+    test('displays Data section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Data')).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('text=Download All Data')).toBeVisible();
     });
 
-    test.skip('displays Support section', async ({ page }) => {
+    test('displays Support section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Support')).toBeVisible();
@@ -65,20 +65,20 @@ test.describe('Settings Page', () => {
       await expect(page.locator('text=Terms')).toBeVisible();
     });
 
-    test.skip('displays Danger Zone section', async ({ page }) => {
+    test('displays Danger Zone section', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Danger Zone')).toBeVisible();
       await expect(page.locator('text=Delete Account')).toBeVisible();
     });
 
-    test.skip('displays Log Out button', async ({ page }) => {
+    test('displays Log Out button', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('button:has-text("Log Out")')).toBeVisible();
     });
 
-    test.skip('displays app version', async ({ page }) => {
+    test('displays app version', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('text=Version')).toBeVisible();
@@ -86,7 +86,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Personal Info Modal', () => {
-    test.skip('opens when clicking Personal Info', async ({ page }) => {
+    test('opens when clicking Personal Info', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Personal Info');
@@ -95,7 +95,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Personal Info")')).toBeVisible();
     });
 
-    test.skip('has age, gender, and height fields', async ({ page }) => {
+    test('has age, gender, and height fields', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Personal Info');
 
@@ -104,7 +104,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('input[name*="height"], label:has-text("Height")')).toBeVisible();
     });
 
-    test.skip('closes when clicking cancel', async ({ page }) => {
+    test('closes when clicking cancel', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Personal Info');
       await page.click('button:has-text("Cancel"), button:has-text("✕")');
@@ -114,7 +114,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Goals Modal', () => {
-    test.skip('opens when clicking Goals', async ({ page }) => {
+    test('opens when clicking Goals', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Goals');
@@ -122,7 +122,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Goals")')).toBeVisible();
     });
 
-    test.skip('has goal weight and treatment start date fields', async ({ page }) => {
+    test('has goal weight and treatment start date fields', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Goals');
 
@@ -132,7 +132,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Injection Schedule Modal', () => {
-    test.skip('opens when clicking Injection Schedule', async ({ page }) => {
+    test('opens when clicking Injection Schedule', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Injection Schedule');
@@ -140,7 +140,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Injection Schedule")')).toBeVisible();
     });
 
-    test.skip('has preferred day and reminder timing options', async ({ page }) => {
+    test('has preferred day and reminder timing options', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Injection Schedule');
 
@@ -149,7 +149,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Units Modal', () => {
-    test.skip('opens when clicking Units', async ({ page }) => {
+    test('opens when clicking Units', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Units');
@@ -157,7 +157,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Units")')).toBeVisible();
     });
 
-    test.skip('has weight and height unit options', async ({ page }) => {
+    test('has weight and height unit options', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Units');
 
@@ -167,7 +167,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Notifications Modal', () => {
-    test.skip('opens when clicking Notifications', async ({ page }) => {
+    test('opens when clicking Notifications', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Notifications');
@@ -175,7 +175,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Notifications")')).toBeVisible();
     });
 
-    test.skip('has email reminder toggles', async ({ page }) => {
+    test('has email reminder toggles', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Notifications');
 
@@ -185,7 +185,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Export Modal', () => {
-    test.skip('opens when clicking Export Data', async ({ page }) => {
+    test('opens when clicking Export Data', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Export Data');
@@ -193,7 +193,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('h2:has-text("Export")')).toBeVisible();
     });
 
-    test.skip('has export format options', async ({ page }) => {
+    test('has export format options', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Export Data');
 
@@ -204,7 +204,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Delete Account Modal', () => {
-    test.skip('opens when clicking Delete Account', async ({ page }) => {
+    test('opens when clicking Delete Account', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('text=Delete Account');
@@ -213,7 +213,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('text=delete, text=confirmation')).toBeVisible();
     });
 
-    test.skip('requires confirmation', async ({ page }) => {
+    test('requires confirmation', async ({ page }) => {
       await page.goto('/settings');
       await page.click('text=Delete Account');
 
@@ -223,7 +223,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Logout', () => {
-    test.skip('logs out when clicking Log Out button', async ({ page }) => {
+    test('logs out when clicking Log Out button', async ({ page }) => {
       await page.goto('/settings');
 
       await page.click('button:has-text("Log Out")');
@@ -235,7 +235,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Bottom Navigation', () => {
-    test.skip('shows bottom navigation bar', async ({ page }) => {
+    test('shows bottom navigation bar', async ({ page }) => {
       await page.goto('/settings');
 
       await expect(page.locator('a[href="/summary"]')).toBeVisible();
@@ -245,7 +245,7 @@ test.describe('Settings Page', () => {
       await expect(page.locator('a[href="/settings"]')).toBeVisible();
     });
 
-    test.skip('highlights settings tab as active', async ({ page }) => {
+    test('highlights settings tab as active', async ({ page }) => {
       await page.goto('/settings');
 
       const settingsLink = page.locator('a[href="/settings"]');
@@ -254,7 +254,7 @@ test.describe('Settings Page', () => {
   });
 
   test.describe('Responsive Design', () => {
-    test.skip('displays correctly on mobile', async ({ page }) => {
+    test('displays correctly on mobile', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/settings');
 

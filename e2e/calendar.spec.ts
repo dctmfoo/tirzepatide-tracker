@@ -16,7 +16,7 @@ test.describe('Calendar Page', () => {
 
   // These tests require authentication
   test.describe('Page Structure (Authenticated)', () => {
-    test.skip('displays month navigation', async ({ page }) => {
+    test('displays month navigation', async ({ page }) => {
       await page.goto('/calendar');
 
       // Navigation arrows
@@ -24,7 +24,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('button:has-text("→"), button[aria-label*="next"]')).toBeVisible();
     });
 
-    test.skip('displays current month and year', async ({ page }) => {
+    test('displays current month and year', async ({ page }) => {
       await page.goto('/calendar');
 
       const now = new Date();
@@ -35,7 +35,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator(`text=${year}`)).toBeVisible();
     });
 
-    test.skip('displays weekday headers', async ({ page }) => {
+    test('displays weekday headers', async ({ page }) => {
       await page.goto('/calendar');
 
       // Short weekday names
@@ -48,7 +48,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('text=Sun')).toBeVisible();
     });
 
-    test.skip('displays calendar grid', async ({ page }) => {
+    test('displays calendar grid', async ({ page }) => {
       await page.goto('/calendar');
 
       // Calendar should have day cells
@@ -56,7 +56,7 @@ test.describe('Calendar Page', () => {
       expect(await dayCells.count()).toBeGreaterThan(20); // At least 28 days in a month
     });
 
-    test.skip('displays legend', async ({ page }) => {
+    test('displays legend', async ({ page }) => {
       await page.goto('/calendar');
 
       // Legend showing indicator meanings
@@ -66,7 +66,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Month Navigation', () => {
-    test.skip('navigates to previous month', async ({ page }) => {
+    test('navigates to previous month', async ({ page }) => {
       await page.goto('/calendar');
 
       // Click previous month button
@@ -80,7 +80,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator(`text=${prevMonthName}`)).toBeVisible();
     });
 
-    test.skip('navigates to next month', async ({ page }) => {
+    test('navigates to next month', async ({ page }) => {
       await page.goto('/calendar');
 
       // First go to previous month
@@ -95,7 +95,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator(`text=${currentMonth}`)).toBeVisible();
     });
 
-    test.skip('handles year rollover', async ({ page }) => {
+    test('handles year rollover', async ({ page }) => {
       await page.goto('/calendar');
 
       // Navigate back 12 months to go to previous year
@@ -111,7 +111,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Day Selection', () => {
-    test.skip('highlights today', async ({ page }) => {
+    test('highlights today', async ({ page }) => {
       await page.goto('/calendar');
 
       const today = new Date().getDate().toString();
@@ -121,7 +121,7 @@ test.describe('Calendar Page', () => {
       await expect(todayCell).toHaveClass(/ring|border|today/);
     });
 
-    test.skip('selects a day when clicked', async ({ page }) => {
+    test('selects a day when clicked', async ({ page }) => {
       await page.goto('/calendar');
 
       const dayToClick = '15';
@@ -132,7 +132,7 @@ test.describe('Calendar Page', () => {
       await expect(selectedDay).toHaveClass(/bg-accent|selected/);
     });
 
-    test.skip('shows day detail panel when day is selected', async ({ page }) => {
+    test('shows day detail panel when day is selected', async ({ page }) => {
       await page.goto('/calendar');
 
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
@@ -143,7 +143,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Day Detail Panel', () => {
-    test.skip('displays quick action buttons', async ({ page }) => {
+    test('displays quick action buttons', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
 
@@ -153,7 +153,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('button:has-text("Daily Log")')).toBeVisible();
     });
 
-    test.skip('shows entries for selected day', async ({ page }) => {
+    test('shows entries for selected day', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
 
@@ -163,7 +163,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Log Weight Modal', () => {
-    test.skip('opens when clicking Log Weight button', async ({ page }) => {
+    test('opens when clicking Log Weight button', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Log Weight")');
@@ -172,7 +172,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('h2:has-text("Log Weight"), text=Log Weight')).toBeVisible();
     });
 
-    test.skip('has weight input field', async ({ page }) => {
+    test('has weight input field', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Log Weight")');
@@ -180,7 +180,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('input[type="number"], input[name*="weight"]')).toBeVisible();
     });
 
-    test.skip('closes when clicking cancel or close', async ({ page }) => {
+    test('closes when clicking cancel or close', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Log Weight")');
@@ -194,7 +194,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Log Injection Modal', () => {
-    test.skip('opens when clicking Log Injection button', async ({ page }) => {
+    test('opens when clicking Log Injection button', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Log Injection")');
@@ -202,7 +202,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('h2:has-text("Log Injection")')).toBeVisible();
     });
 
-    test.skip('has dose selection', async ({ page }) => {
+    test('has dose selection', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Log Injection")');
@@ -213,7 +213,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Daily Log Modal', () => {
-    test.skip('opens when clicking Daily Log button', async ({ page }) => {
+    test('opens when clicking Daily Log button', async ({ page }) => {
       await page.goto('/calendar');
       await page.click('[data-date="15"], .calendar-day:has-text("15")');
       await page.click('button:has-text("Daily Log")');
@@ -223,14 +223,14 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Calendar Indicators', () => {
-    test.skip('shows injection indicator on injection days', async ({ page }) => {
+    test('shows injection indicator on injection days', async ({ page }) => {
       await page.goto('/calendar');
 
       // Look for injection emoji indicator (may or may not be visible depending on data)
       await expect(page.locator('.calendar-day:has-text("💉")').first()).toBeVisible();
     });
 
-    test.skip('shows weight indicator on weight log days', async ({ page }) => {
+    test('shows weight indicator on weight log days', async ({ page }) => {
       await page.goto('/calendar');
 
       // Look for weight dot indicator (may or may not be visible depending on data)
@@ -239,7 +239,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Bottom Navigation', () => {
-    test.skip('shows bottom navigation bar', async ({ page }) => {
+    test('shows bottom navigation bar', async ({ page }) => {
       await page.goto('/calendar');
 
       await expect(page.locator('a[href="/summary"]')).toBeVisible();
@@ -249,7 +249,7 @@ test.describe('Calendar Page', () => {
       await expect(page.locator('a[href="/settings"]')).toBeVisible();
     });
 
-    test.skip('highlights calendar tab as active', async ({ page }) => {
+    test('highlights calendar tab as active', async ({ page }) => {
       await page.goto('/calendar');
 
       const calendarLink = page.locator('a[href="/calendar"]');
@@ -258,7 +258,7 @@ test.describe('Calendar Page', () => {
   });
 
   test.describe('Responsive Design', () => {
-    test.skip('calendar grid adjusts on mobile', async ({ page }) => {
+    test('calendar grid adjusts on mobile', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/calendar');
 

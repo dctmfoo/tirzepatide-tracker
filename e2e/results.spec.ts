@@ -16,7 +16,7 @@ test.describe('Results Page', () => {
 
   // These tests require authentication
   test.describe('Page Structure (Authenticated)', () => {
-    test.skip('displays period tabs', async ({ page }) => {
+    test('displays period tabs', async ({ page }) => {
       await page.goto('/results');
 
       // Check for period selector tabs
@@ -26,13 +26,13 @@ test.describe('Results Page', () => {
       await expect(page.locator('button:has-text("All Time"), [data-tab="all"]')).toBeVisible();
     });
 
-    test.skip('displays weight change header', async ({ page }) => {
+    test('displays weight change header', async ({ page }) => {
       await page.goto('/results');
 
       await expect(page.locator('h2:has-text("Weight Change")')).toBeVisible();
     });
 
-    test.skip('displays all stat cards', async ({ page }) => {
+    test('displays all stat cards', async ({ page }) => {
       await page.goto('/results');
 
       // Check for all 6 stat cards
@@ -44,7 +44,7 @@ test.describe('Results Page', () => {
       await expect(page.locator('text=To goal')).toBeVisible();
     });
 
-    test.skip('displays weight chart', async ({ page }) => {
+    test('displays weight chart', async ({ page }) => {
       await page.goto('/results');
 
       // Chart container should be visible
@@ -54,7 +54,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Period Filter', () => {
-    test.skip('changes period when clicking tabs', async ({ page }) => {
+    test('changes period when clicking tabs', async ({ page }) => {
       await page.goto('/results');
 
       // Click on 1 month tab
@@ -65,7 +65,7 @@ test.describe('Results Page', () => {
       await expect(monthTab).toHaveClass(/bg-accent-primary|text-accent-primary|underline/);
     });
 
-    test.skip('updates date range when changing period', async ({ page }) => {
+    test('updates date range when changing period', async ({ page }) => {
       await page.goto('/results');
 
       // Change to 3 months
@@ -79,7 +79,7 @@ test.describe('Results Page', () => {
       await expect(dateRange).toBeVisible();
     });
 
-    test.skip('All Time is selected by default', async ({ page }) => {
+    test('All Time is selected by default', async ({ page }) => {
       await page.goto('/results');
 
       const allTimeTab = page.locator('button:has-text("All Time"), [data-tab="all"]');
@@ -88,7 +88,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Stat Cards', () => {
-    test.skip('displays stat values with units', async ({ page }) => {
+    test('displays stat values with units', async ({ page }) => {
       await page.goto('/results');
 
       // Stats should show values with units like "kg" or "%"
@@ -96,7 +96,7 @@ test.describe('Results Page', () => {
       await expect(totalChangeCard).toBeVisible();
     });
 
-    test.skip('shows correct icons for each stat', async ({ page }) => {
+    test('shows correct icons for each stat', async ({ page }) => {
       await page.goto('/results');
 
       // Check for emoji icons
@@ -110,21 +110,21 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Weight Chart', () => {
-    test.skip('shows chart with data points', async ({ page }) => {
+    test('shows chart with data points', async ({ page }) => {
       await page.goto('/results');
 
       // Recharts elements should be present
       await expect(page.locator('.recharts-line, .recharts-curve')).toBeVisible();
     });
 
-    test.skip('shows Y-axis with weight values', async ({ page }) => {
+    test('shows Y-axis with weight values', async ({ page }) => {
       await page.goto('/results');
 
       // Y-axis should be visible
       await expect(page.locator('.recharts-yAxis')).toBeVisible();
     });
 
-    test.skip('shows X-axis with dates', async ({ page }) => {
+    test('shows X-axis with dates', async ({ page }) => {
       await page.goto('/results');
 
       // X-axis should be visible
@@ -133,7 +133,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Empty State', () => {
-    test.skip('shows empty state when no weight data', async ({ page }) => {
+    test('shows empty state when no weight data', async ({ page }) => {
       await page.goto('/results');
 
       // For new users with no data (may or may not be visible depending on user data)
@@ -142,7 +142,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Loading State', () => {
-    test.skip('shows skeleton while loading', async ({ page }) => {
+    test('shows skeleton while loading', async ({ page }) => {
       await page.goto('/results');
 
       // Skeleton should appear briefly during loading
@@ -151,7 +151,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Bottom Navigation', () => {
-    test.skip('shows bottom navigation bar', async ({ page }) => {
+    test('shows bottom navigation bar', async ({ page }) => {
       await page.goto('/results');
 
       await expect(page.locator('a[href="/summary"]')).toBeVisible();
@@ -161,7 +161,7 @@ test.describe('Results Page', () => {
       await expect(page.locator('a[href="/settings"]')).toBeVisible();
     });
 
-    test.skip('highlights results tab as active', async ({ page }) => {
+    test('highlights results tab as active', async ({ page }) => {
       await page.goto('/results');
 
       const resultsLink = page.locator('a[href="/results"]');
@@ -170,7 +170,7 @@ test.describe('Results Page', () => {
   });
 
   test.describe('Responsive Design', () => {
-    test.skip('displays correctly on mobile', async ({ page }) => {
+    test('displays correctly on mobile', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/results');
 
@@ -186,7 +186,7 @@ test.describe('Results Page', () => {
       }
     });
 
-    test.skip('displays correctly on tablet', async ({ page }) => {
+    test('displays correctly on tablet', async ({ page }) => {
       await page.setViewportSize({ width: 768, height: 1024 });
       await page.goto('/results');
 
