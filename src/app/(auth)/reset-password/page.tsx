@@ -55,20 +55,20 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+      <div className="bg-card rounded-2xl p-8 shadow-xl">
         <div className="text-center">
-          <div className="w-16 h-16 bg-error/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Invalid reset link</h1>
-          <p className="text-foreground-muted mb-6">
+          <p className="text-muted-foreground mb-6">
             This password reset link is invalid or has expired.
           </p>
           <Link
             href="/forgot-password"
-            className="text-accent-primary hover:underline font-medium"
+            className="text-primary hover:underline font-medium"
           >
             Request a new link
           </Link>
@@ -79,7 +79,7 @@ function ResetPasswordForm() {
 
   if (success) {
     return (
-      <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+      <div className="bg-card rounded-2xl p-8 shadow-xl">
         <div className="text-center">
           <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,12 +87,12 @@ function ResetPasswordForm() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Password reset!</h1>
-          <p className="text-foreground-muted mb-6">
+          <p className="text-muted-foreground mb-6">
             Your password has been reset. Redirecting to login...
           </p>
           <Link
             href="/login"
-            className="text-accent-primary hover:underline font-medium"
+            className="text-primary hover:underline font-medium"
           >
             Go to login now
           </Link>
@@ -102,21 +102,21 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+    <div className="bg-card rounded-2xl p-8 shadow-xl">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">Reset your password</h1>
-        <p className="text-foreground-muted">Enter your new password below</p>
+        <p className="text-muted-foreground">Enter your new password below</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="bg-error/10 border border-error/50 text-error px-4 py-3 rounded-lg text-sm">
+          <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
             New password
           </label>
           <input
@@ -127,16 +127,16 @@ function ResetPasswordForm() {
             required
             minLength={8}
             autoComplete="new-password"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="Min 8 characters"
           />
-          <p className="mt-1 text-xs text-foreground-muted">
+          <p className="mt-1 text-xs text-muted-foreground">
             Must include uppercase, lowercase, and a number
           </p>
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-muted-foreground mb-2">
             Confirm password
           </label>
           <input
@@ -146,7 +146,7 @@ function ResetPasswordForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             autoComplete="new-password"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="Confirm your password"
           />
         </div>
@@ -154,7 +154,7 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 px-4 bg-accent-primary text-background font-semibold rounded-lg hover:bg-accent-primary/90 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full py-3 px-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isLoading ? 'Resetting...' : 'Reset password'}
         </button>
@@ -166,9 +166,9 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+      <div className="bg-card rounded-2xl p-8 shadow-xl">
         <div className="text-center">
-          <p className="text-foreground-muted">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     }>

@@ -7,7 +7,7 @@ export default function OnboardingPage() {
         <h1 className="text-2xl font-bold text-foreground mb-2">
           Welcome to Mounjaro Tracker
         </h1>
-        <p className="text-foreground-muted">
+        <p className="text-muted-foreground">
           Let&apos;s set up your journey in just a few steps
         </p>
       </div>

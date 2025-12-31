@@ -68,21 +68,21 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+    <div className="bg-card rounded-2xl p-8 shadow-xl">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">Create account</h1>
-        <p className="text-foreground-muted">Start tracking your Mounjaro journey</p>
+        <p className="text-muted-foreground">Start tracking your Mounjaro journey</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="bg-error/10 border border-error/50 text-error px-4 py-3 rounded-lg text-sm">
+          <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
             Email
           </label>
           <input
@@ -92,13 +92,13 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
             Password
           </label>
           <input
@@ -108,16 +108,16 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="new-password"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="At least 8 characters"
           />
-          <p className="mt-1 text-xs text-foreground-muted">
+          <p className="mt-1 text-xs text-muted-foreground">
             Must contain uppercase, lowercase, and a number
           </p>
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-muted-foreground mb-2">
             Confirm password
           </label>
           <input
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             autoComplete="new-password"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="Confirm your password"
           />
         </div>
@@ -135,15 +135,15 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 px-4 bg-accent-primary text-background font-semibold rounded-lg hover:bg-accent-primary/90 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full py-3 px-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isLoading ? 'Creating account...' : 'Create account'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-foreground-muted">
+      <p className="mt-6 text-center text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/login" className="text-accent-primary hover:underline font-medium">
+        <Link href="/login" className="text-primary hover:underline font-medium">
           Sign in
         </Link>
       </p>

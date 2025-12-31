@@ -9,12 +9,12 @@ export function SettingsSection({ title, children, danger }: SettingsSectionProp
     <div className="mb-6">
       <h2
         className={`mb-2 px-4 text-xs font-semibold uppercase tracking-wider ${
-          danger ? 'text-error' : 'text-foreground-muted'
+          danger ? 'text-destructive' : 'text-muted-foreground'
         }`}
       >
         {title}
       </h2>
-      <div className="divide-y divide-background-card rounded-xl bg-background-card">
+      <div className="divide-y divide-border rounded-xl bg-card">
         {children}
       </div>
     </div>

@@ -14,7 +14,7 @@ const navItems = [
 function ClipboardIcon({ active }: { active: boolean }) {
   return (
     <svg
-      className={`h-6 w-6 ${active ? 'text-accent-primary' : 'text-foreground-muted'}`}
+      className={`h-6 w-6 ${active ? 'text-primary' : 'text-muted-foreground'}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -32,7 +32,7 @@ function ClipboardIcon({ active }: { active: boolean }) {
 function SyringeIcon({ active }: { active: boolean }) {
   return (
     <svg
-      className={`h-6 w-6 ${active ? 'text-accent-primary' : 'text-foreground-muted'}`}
+      className={`h-6 w-6 ${active ? 'text-primary' : 'text-muted-foreground'}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -50,7 +50,7 @@ function SyringeIcon({ active }: { active: boolean }) {
 function ChartIcon({ active }: { active: boolean }) {
   return (
     <svg
-      className={`h-6 w-6 ${active ? 'text-accent-primary' : 'text-foreground-muted'}`}
+      className={`h-6 w-6 ${active ? 'text-primary' : 'text-muted-foreground'}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -68,7 +68,7 @@ function ChartIcon({ active }: { active: boolean }) {
 function CalendarIcon({ active }: { active: boolean }) {
   return (
     <svg
-      className={`h-6 w-6 ${active ? 'text-accent-primary' : 'text-foreground-muted'}`}
+      className={`h-6 w-6 ${active ? 'text-primary' : 'text-muted-foreground'}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -86,7 +86,7 @@ function CalendarIcon({ active }: { active: boolean }) {
 function SettingsIcon({ active }: { active: boolean }) {
   return (
     <svg
-      className={`h-6 w-6 ${active ? 'text-accent-primary' : 'text-foreground-muted'}`}
+      className={`h-6 w-6 ${active ? 'text-primary' : 'text-muted-foreground'}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -114,7 +114,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-foreground-muted/20 bg-background">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background">
       <div className="mx-auto flex max-w-lg items-center justify-around py-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -128,14 +128,14 @@ export function BottomNav() {
               className="flex flex-col items-center gap-1 px-3 py-1"
             >
               {isActive ? (
-                <span className="rounded-full bg-accent-primary/20 px-4 py-2">
+                <span className="rounded-full bg-primary/20 px-4 py-2">
                   <IconComponent active={isActive} />
                 </span>
               ) : (
                 <IconComponent active={isActive} />
               )}
               <span
-                className={`text-xs ${isActive ? 'text-accent-primary' : 'text-foreground-muted'}`}
+                className={`text-xs ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 {item.label}
               </span>

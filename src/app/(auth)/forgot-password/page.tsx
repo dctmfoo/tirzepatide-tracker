@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
 
   if (success) {
     return (
-      <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+      <div className="bg-card rounded-2xl p-8 shadow-xl">
         <div className="text-center">
           <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,12 +44,12 @@ export default function ForgotPasswordPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Check your email</h1>
-          <p className="text-foreground-muted mb-6">
+          <p className="text-muted-foreground mb-6">
             If an account exists with that email, we&apos;ve sent a password reset link.
           </p>
           <Link
             href="/login"
-            className="text-accent-primary hover:underline font-medium"
+            className="text-primary hover:underline font-medium"
           >
             Back to login
           </Link>
@@ -59,21 +59,21 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+    <div className="bg-card rounded-2xl p-8 shadow-xl">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">Forgot password?</h1>
-        <p className="text-foreground-muted">Enter your email to receive a reset link</p>
+        <p className="text-muted-foreground">Enter your email to receive a reset link</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="bg-error/10 border border-error/50 text-error px-4 py-3 rounded-lg text-sm">
+          <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
             Email
           </label>
           <input
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="you@example.com"
           />
         </div>
@@ -91,15 +91,15 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 px-4 bg-accent-primary text-background font-semibold rounded-lg hover:bg-accent-primary/90 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full py-3 px-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isLoading ? 'Sending...' : 'Send reset link'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-foreground-muted">
+      <p className="mt-6 text-center text-muted-foreground">
         Remember your password?{' '}
-        <Link href="/login" className="text-accent-primary hover:underline font-medium">
+        <Link href="/login" className="text-primary hover:underline font-medium">
           Sign in
         </Link>
       </p>

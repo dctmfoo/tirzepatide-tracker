@@ -37,13 +37,13 @@ function JabsSkeleton() {
     <div className="animate-pulse space-y-4 p-4">
       <div className="grid grid-cols-2 gap-3">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-24 rounded-xl bg-background-card" />
+          <div key={i} className="h-24 rounded-xl bg-card" />
         ))}
       </div>
-      <div className="h-6 w-40 rounded bg-background-card" />
+      <div className="h-6 w-40 rounded bg-card" />
       <div className="space-y-3">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-20 rounded-xl bg-background-card" />
+          <div key={i} className="h-20 rounded-xl bg-card" />
         ))}
       </div>
     </div>
@@ -55,12 +55,12 @@ function EmptyState({ onLogInjection }: { onLogInjection: () => void }) {
     <div className="flex h-[60vh] flex-col items-center justify-center p-4 text-center">
       <div className="mb-4 text-5xl">💉</div>
       <p className="text-lg font-medium text-foreground">No injections logged yet</p>
-      <p className="mt-2 text-foreground-muted">
+      <p className="mt-2 text-muted-foreground">
         Log your first injection to start tracking your treatment
       </p>
       <button
         onClick={onLogInjection}
-        className="mt-6 rounded-xl bg-accent-primary px-6 py-3 font-medium text-background hover:bg-accent-primary/90"
+        className="mt-6 rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground hover:bg-primary/90"
       >
         + Log Injection
       </button>
@@ -175,7 +175,7 @@ export default function JabsPage() {
   if (error) {
     return (
       <div className="flex h-[60vh] items-center justify-center p-4">
-        <p className="text-error">{error}</p>
+        <p className="text-destructive">{error}</p>
       </div>
     );
   }
@@ -262,7 +262,7 @@ export default function JabsPage() {
       <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 pb-4">
         <button
           onClick={handleLogInjection}
-          className="rounded-xl bg-accent-primary px-8 py-3 font-medium text-background shadow-lg hover:bg-accent-primary/90"
+          className="rounded-xl bg-primary px-8 py-3 font-medium text-primary-foreground shadow-lg hover:bg-primary/90"
         >
           + Log Injection
         </button>
@@ -367,7 +367,7 @@ function LogInjectionModal({
           <h2 className="text-xl font-bold text-foreground">Log Injection</h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-2 text-foreground-muted hover:bg-background-card"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-card"
           >
             ✕
           </button>
@@ -387,8 +387,8 @@ function LogInjectionModal({
                   onClick={() => setDoseMg(d)}
                   className={`rounded-lg py-3 text-sm font-medium transition-colors ${
                     doseMg === d
-                      ? 'bg-accent-primary text-background'
-                      : 'bg-background-card text-foreground hover:bg-background-card/80'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-card text-foreground hover:bg-card/80'
                   }`}
                 >
                   {d} mg
@@ -405,7 +405,7 @@ function LogInjectionModal({
             <select
               value={site}
               onChange={(e) => setSite(e.target.value)}
-              className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {VALID_SITES.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -425,7 +425,7 @@ function LogInjectionModal({
               type="datetime-local"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -439,20 +439,20 @@ function LogInjectionModal({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Any notes about this injection..."
               rows={2}
-              className="w-full resize-none rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full resize-none rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
           {/* Error Message */}
           {error && (
-            <p className="text-sm text-error">{error}</p>
+            <p className="text-sm text-destructive">{error}</p>
           )}
 
           {/* Submit Button */}
           <button
             type="submit"
             disabled={saving}
-            className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
+            className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Injection'}
           </button>

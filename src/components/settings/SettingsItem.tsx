@@ -26,13 +26,13 @@ export function SettingsItem({
       } ${disabled ? 'opacity-50' : ''}`}
     >
       <div>
-        <p className={`font-medium ${danger ? 'text-error' : 'text-foreground'}`}>{label}</p>
-        {sublabel && <p className="text-sm text-foreground-muted">{sublabel}</p>}
+        <p className={`font-medium ${danger ? 'text-destructive' : 'text-foreground'}`}>{label}</p>
+        {sublabel && <p className="text-sm text-muted-foreground">{sublabel}</p>}
       </div>
       {rightElement ? (
         rightElement
       ) : onClick ? (
-        <span className="text-foreground-muted">→</span>
+        <span className="text-muted-foreground">→</span>
       ) : null}
     </Component>
   );

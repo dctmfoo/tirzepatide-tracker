@@ -30,8 +30,8 @@ function SettingsSkeleton() {
     <div className="animate-pulse space-y-6 p-4">
       {[...Array(4)].map((_, i) => (
         <div key={i}>
-          <div className="mb-2 h-4 w-24 rounded bg-background-card" />
-          <div className="space-y-1 rounded-xl bg-background-card p-4">
+          <div className="mb-2 h-4 w-24 rounded bg-card" />
+          <div className="space-y-1 rounded-xl bg-card p-4">
             {[...Array(3)].map((_, j) => (
               <div key={j} className="h-12 rounded bg-background/50" />
             ))}
@@ -211,11 +211,11 @@ export default function SettingsPage() {
       <div className="px-4 py-4">
         <button
           onClick={handleLogout}
-          className="w-full rounded-xl bg-background-card py-3 font-medium text-foreground hover:bg-background-card/80"
+          className="w-full rounded-xl bg-card py-3 font-medium text-foreground hover:bg-card/80"
         >
           Log Out
         </button>
-        <p className="mt-4 text-center text-xs text-foreground-muted">App Version 1.0.0</p>
+        <p className="mt-4 text-center text-xs text-muted-foreground">App Version 1.0.0</p>
       </div>
 
       {/* Modals */}
@@ -320,7 +320,7 @@ function PersonalInfoModal({
             type="number"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter age"
           />
         </FormField>
@@ -340,14 +340,14 @@ function PersonalInfoModal({
             step="0.1"
             value={heightCm}
             onChange={(e) => setHeightCm(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter height in cm"
           />
         </FormField>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
@@ -407,7 +407,7 @@ function GoalsModal({
             step="0.1"
             value={startingWeight}
             onChange={(e) => setStartingWeight(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter starting weight"
           />
         </FormField>
@@ -418,7 +418,7 @@ function GoalsModal({
             step="0.1"
             value={goalWeight}
             onChange={(e) => setGoalWeight(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter goal weight"
           />
         </FormField>
@@ -428,13 +428,13 @@ function GoalsModal({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </FormField>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
@@ -514,9 +514,9 @@ function InjectionScheduleModal({
           </select>
         </FormField>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
@@ -586,9 +586,9 @@ function UnitsModal({
           </select>
         </FormField>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
@@ -635,35 +635,35 @@ function NotificationsModal({
   return (
     <Modal title="Notifications" onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="flex items-center justify-between rounded-lg bg-background-card p-4">
+        <label className="flex items-center justify-between rounded-lg bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Email Reminders</p>
-            <p className="text-sm text-foreground-muted">Get injection reminders via email</p>
+            <p className="text-sm text-muted-foreground">Get injection reminders via email</p>
           </div>
           <input
             type="checkbox"
             checked={emailNotifications}
             onChange={(e) => setEmailNotifications(e.target.checked)}
-            className="h-5 w-5 accent-accent-primary"
+            className="h-5 w-5 accent-primary"
           />
         </label>
 
-        <label className="flex items-center justify-between rounded-lg bg-background-card p-4">
+        <label className="flex items-center justify-between rounded-lg bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Weekly Report</p>
-            <p className="text-sm text-foreground-muted">Receive weekly progress summary</p>
+            <p className="text-sm text-muted-foreground">Receive weekly progress summary</p>
           </div>
           <input
             type="checkbox"
             checked={weeklyReport}
             onChange={(e) => setWeeklyReport(e.target.checked)}
-            className="h-5 w-5 accent-accent-primary"
+            className="h-5 w-5 accent-primary"
           />
         </label>
 
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
@@ -678,35 +678,35 @@ function ExportModal({ onClose }: { onClose: () => void }) {
       <div className="space-y-3">
         <button
           onClick={() => window.open('/api/export/text', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-background-card p-4 hover:bg-background-card/80"
+          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">Text Format</p>
-            <p className="text-sm text-foreground-muted">Human-readable summary</p>
+            <p className="text-sm text-muted-foreground">Human-readable summary</p>
           </div>
-          <span className="text-foreground-muted">📄</span>
+          <span className="text-muted-foreground">📄</span>
         </button>
 
         <button
           onClick={() => window.open('/api/export/json', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-background-card p-4 hover:bg-background-card/80"
+          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">JSON Format</p>
-            <p className="text-sm text-foreground-muted">Machine-readable data</p>
+            <p className="text-sm text-muted-foreground">Machine-readable data</p>
           </div>
-          <span className="text-foreground-muted">{ }</span>
+          <span className="text-muted-foreground">{ }</span>
         </button>
 
         <button
           onClick={() => window.open('/api/export/image', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-background-card p-4 hover:bg-background-card/80"
+          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">Image Format</p>
-            <p className="text-sm text-foreground-muted">Shareable progress card</p>
+            <p className="text-sm text-muted-foreground">Shareable progress card</p>
           </div>
-          <span className="text-foreground-muted">🖼️</span>
+          <span className="text-muted-foreground">🖼️</span>
         </button>
       </div>
     </Modal>
@@ -730,8 +730,8 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal title="Delete Account" onClose={onClose}>
       <div className="space-y-4">
-        <div className="rounded-lg bg-error/10 p-4">
-          <p className="text-sm text-error">
+        <div className="rounded-lg bg-destructive/10 p-4">
+          <p className="text-sm text-destructive">
             This action is permanent and cannot be undone. All your data will be permanently deleted.
           </p>
         </div>
@@ -741,7 +741,7 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Type DELETE"
           />
         </FormField>
@@ -749,7 +749,7 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
         <button
           onClick={handleDelete}
           disabled={confirmText !== 'DELETE' || deleting}
-          className="w-full rounded-xl bg-error py-3 font-medium text-white hover:bg-error/90 disabled:opacity-50"
+          className="w-full rounded-xl bg-destructive py-3 font-medium text-white hover:bg-destructive/90 disabled:opacity-50"
         >
           {deleting ? 'Deleting...' : 'Delete My Account'}
         </button>
@@ -773,7 +773,7 @@ function Modal({
       <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-background p-6 sm:rounded-2xl">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground">{title}</h2>
-          <button onClick={onClose} className="rounded-lg p-2 text-foreground-muted hover:bg-background-card">
+          <button onClick={onClose} className="rounded-lg p-2 text-muted-foreground hover:bg-card">
             ✕
           </button>
         </div>

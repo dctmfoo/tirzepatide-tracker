@@ -46,7 +46,7 @@ export function InjectionHistoryItem({
   const isIncrease = isDoseChange && previousDose !== undefined && doseMg > previousDose;
 
   return (
-    <div className="rounded-xl bg-background-card p-4">
+    <div className="rounded-xl bg-card p-4">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export function InjectionHistoryItem({
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-foreground-muted">
+          <p className="mt-1 text-sm text-muted-foreground">
             {formatSite(site)} · Week {weekNumber}
           </p>
         </div>
@@ -66,7 +66,7 @@ export function InjectionHistoryItem({
           {onEdit && (
             <button
               onClick={() => onEdit(id)}
-              className="rounded-lg px-3 py-1 text-sm text-accent-primary hover:bg-accent-primary/10"
+              className="rounded-lg px-3 py-1 text-sm text-primary hover:bg-primary/10"
             >
               Edit
             </button>

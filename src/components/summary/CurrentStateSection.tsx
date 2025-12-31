@@ -67,35 +67,35 @@ export function CurrentStateSection({
       </div>
 
       {weeklyStats && (
-        <div className="mt-3 rounded-lg bg-background-card p-4">
+        <div className="mt-3 rounded-lg bg-card p-4">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="font-medium text-foreground">This Week</h3>
-            <span className="text-xs text-foreground-muted">
+            <span className="text-xs text-muted-foreground">
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} week
             </span>
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-foreground-muted">Weight</span>
+              <span className="text-muted-foreground">Weight</span>
               <span className={`font-medium ${weeklyStats.weightChange && weeklyStats.weightChange < 0 ? 'text-success' : 'text-foreground'}`}>
                 {formatWeightChange(weeklyStats.weightChange, weightUnit)} ↓
               </span>
             </div>
             {weeklyStats.avgHunger && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Avg Hunger</span>
+                <span className="text-muted-foreground">Avg Hunger</span>
                 <span className="text-foreground">{weeklyStats.avgHunger}</span>
               </div>
             )}
             {weeklyStats.avgMood && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Avg Mood</span>
+                <span className="text-muted-foreground">Avg Mood</span>
                 <span className="text-foreground">{weeklyStats.avgMood}</span>
               </div>
             )}
             {weeklyStats.totalSteps !== undefined && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Steps</span>
+                <span className="text-muted-foreground">Steps</span>
                 <span className="text-foreground">
                   {weeklyStats.totalSteps.toLocaleString()} (avg {Math.round(weeklyStats.totalSteps / 7).toLocaleString()}/day)
                 </span>
@@ -103,19 +103,19 @@ export function CurrentStateSection({
             )}
             {weeklyStats.workoutDays !== undefined && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Workouts</span>
+                <span className="text-muted-foreground">Workouts</span>
                 <span className="text-foreground">{weeklyStats.workoutDays} of 7 days</span>
               </div>
             )}
             {weeklyStats.avgProtein !== undefined && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Protein</span>
+                <span className="text-muted-foreground">Protein</span>
                 <span className="text-foreground">~{weeklyStats.avgProtein}g/day avg</span>
               </div>
             )}
             {weeklyStats.sideEffects && (
               <div className="flex justify-between">
-                <span className="text-foreground-muted">Side Effects</span>
+                <span className="text-muted-foreground">Side Effects</span>
                 <span className="text-foreground">{weeklyStats.sideEffects}</span>
               </div>
             )}

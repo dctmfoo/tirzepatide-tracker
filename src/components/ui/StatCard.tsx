@@ -7,14 +7,14 @@ type StatCardProps = {
 
 export function StatCard({ label, value, sublabel, variant = 'default' }: StatCardProps) {
   return (
-    <div className="rounded-lg bg-background-card p-4">
-      <p className="text-sm text-foreground-muted">{label}</p>
+    <div className="rounded-lg bg-card p-4">
+      <p className="text-sm text-muted-foreground">{label}</p>
       <p
         className={`font-bold text-foreground ${variant === 'large' ? 'text-2xl' : 'text-xl'}`}
       >
         {value ?? '—'}
       </p>
-      {sublabel && <p className="mt-1 text-xs text-foreground-muted">{sublabel}</p>}
+      {sublabel && <p className="mt-1 text-xs text-muted-foreground">{sublabel}</p>}
     </div>
   );
 }

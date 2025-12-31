@@ -6,7 +6,7 @@ type SectionProps = {
 export function Section({ title, children }: SectionProps) {
   return (
     <section className="space-y-3">
-      <h2 className="text-sm font-medium tracking-wide text-foreground-muted uppercase">
+      <h2 className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
         {title}
       </h2>
       {children}

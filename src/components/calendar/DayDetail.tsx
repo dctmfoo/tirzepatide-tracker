@@ -95,7 +95,7 @@ export function DayDetail({
   const hasEntries = entries.length > 0;
 
   return (
-    <div className="border-t border-background-card px-4 py-4">
+    <div className="border-t border-border px-4 py-4">
       {/* Date Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-medium text-foreground">{formatDate(date)}</h3>
@@ -107,7 +107,7 @@ export function DayDetail({
           {entries.map((entry, index) => (
             <div
               key={`${entry.type}-${index}`}
-              className="flex items-start justify-between rounded-lg bg-background-card p-3"
+              className="flex items-start justify-between rounded-lg bg-card p-3"
             >
               <div className="flex items-start gap-3">
                 <span className="text-lg">
@@ -121,7 +121,7 @@ export function DayDetail({
                     {entry.type === 'weight' && 'Weight'}
                     {entry.type === 'log' && 'Daily Log'}
                   </p>
-                  <p className="text-sm text-foreground-muted">
+                  <p className="text-sm text-muted-foreground">
                     {entry.type === 'injection' && entry.data.doseMg && (
                       <>{entry.data.doseMg}mg · {formatSite(entry.data.site || '')}</>
                     )}
@@ -142,12 +142,12 @@ export function DayDetail({
               </div>
               <div className="flex items-center gap-2">
                 {entry.time && (
-                  <span className="text-sm text-foreground-muted">{entry.time}</span>
+                  <span className="text-sm text-muted-foreground">{entry.time}</span>
                 )}
                 {onEditEntry && (
                   <button
                     onClick={() => onEditEntry(entry.type)}
-                    className="rounded px-2 py-1 text-sm text-accent-primary hover:bg-accent-primary/10"
+                    className="rounded px-2 py-1 text-sm text-primary hover:bg-primary/10"
                   >
                     Edit
                   </button>
@@ -158,7 +158,7 @@ export function DayDetail({
         </div>
       ) : (
         <div className="mt-4 text-center">
-          <p className="text-foreground-muted">No entries for this day</p>
+          <p className="text-muted-foreground">No entries for this day</p>
         </div>
       )}
 
@@ -166,21 +166,21 @@ export function DayDetail({
       <div className="mt-4 grid grid-cols-3 gap-2">
         <button
           onClick={onLogWeight}
-          className="flex flex-col items-center gap-1 rounded-xl bg-background-card p-3 text-foreground hover:bg-background-card/80"
+          className="flex flex-col items-center gap-1 rounded-xl bg-card p-3 text-foreground hover:bg-muted"
         >
           <span className="text-lg">⚖️</span>
           <span className="text-xs">Log Weight</span>
         </button>
         <button
           onClick={onLogInjection}
-          className="flex flex-col items-center gap-1 rounded-xl bg-background-card p-3 text-foreground hover:bg-background-card/80"
+          className="flex flex-col items-center gap-1 rounded-xl bg-card p-3 text-foreground hover:bg-muted"
         >
           <span className="text-lg">💉</span>
           <span className="text-xs">Log Injection</span>
         </button>
         <button
           onClick={onLogDaily}
-          className="flex flex-col items-center gap-1 rounded-xl bg-background-card p-3 text-foreground hover:bg-background-card/80"
+          className="flex flex-col items-center gap-1 rounded-xl bg-card p-3 text-foreground hover:bg-muted"
         >
           <span className="text-lg">📝</span>
           <span className="text-xs">Daily Log</span>

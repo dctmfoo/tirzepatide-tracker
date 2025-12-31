@@ -20,14 +20,14 @@ export function TodaysLogCard({
   const completedItems = [hasDiet, hasActivity, hasMental].filter(Boolean).length;
 
   return (
-    <div className="rounded-lg bg-background-card p-4">
+    <div className="rounded-lg bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-2xl">📝</span>
           <h3 className="font-medium text-foreground">Today&apos;s Log</h3>
         </div>
         <span
-          className={`text-sm ${hasLog ? 'text-success' : 'text-foreground-muted'}`}
+          className={`text-sm ${hasLog ? 'text-success' : 'text-muted-foreground'}`}
         >
           {hasLog ? (
             <>
@@ -44,7 +44,7 @@ export function TodaysLogCard({
         <div className="mt-3">
           <Link
             href="/log"
-            className="inline-block rounded-lg border border-accent-primary px-4 py-2 text-sm font-medium text-accent-primary transition-colors hover:bg-accent-primary hover:text-background"
+            className="inline-block rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
           >
             Log Now
           </Link>
@@ -52,7 +52,7 @@ export function TodaysLogCard({
       )}
 
       {hasLog && (
-        <div className="mt-3 flex gap-2 text-xs text-foreground-muted">
+        <div className="mt-3 flex gap-2 text-xs text-muted-foreground">
           <span className={hasDiet ? 'text-success' : ''}>
             {hasDiet ? '✓' : '○'} Diet
           </span>

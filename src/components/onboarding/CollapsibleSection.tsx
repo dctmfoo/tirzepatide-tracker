@@ -18,16 +18,16 @@ export function CollapsibleSection({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-background-card rounded-2xl overflow-hidden">
+    <div className="bg-card rounded-2xl overflow-hidden">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-inset transition-colors hover:bg-foreground/5"
+        className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none focus:ring-2 focus:ring-ring focus:ring-inset transition-colors hover:bg-foreground/5"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
           <svg
-            className={`w-5 h-5 text-foreground-muted transition-transform duration-200 ${
+            className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
               isOpen ? 'rotate-90' : ''
             }`}
             fill="none"

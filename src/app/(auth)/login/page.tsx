@@ -38,21 +38,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-background-card rounded-2xl p-8 shadow-xl">
+    <div className="bg-card rounded-2xl p-8 shadow-xl">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">Welcome back</h1>
-        <p className="text-foreground-muted">Sign in to your account</p>
+        <p className="text-muted-foreground">Sign in to your account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="bg-error/10 border border-error/50 text-error px-4 py-3 rounded-lg text-sm">
+          <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-foreground-muted mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-2">
             Email
           </label>
           <input
@@ -62,17 +62,17 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label htmlFor="password" className="block text-sm font-medium text-foreground-muted">
+            <label htmlFor="password" className="block text-sm font-medium text-muted-foreground">
               Password
             </label>
-            <Link href="/forgot-password" className="text-sm text-accent-primary hover:underline">
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -83,7 +83,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
-            className="w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             placeholder="Enter your password"
           />
         </div>
@@ -91,15 +91,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 px-4 bg-accent-primary text-background font-semibold rounded-lg hover:bg-accent-primary/90 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full py-3 px-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-card disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isLoading ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-foreground-muted">
+      <p className="mt-6 text-center text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-accent-primary hover:underline font-medium">
+        <Link href="/register" className="text-primary hover:underline font-medium">
           Sign up
         </Link>
       </p>

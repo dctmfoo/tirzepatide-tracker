@@ -291,8 +291,8 @@ export default function LogDatePage() {
   if (!isValid) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center p-4">
-        <p className="mb-4 text-error">Invalid date format. Use YYYY-MM-DD.</p>
-        <Link href="/calendar" className="text-accent-primary hover:underline">
+        <p className="mb-4 text-destructive">Invalid date format. Use YYYY-MM-DD.</p>
+        <Link href="/calendar" className="text-primary hover:underline">
           ← Back to Calendar
         </Link>
       </div>
@@ -302,10 +302,10 @@ export default function LogDatePage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-4 p-4">
-        <div className="h-8 w-40 rounded bg-background-card" />
+        <div className="h-8 w-40 rounded bg-card" />
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-16 rounded-xl bg-background-card" />
+            <div key={i} className="h-16 rounded-xl bg-card" />
           ))}
         </div>
       </div>
@@ -319,18 +319,18 @@ export default function LogDatePage() {
         <div className="flex items-center gap-3">
           <Link
             href="/calendar"
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-background-card text-foreground-muted hover:text-foreground"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-card text-muted-foreground hover:text-foreground"
           >
             ←
           </Link>
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold text-foreground">Daily Log</h1>
-              <span className="text-sm text-foreground-muted">
+              <span className="text-sm text-muted-foreground">
                 {formatDateDisplay(logDate)}
               </span>
             </div>
-            <p className="mt-1 text-sm text-foreground-muted">
+            <p className="mt-1 text-sm text-muted-foreground">
               {new Date(logDate + 'T00:00:00').toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -349,7 +349,7 @@ export default function LogDatePage() {
         </div>
       )}
       {error && (
-        <div className="mx-4 mb-4 rounded-lg bg-error/20 p-3 text-error">
+        <div className="mx-4 mb-4 rounded-lg bg-destructive/20 p-3 text-destructive">
           {error}
         </div>
       )}
@@ -375,7 +375,7 @@ export default function LogDatePage() {
                     onClick={() => setHungerLevel(hungerLevel === level ? '' : level)}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       hungerLevel === level
-                        ? 'bg-accent-primary text-background'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-background text-foreground hover:bg-background/80'
                     }`}
                   >
@@ -387,7 +387,7 @@ export default function LogDatePage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="mb-1 block text-xs text-foreground-muted">Meals</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Meals</label>
                 <input
                   type="number"
                   value={mealsCount}
@@ -395,22 +395,22 @@ export default function LogDatePage() {
                   placeholder="0"
                   min="0"
                   max="10"
-                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-foreground-muted">Protein (g)</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Protein (g)</label>
                 <input
                   type="number"
                   value={proteinGrams}
                   onChange={(e) => setProteinGrams(e.target.value)}
                   placeholder="0"
                   min="0"
-                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-foreground-muted">Water (L)</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Water (L)</label>
                 <input
                   type="number"
                   step="0.1"
@@ -419,19 +419,19 @@ export default function LogDatePage() {
                   placeholder="0"
                   min="0"
                   max="10"
-                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-xs text-foreground-muted">Notes</label>
+              <label className="mb-1 block text-xs text-muted-foreground">Notes</label>
               <textarea
                 value={dietNotes}
                 onChange={(e) => setDietNotes(e.target.value)}
                 placeholder="Any diet notes..."
                 rows={2}
-                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -456,7 +456,7 @@ export default function LogDatePage() {
                     onClick={() => setWorkoutType(workoutType === type ? '' : type)}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       workoutType === type
-                        ? 'bg-accent-primary text-background'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-background text-foreground hover:bg-background/80'
                     }`}
                   >
@@ -468,37 +468,37 @@ export default function LogDatePage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1 block text-xs text-foreground-muted">Duration (min)</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Duration (min)</label>
                 <input
                   type="number"
                   value={durationMinutes}
                   onChange={(e) => setDurationMinutes(e.target.value)}
                   placeholder="0"
                   min="0"
-                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs text-foreground-muted">Steps</label>
+                <label className="mb-1 block text-xs text-muted-foreground">Steps</label>
                 <input
                   type="number"
                   value={steps}
                   onChange={(e) => setSteps(e.target.value)}
                   placeholder="0"
                   min="0"
-                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                  className="w-full rounded-lg bg-background px-3 py-2 text-center text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-xs text-foreground-muted">Notes</label>
+              <label className="mb-1 block text-xs text-muted-foreground">Notes</label>
               <textarea
                 value={activityNotes}
                 onChange={(e) => setActivityNotes(e.target.value)}
                 placeholder="Any activity notes..."
                 rows={2}
-                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -523,7 +523,7 @@ export default function LogDatePage() {
                     onClick={() => setMotivationLevel(motivationLevel === level ? '' : level)}
                     className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
                       motivationLevel === level
-                        ? 'bg-accent-primary text-background'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-background text-foreground hover:bg-background/80'
                     }`}
                   >
@@ -543,7 +543,7 @@ export default function LogDatePage() {
                     onClick={() => setCravingsLevel(cravingsLevel === level ? '' : level)}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       cravingsLevel === level
-                        ? 'bg-accent-primary text-background'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-background text-foreground hover:bg-background/80'
                     }`}
                   >
@@ -563,7 +563,7 @@ export default function LogDatePage() {
                     onClick={() => setMoodLevel(moodLevel === level ? '' : level)}
                     className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                       moodLevel === level
-                        ? 'bg-accent-primary text-background'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-background text-foreground hover:bg-background/80'
                     }`}
                   >
@@ -574,13 +574,13 @@ export default function LogDatePage() {
             </div>
 
             <div>
-              <label className="mb-1 block text-xs text-foreground-muted">Notes</label>
+              <label className="mb-1 block text-xs text-muted-foreground">Notes</label>
               <textarea
                 value={mentalNotes}
                 onChange={(e) => setMentalNotes(e.target.value)}
                 placeholder="Any mental wellness notes..."
                 rows={2}
-                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                className="w-full resize-none rounded-lg bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
@@ -602,7 +602,7 @@ export default function LogDatePage() {
                   <button
                     type="button"
                     onClick={() => removeSideEffect(index)}
-                    className="text-error hover:text-error/80"
+                    className="text-destructive hover:text-destructive/80"
                   >
                     ✕
                   </button>
@@ -611,7 +611,7 @@ export default function LogDatePage() {
                   <select
                     value={se.effectType}
                     onChange={(e) => updateSideEffect(index, 'effectType', e.target.value)}
-                    className="w-full rounded-lg bg-background-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+                    className="w-full rounded-lg bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <option value="">Select type...</option>
                     {SIDE_EFFECT_TYPES.map((type) => (
@@ -627,11 +627,11 @@ export default function LogDatePage() {
                         className={`flex-1 rounded-lg py-2 text-xs font-medium transition-colors ${
                           se.severity === severity
                             ? severity === 'Severe'
-                              ? 'bg-error text-white'
+                              ? 'bg-destructive text-white'
                               : severity === 'Moderate'
-                              ? 'bg-warning text-background'
-                              : 'bg-accent-primary text-background'
-                            : 'bg-background-card text-foreground hover:bg-background-card/80'
+                              ? 'bg-warning text-primary-foreground'
+                              : 'bg-primary text-primary-foreground'
+                            : 'bg-card text-foreground hover:bg-card/80'
                         }`}
                       >
                         {severity}
@@ -645,7 +645,7 @@ export default function LogDatePage() {
             <button
               type="button"
               onClick={addSideEffect}
-              className="w-full rounded-lg border-2 border-dashed border-foreground-muted/30 py-3 text-sm text-foreground-muted hover:border-accent-primary hover:text-accent-primary"
+              className="w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground hover:border-primary hover:text-primary"
             >
               + Add Side Effect
             </button>
@@ -658,7 +658,7 @@ export default function LogDatePage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full rounded-xl bg-accent-primary py-4 font-medium text-background shadow-lg hover:bg-accent-primary/90 disabled:opacity-50"
+          className="w-full rounded-xl bg-primary py-4 font-medium text-primary-foreground shadow-lg hover:bg-primary/90 disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save Daily Log'}
         </button>
@@ -684,7 +684,7 @@ function CollapsibleSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-background-card">
+    <div className="overflow-hidden rounded-xl bg-card">
       <button
         type="button"
         onClick={onToggle}
@@ -699,11 +699,11 @@ function CollapsibleSection({
             </span>
           )}
         </div>
-        <span className={`text-foreground-muted transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+        <span className={`text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}>
           ▼
         </span>
       </button>
-      {isOpen && <div className="border-t border-foreground-muted/10 p-4">{children}</div>}
+      {isOpen && <div className="border-t border-input p-4">{children}</div>}
     </div>
   );
 }

@@ -7,7 +7,7 @@ type ProgressBarProps = {
 };
 
 const colorClasses = {
-  primary: 'bg-accent-primary',
+  primary: 'bg-primary',
   success: 'bg-success',
   warning: 'bg-warning',
   secondary: 'bg-accent-secondary',
@@ -25,12 +25,12 @@ export function ProgressBar({
   return (
     <div className="space-y-1">
       {(label || showPercentage) && (
-        <div className="flex justify-between text-xs text-foreground-muted">
+        <div className="flex justify-between text-xs text-muted-foreground">
           {label && <span>{label}</span>}
           {showPercentage && <span>{percentage.toFixed(1)}%</span>}
         </div>
       )}
-      <div className="h-2 overflow-hidden rounded-full bg-foreground-muted/20">
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
         <div
           className={`h-full transition-all duration-300 ${colorClasses[color]}`}
           style={{ width: `${percentage}%` }}

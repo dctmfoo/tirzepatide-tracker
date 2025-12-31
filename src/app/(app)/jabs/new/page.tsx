@@ -90,10 +90,10 @@ export default function NewInjectionPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-4 p-4">
-        <div className="h-8 w-48 rounded bg-background-card" />
-        <div className="h-32 rounded-lg bg-background-card" />
-        <div className="h-16 rounded-lg bg-background-card" />
-        <div className="h-16 rounded-lg bg-background-card" />
+        <div className="h-8 w-48 rounded bg-card" />
+        <div className="h-32 rounded-lg bg-card" />
+        <div className="h-16 rounded-lg bg-card" />
+        <div className="h-16 rounded-lg bg-card" />
       </div>
     );
   }
@@ -103,7 +103,7 @@ export default function NewInjectionPage() {
       <div className="mb-6 flex items-center gap-4">
         <button
           onClick={() => router.back()}
-          className="rounded-lg p-2 text-foreground-muted hover:bg-background-card"
+          className="rounded-lg p-2 text-muted-foreground hover:bg-card"
         >
           ←
         </button>
@@ -124,8 +124,8 @@ export default function NewInjectionPage() {
                 onClick={() => setDoseMg(d)}
                 className={`rounded-lg py-3 text-sm font-medium transition-colors ${
                   doseMg === d
-                    ? 'bg-accent-primary text-background'
-                    : 'bg-background-card text-foreground hover:bg-background-card/80'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card text-foreground hover:bg-card/80'
                 }`}
               >
                 {d} mg
@@ -142,7 +142,7 @@ export default function NewInjectionPage() {
           <select
             value={site}
             onChange={(e) => setSite(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             {VALID_SITES.map((s) => (
               <option key={s.value} value={s.value}>
@@ -162,7 +162,7 @@ export default function NewInjectionPage() {
             type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -176,18 +176,18 @@ export default function NewInjectionPage() {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Any notes about this injection..."
             rows={2}
-            className="w-full resize-none rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full resize-none rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Error Message */}
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={saving}
-          className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
+          className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save Injection'}
         </button>

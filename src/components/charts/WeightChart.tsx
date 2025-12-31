@@ -58,8 +58,8 @@ function CustomTooltip({
 
   const data = payload[0];
   return (
-    <div className="rounded-lg bg-background-card px-3 py-2 shadow-lg border border-foreground-muted/20">
-      <p className="text-xs text-foreground-muted">{formatDate(data.payload.date)}</p>
+    <div className="rounded-lg bg-card px-3 py-2 shadow-lg border border-border">
+      <p className="text-xs text-muted-foreground">{formatDate(data.payload.date)}</p>
       <p className="font-bold text-foreground">{data.value.toFixed(2)}kg</p>
     </div>
   );
@@ -129,8 +129,8 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
 
   if (data.length === 0) {
     return (
-      <div className="flex h-72 items-center justify-center rounded-lg bg-background-card">
-        <p className="text-foreground-muted">Log your first weight to see your progress chart</p>
+      <div className="flex h-72 items-center justify-center rounded-lg bg-card">
+        <p className="text-muted-foreground">Log your first weight to see your progress chart</p>
       </div>
     );
   }

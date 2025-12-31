@@ -55,14 +55,14 @@ function calculateBMI(weightKg: number | null, heightCm: number | null): number 
 function ResultsSkeleton() {
   return (
     <div className="animate-pulse space-y-4 p-4">
-      <div className="h-10 w-full rounded bg-background-card" />
-      <div className="h-6 w-48 rounded bg-background-card" />
+      <div className="h-10 w-full rounded bg-card" />
+      <div className="h-6 w-48 rounded bg-card" />
       <div className="grid grid-cols-3 gap-3">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-20 rounded-xl bg-background-card" />
+          <div key={i} className="h-20 rounded-xl bg-card" />
         ))}
       </div>
-      <div className="h-72 rounded-lg bg-background-card" />
+      <div className="h-72 rounded-lg bg-card" />
     </div>
   );
 }
@@ -71,7 +71,7 @@ function EmptyState() {
   return (
     <div className="flex h-[60vh] flex-col items-center justify-center p-4 text-center">
       <p className="text-lg text-foreground">No data yet</p>
-      <p className="mt-2 text-foreground-muted">
+      <p className="mt-2 text-muted-foreground">
         Log your first weight to see your progress chart
       </p>
     </div>
@@ -125,7 +125,7 @@ export default function ResultsPage() {
   if (error) {
     return (
       <div className="flex h-[60vh] items-center justify-center p-4">
-        <p className="text-error">{error}</p>
+        <p className="text-destructive">{error}</p>
       </div>
     );
   }
@@ -157,7 +157,7 @@ export default function ResultsPage() {
       {/* Weight Change Header */}
       <div className="flex items-center justify-between px-4 py-4">
         <h2 className="text-xl font-bold text-foreground">Weight Change</h2>
-        <span className="text-sm text-foreground-muted">
+        <span className="text-sm text-muted-foreground">
           {formatDateRange(data.period.start, data.period.end)}
         </span>
       </div>

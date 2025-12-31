@@ -65,7 +65,7 @@ export function RecentActivitySection({ activities }: RecentActivitySectionProps
   if (activities.length === 0) {
     return (
       <Section title="Recent Activity">
-        <div className="rounded-lg bg-background-card p-4 text-center text-foreground-muted">
+        <div className="rounded-lg bg-card p-4 text-center text-muted-foreground">
           <p>No activity yet</p>
           <p className="mt-1 text-sm">Start logging to see your history</p>
         </div>
@@ -88,7 +88,7 @@ export function RecentActivitySection({ activities }: RecentActivitySectionProps
                   {getActivityLabel(activity.type)}: {activity.details}
                 </span>
               </div>
-              <span className="text-xs text-foreground-muted">
+              <span className="text-xs text-muted-foreground">
                 {formatDate(activity.date)}
                 {activity.time && ` ${formatTime(activity.date)}`}
               </span>
@@ -100,7 +100,7 @@ export function RecentActivitySection({ activities }: RecentActivitySectionProps
       <div className="mt-3 text-center">
         <Link
           href="/calendar"
-          className="text-sm text-accent-primary hover:underline"
+          className="text-sm text-primary hover:underline"
         >
           View All Activity
         </Link>

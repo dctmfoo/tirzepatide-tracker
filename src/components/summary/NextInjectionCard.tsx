@@ -42,7 +42,7 @@ export function NextInjectionCard({
   const progressValue = Math.max(0, Math.min(dayInCycle, 7));
 
   return (
-    <div className="rounded-lg bg-background-card p-4">
+    <div className="rounded-lg bg-card p-4">
       <div className="flex items-center gap-3">
         <span className="text-2xl">💉</span>
         <h3 className="font-medium text-foreground">Next Injection</h3>
@@ -56,7 +56,7 @@ export function NextInjectionCard({
             <>
               {getStatusText(status, daysUntil)}
               {nextDue && status !== 'overdue' && (
-                <span className="text-foreground-muted"> ({formatDate(nextDue)})</span>
+                <span className="text-muted-foreground"> ({formatDate(nextDue)})</span>
               )}
             </>
           )}
@@ -71,7 +71,7 @@ export function NextInjectionCard({
               color={getStatusColor(status)}
             />
 
-            <div className="flex flex-col gap-1 text-sm text-foreground-muted">
+            <div className="flex flex-col gap-1 text-sm text-muted-foreground">
               {currentDose && <span>Current dose: {currentDose}mg</span>}
               <span>Suggested site: {suggestedSite}</span>
             </div>
@@ -80,7 +80,7 @@ export function NextInjectionCard({
 
         <Link
           href="/jabs/new"
-          className="mt-2 inline-block rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+          className="mt-2 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
           Log Injection
         </Link>

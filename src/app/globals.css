@@ -2,31 +2,74 @@
 
 /*
  * Design Tokens for Mounjaro Tracker
- * Based on spec: docs/mounjaro-tracker-spec-v2.md (lines 302-321)
+ * Based on shadcn/ui dark theme structure with OKLCH colors
+ * Primary accent: Cyan (#00d4ff)
  *
- * Usage: Use these tokens via Tailwind classes (e.g., bg-background, text-primary)
+ * Usage: Use these tokens via Tailwind classes (e.g., bg-card, text-primary)
  * Do NOT hardcode hex values in components.
  */
 
 :root {
-  /* Background colors */
-  --background: #0a0a0a;
-  --background-card: #1a2a3a;
+  /*
+   * Core shadcn/ui dark theme tokens (OKLCH)
+   * Using neutral grays - NO blue tint
+   */
 
-  /* Text colors */
-  --foreground: #ffffff;
-  --foreground-muted: #9ca3af;
+  /* Base backgrounds */
+  --background: oklch(0.145 0 0);              /* ~#0a0a0a - main bg */
+  --foreground: oklch(0.985 0 0);              /* ~#fafafa - primary text */
 
-  /* Accent colors */
-  --accent-primary: #00d4ff;
-  --accent-secondary: #a855f7;
+  /* Card/elevated surfaces - NEUTRAL GRAY */
+  --card: oklch(0.205 0 0);                    /* ~#171717 - card backgrounds */
+  --card-foreground: oklch(0.985 0 0);         /* ~#fafafa - card text */
 
-  /* Semantic colors */
-  --success: #22c55e;
-  --warning: #eab308;
-  --error: #ef4444;
+  /* Popovers/dropdowns */
+  --popover: oklch(0.205 0 0);                 /* Same as card */
+  --popover-foreground: oklch(0.985 0 0);
 
-  /* Dose colors (for chart markers) */
+  /* Primary action - CYAN ACCENT */
+  --primary: oklch(0.82 0.17 195);             /* #00d4ff in OKLCH */
+  --primary-foreground: oklch(0.145 0 0);      /* Dark text on cyan */
+
+  /* Secondary surfaces */
+  --secondary: oklch(0.269 0 0);               /* ~#262626 */
+  --secondary-foreground: oklch(0.985 0 0);
+
+  /* Muted text/backgrounds */
+  --muted: oklch(0.269 0 0);                   /* ~#262626 */
+  --muted-foreground: oklch(0.556 0 0);        /* ~#737373 - secondary text */
+
+  /* Accent (for hover states, highlights) */
+  --accent: oklch(0.269 0 0);                  /* Neutral for hover bg */
+  --accent-foreground: oklch(0.985 0 0);
+
+  /* Destructive/error states */
+  --destructive: oklch(0.577 0.245 27.325);    /* #ef4444 */
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* Borders and inputs */
+  --border: oklch(0.269 0 0);                  /* ~#262626 subtle border */
+  --input: oklch(0.269 0 0);                   /* Form input backgrounds */
+  --ring: oklch(0.82 0.17 195);                /* Cyan for focus rings */
+
+  /*
+   * Extended semantic colors (app-specific)
+   */
+  --success: oklch(0.648 0.196 142);           /* #22c55e */
+  --success-foreground: oklch(0.145 0 0);
+
+  --warning: oklch(0.795 0.184 86.047);        /* #eab308 */
+  --warning-foreground: oklch(0.145 0 0);
+
+  /*
+   * Secondary accent (purple) - for dose badges, special highlights
+   */
+  --accent-secondary: oklch(0.627 0.265 303.9); /* #a855f7 */
+  --accent-secondary-foreground: oklch(0.985 0 0);
+
+  /*
+   * Dose colors for charts (hex for Recharts compatibility)
+   */
   --dose-2-5: #9ca3af;
   --dose-5-0: #a855f7;
   --dose-7-5: #14b8a6;
@@ -36,22 +79,44 @@
 }
 
 @theme inline {
-  /* Map CSS variables to Tailwind tokens */
+  /* Core shadcn tokens */
   --color-background: var(--background);
-  --color-background-card: var(--background-card);
   --color-foreground: var(--foreground);
-  --color-foreground-muted: var(--foreground-muted);
-  --color-accent-primary: var(--accent-primary);
-  --color-accent-secondary: var(--accent-secondary);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Extended semantic tokens */
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
-  --color-error: var(--error);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-secondary-foreground: var(--accent-secondary-foreground);
+
+  /* Dose colors */
   --color-dose-2-5: var(--dose-2-5);
   --color-dose-5-0: var(--dose-5-0);
   --color-dose-7-5: var(--dose-7-5);
   --color-dose-10-0: var(--dose-10-0);
   --color-dose-12-5: var(--dose-12-5);
   --color-dose-15-0: var(--dose-15-0);
+
+  /* Font families */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

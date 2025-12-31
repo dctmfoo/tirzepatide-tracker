@@ -16,7 +16,7 @@ const periods: { value: Period; label: string }[] = [
 
 export function PeriodTabs({ selected, onChange }: PeriodTabsProps) {
   return (
-    <div className="flex gap-4 border-b border-foreground-muted/20 px-4">
+    <div className="flex gap-4 border-b border-border px-4">
       {periods.map((period) => (
         <button
           key={period.value}
@@ -24,12 +24,12 @@ export function PeriodTabs({ selected, onChange }: PeriodTabsProps) {
           className={`relative pb-3 text-sm font-medium transition-colors ${
             selected === period.value
               ? 'text-foreground'
-              : 'text-foreground-muted hover:text-foreground'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           {period.label}
           {selected === period.value && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-primary" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
           )}
         </button>
       ))}

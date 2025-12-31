@@ -72,7 +72,7 @@ export function CalendarGrid({
       <div className="flex items-center justify-center gap-4 py-4">
         <button
           onClick={onPrevMonth}
-          className="rounded-lg p-2 text-foreground-muted hover:bg-background-card hover:text-foreground"
+          className="rounded-lg p-2 text-muted-foreground hover:bg-card hover:text-foreground"
           aria-label="Previous month"
         >
           ←
@@ -82,7 +82,7 @@ export function CalendarGrid({
         </h2>
         <button
           onClick={onNextMonth}
-          className="rounded-lg p-2 text-foreground-muted hover:bg-background-card hover:text-foreground"
+          className="rounded-lg p-2 text-muted-foreground hover:bg-card hover:text-foreground"
           aria-label="Next month"
         >
           →
@@ -92,7 +92,7 @@ export function CalendarGrid({
       {/* Weekday Headers */}
       <div className="grid grid-cols-7 gap-1 pb-2">
         {WEEKDAYS.map((day) => (
-          <div key={day} className="text-center text-xs font-medium text-foreground-muted">
+          <div key={day} className="text-center text-xs font-medium text-muted-foreground">
             {day}
           </div>
         ))}
@@ -115,13 +115,13 @@ export function CalendarGrid({
               onClick={() => onSelectDate(cell.date)}
               className={`relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition-colors ${
                 isSelected
-                  ? 'bg-accent-primary text-background'
+                  ? 'bg-primary text-primary-foreground'
                   : isTodayDate
-                    ? 'bg-background-card ring-2 ring-accent-primary text-foreground'
-                    : 'text-foreground hover:bg-background-card'
+                    ? 'bg-card ring-2 ring-primary text-foreground'
+                    : 'text-foreground hover:bg-card'
               }`}
             >
-              <span className={`font-medium ${isSelected ? 'text-background' : ''}`}>{dayNum}</span>
+              <span className={`font-medium ${isSelected ? 'text-primary-foreground' : ''}`}>{dayNum}</span>
 
               {/* Indicators */}
               <div className="absolute bottom-1 flex items-center gap-0.5">
@@ -130,7 +130,7 @@ export function CalendarGrid({
                 )}
                 {cell.hasWeight && (
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-background' : 'bg-accent-primary'}`}
+                    className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-background' : 'bg-primary'}`}
                     title="Weight logged"
                   />
                 )}
@@ -147,13 +147,13 @@ export function CalendarGrid({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center justify-center gap-4 text-xs text-foreground-muted">
+      <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <span>💉</span>
           <span>Injection</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-accent-primary" />
+          <span className="h-2 w-2 rounded-full bg-primary" />
           <span>Weight</span>
         </div>
         <div className="flex items-center gap-1">

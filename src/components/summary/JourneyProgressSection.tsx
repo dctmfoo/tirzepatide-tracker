@@ -65,15 +65,15 @@ export function JourneyProgressSection({
   return (
     <Section title="Journey Progress">
       {/* Goal Progress Card */}
-      <div className="rounded-lg bg-background-card p-4">
+      <div className="rounded-lg bg-card p-4">
         <h3 className="mb-3 font-medium text-foreground">Goal Progress</h3>
 
-        <div className="mb-2 flex justify-between text-sm text-foreground-muted">
+        <div className="mb-2 flex justify-between text-sm text-muted-foreground">
           <span>{formatWeight(startWeight, weightUnit)}</span>
           <span className="font-medium text-foreground">{formatWeight(currentWeight, weightUnit)}</span>
           <span>{formatWeight(goalWeight, weightUnit)}</span>
         </div>
-        <div className="flex justify-between text-xs text-foreground-muted">
+        <div className="flex justify-between text-xs text-muted-foreground">
           <span>Start</span>
           <span>Current</span>
           <span>Goal</span>
@@ -87,7 +87,7 @@ export function JourneyProgressSection({
           />
         </div>
 
-        <p className="mt-3 text-sm text-foreground-muted">
+        <p className="mt-3 text-sm text-muted-foreground">
           {progressPercent !== null ? (
             <>
               <span className="text-foreground">{progressPercent.toFixed(1)}%</span> complete ·{' '}
@@ -95,7 +95,7 @@ export function JourneyProgressSection({
               {estimatedDate && (
                 <>
                   <br />
-                  <span className="text-foreground-muted">At current pace: ~{estimatedDate}</span>
+                  <span className="text-muted-foreground">At current pace: ~{estimatedDate}</span>
                 </>
               )}
             </>
@@ -107,17 +107,17 @@ export function JourneyProgressSection({
 
       {/* Treatment Timeline Card */}
       {treatmentStartDate && (
-        <div className="mt-3 rounded-lg bg-background-card p-4">
+        <div className="mt-3 rounded-lg bg-card p-4">
           <h3 className="mb-3 font-medium text-foreground">Treatment Timeline</h3>
           <p className="text-foreground">
             Week {treatmentWeeks || 0} · Day {treatmentDays || 0}
           </p>
-          <p className="text-sm text-foreground-muted">
+          <p className="text-sm text-muted-foreground">
             Started {formatDate(treatmentStartDate)}
           </p>
 
           {currentDose !== null && (
-            <p className="mt-2 text-sm text-foreground-muted">
+            <p className="mt-2 text-sm text-muted-foreground">
               {treatmentWeeks !== null && Math.floor(treatmentWeeks / 4) >= 1
                 ? `${Math.floor((treatmentWeeks % 4) || 4)} weeks on current dose (${currentDose}mg)`
                 : `Current dose: ${currentDose}mg`}

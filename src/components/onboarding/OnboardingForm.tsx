@@ -143,15 +143,15 @@ export function OnboardingForm() {
   );
 
   const inputClasses =
-    'w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all';
+    'w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all';
 
   const selectClasses =
-    'w-full px-4 py-3 bg-background border border-foreground-muted/20 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all appearance-none cursor-pointer';
+    'w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all appearance-none cursor-pointer';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {submitError && (
-        <div className="bg-error/10 border border-error/50 text-error px-4 py-3 rounded-lg text-sm">
+        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
           {submitError}
         </div>
       )}
@@ -161,7 +161,7 @@ export function OnboardingForm() {
         <div className="space-y-4">
           {/* Age */}
           <div className="space-y-2">
-            <label htmlFor="age" className="block text-sm font-medium text-foreground-muted">
+            <label htmlFor="age" className="block text-sm font-medium text-muted-foreground">
               Age
             </label>
             <input
@@ -173,14 +173,14 @@ export function OnboardingForm() {
               value={age ?? ''}
               onChange={(e) => setAge(e.target.value ? parseInt(e.target.value, 10) : undefined)}
               placeholder="Enter your age"
-              className={`${inputClasses} ${errors.age ? 'border-error' : ''}`}
+              className={`${inputClasses} ${errors.age ? 'border-destructive' : ''}`}
             />
-            {errors.age && <p className="text-sm text-error">{errors.age}</p>}
+            {errors.age && <p className="text-sm text-destructive">{errors.age}</p>}
           </div>
 
           {/* Gender */}
           <div className="space-y-2">
-            <label htmlFor="gender" className="block text-sm font-medium text-foreground-muted">
+            <label htmlFor="gender" className="block text-sm font-medium text-muted-foreground">
               Gender
             </label>
             <div className="relative">
@@ -188,7 +188,7 @@ export function OnboardingForm() {
                 id="gender"
                 value={gender ?? ''}
                 onChange={(e) => setGender(e.target.value as Gender)}
-                className={`${selectClasses} ${errors.gender ? 'border-error' : ''}`}
+                className={`${selectClasses} ${errors.gender ? 'border-destructive' : ''}`}
               >
                 <option value="" disabled>
                   Select gender
@@ -200,12 +200,12 @@ export function OnboardingForm() {
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                <svg className="w-5 h-5 text-foreground-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
-            {errors.gender && <p className="text-sm text-error">{errors.gender}</p>}
+            {errors.gender && <p className="text-sm text-destructive">{errors.gender}</p>}
           </div>
 
           {/* Height */}
@@ -252,7 +252,7 @@ export function OnboardingForm() {
           <div className="space-y-2">
             <label
               htmlFor="treatmentStartDate"
-              className="block text-sm font-medium text-foreground-muted"
+              className="block text-sm font-medium text-muted-foreground"
             >
               Treatment Start Date
             </label>
@@ -262,10 +262,10 @@ export function OnboardingForm() {
               value={treatmentStartDate}
               onChange={(e) => setTreatmentStartDate(e.target.value)}
               max={new Date().toISOString().split('T')[0]}
-              className={`${inputClasses} ${errors.treatmentStartDate ? 'border-error' : ''}`}
+              className={`${inputClasses} ${errors.treatmentStartDate ? 'border-destructive' : ''}`}
             />
             {errors.treatmentStartDate && (
-              <p className="text-sm text-error">{errors.treatmentStartDate}</p>
+              <p className="text-sm text-destructive">{errors.treatmentStartDate}</p>
             )}
           </div>
         </div>
@@ -278,7 +278,7 @@ export function OnboardingForm() {
           <div className="space-y-2">
             <label
               htmlFor="injectionDate"
-              className="block text-sm font-medium text-foreground-muted"
+              className="block text-sm font-medium text-muted-foreground"
             >
               Injection Date
             </label>
@@ -288,16 +288,16 @@ export function OnboardingForm() {
               value={injectionDate}
               onChange={(e) => setInjectionDate(e.target.value)}
               max={new Date().toISOString().split('T')[0]}
-              className={`${inputClasses} ${errors['firstInjection.injectionDate'] ? 'border-error' : ''}`}
+              className={`${inputClasses} ${errors['firstInjection.injectionDate'] ? 'border-destructive' : ''}`}
             />
             {errors['firstInjection.injectionDate'] && (
-              <p className="text-sm text-error">{errors['firstInjection.injectionDate']}</p>
+              <p className="text-sm text-destructive">{errors['firstInjection.injectionDate']}</p>
             )}
           </div>
 
           {/* Dose */}
           <div className="space-y-2">
-            <label htmlFor="dose" className="block text-sm font-medium text-foreground-muted">
+            <label htmlFor="dose" className="block text-sm font-medium text-muted-foreground">
               Dose
             </label>
             <div className="relative">
@@ -305,7 +305,7 @@ export function OnboardingForm() {
                 id="dose"
                 value={doseMg ?? ''}
                 onChange={(e) => setDoseMg(parseFloat(e.target.value) as DoseValue)}
-                className={`${selectClasses} ${errors['firstInjection.doseMg'] ? 'border-error' : ''}`}
+                className={`${selectClasses} ${errors['firstInjection.doseMg'] ? 'border-destructive' : ''}`}
               >
                 <option value="" disabled>
                   Select dose
@@ -317,19 +317,19 @@ export function OnboardingForm() {
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                <svg className="w-5 h-5 text-foreground-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
             {errors['firstInjection.doseMg'] && (
-              <p className="text-sm text-error">{errors['firstInjection.doseMg']}</p>
+              <p className="text-sm text-destructive">{errors['firstInjection.doseMg']}</p>
             )}
           </div>
 
           {/* Injection Site */}
           <div className="space-y-2">
-            <label htmlFor="injectionSite" className="block text-sm font-medium text-foreground-muted">
+            <label htmlFor="injectionSite" className="block text-sm font-medium text-muted-foreground">
               Injection Site
             </label>
             <div className="relative">
@@ -337,7 +337,7 @@ export function OnboardingForm() {
                 id="injectionSite"
                 value={injectionSite ?? ''}
                 onChange={(e) => setInjectionSite(e.target.value as InjectionSite)}
-                className={`${selectClasses} ${errors['firstInjection.injectionSite'] ? 'border-error' : ''}`}
+                className={`${selectClasses} ${errors['firstInjection.injectionSite'] ? 'border-destructive' : ''}`}
               >
                 <option value="" disabled>
                   Select injection site
@@ -349,13 +349,13 @@ export function OnboardingForm() {
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                <svg className="w-5 h-5 text-foreground-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
             {errors['firstInjection.injectionSite'] && (
-              <p className="text-sm text-error">{errors['firstInjection.injectionSite']}</p>
+              <p className="text-sm text-destructive">{errors['firstInjection.injectionSite']}</p>
             )}
           </div>
         </div>
@@ -366,7 +366,7 @@ export function OnboardingForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-4 px-6 bg-accent-primary text-background font-semibold rounded-xl hover:bg-accent-primary/90 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg"
+          className="w-full py-4 px-6 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg"
         >
           {isSubmitting ? 'Setting up...' : 'Start My Journey'}
         </button>

@@ -76,9 +76,9 @@ export default function NewWeightPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-4 p-4">
-        <div className="h-8 w-48 rounded bg-background-card" />
-        <div className="h-16 rounded-lg bg-background-card" />
-        <div className="h-16 rounded-lg bg-background-card" />
+        <div className="h-8 w-48 rounded bg-card" />
+        <div className="h-16 rounded-lg bg-card" />
+        <div className="h-16 rounded-lg bg-card" />
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function NewWeightPage() {
       <div className="mb-6 flex items-center gap-4">
         <button
           onClick={() => router.back()}
-          className="rounded-lg p-2 text-foreground-muted hover:bg-background-card"
+          className="rounded-lg p-2 text-muted-foreground hover:bg-card"
         >
           ←
         </button>
@@ -108,17 +108,17 @@ export default function NewWeightPage() {
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder={unit === 'kg' ? '70.5' : '155.0'}
-              className="flex-1 rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="flex-1 rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               autoFocus
             />
-            <div className="flex rounded-lg bg-background-card">
+            <div className="flex rounded-lg bg-card">
               <button
                 type="button"
                 onClick={() => setUnit('kg')}
                 className={`rounded-l-lg px-4 py-3 text-sm font-medium transition-colors ${
                   unit === 'kg'
-                    ? 'bg-accent-primary text-background'
-                    : 'text-foreground hover:bg-background-card/80'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-card/80'
                 }`}
               >
                 kg
@@ -128,8 +128,8 @@ export default function NewWeightPage() {
                 onClick={() => setUnit('lbs')}
                 className={`rounded-r-lg px-4 py-3 text-sm font-medium transition-colors ${
                   unit === 'lbs'
-                    ? 'bg-accent-primary text-background'
-                    : 'text-foreground hover:bg-background-card/80'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground hover:bg-card/80'
                 }`}
               >
                 lbs
@@ -147,7 +147,7 @@ export default function NewWeightPage() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
@@ -161,18 +161,18 @@ export default function NewWeightPage() {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Any notes about this weigh-in..."
             rows={2}
-            className="w-full resize-none rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            className="w-full resize-none rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         {/* Error Message */}
-        {error && <p className="text-sm text-error">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={saving || !weight}
-          className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
+          className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save Weight'}
         </button>

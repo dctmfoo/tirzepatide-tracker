@@ -87,13 +87,13 @@ export function HeightInput({
     [onUnitChange]
   );
 
-  const inputClasses = `w-full px-4 py-3 bg-background border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-all ${
-    error ? 'border-error' : 'border-foreground-muted/20'
+  const inputClasses = `w-full px-4 py-3 bg-background border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all ${
+    error ? 'border-destructive' : 'border-input'
   }`;
 
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm font-medium text-foreground-muted">
+      <label htmlFor={id} className="block text-sm font-medium text-muted-foreground">
         {label}
       </label>
       <div className="flex gap-2">
@@ -110,7 +110,7 @@ export function HeightInput({
               placeholder="170"
               className={`${inputClasses} pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground-muted text-sm">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
               cm
             </span>
           </div>
@@ -128,7 +128,7 @@ export function HeightInput({
                 placeholder="5"
                 className={`${inputClasses} pr-10`}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground-muted text-sm">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
                 ft
               </span>
             </div>
@@ -144,7 +144,7 @@ export function HeightInput({
                 placeholder="8"
                 className={`${inputClasses} pr-10`}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground-muted text-sm">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
                 in
               </span>
             </div>
@@ -152,7 +152,7 @@ export function HeightInput({
         )}
 
         {/* Unit toggle - segmented control */}
-        <div className="flex bg-background border border-foreground-muted/20 rounded-lg overflow-hidden shrink-0">
+        <div className="flex bg-background border border-input rounded-lg overflow-hidden shrink-0">
           {HEIGHT_UNITS.map((u) => (
             <button
               key={u}
@@ -160,8 +160,8 @@ export function HeightInput({
               onClick={() => handleUnitChange(u)}
               className={`px-3 py-3 text-sm font-medium transition-colors ${
                 unit === u
-                  ? 'bg-accent-primary text-background'
-                  : 'text-foreground-muted hover:bg-foreground/5'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-foreground/5'
               }`}
             >
               {u === 'ft-in' ? 'ft' : u}
@@ -169,7 +169,7 @@ export function HeightInput({
           ))}
         </div>
       </div>
-      {error && <p className="text-sm text-error">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

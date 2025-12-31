@@ -43,20 +43,20 @@ function CalendarSkeleton() {
     <div className="animate-pulse p-4">
       {/* Month header */}
       <div className="flex items-center justify-center gap-4 py-4">
-        <div className="h-8 w-8 rounded bg-background-card" />
-        <div className="h-6 w-40 rounded bg-background-card" />
-        <div className="h-8 w-8 rounded bg-background-card" />
+        <div className="h-8 w-8 rounded bg-card" />
+        <div className="h-6 w-40 rounded bg-card" />
+        <div className="h-8 w-8 rounded bg-card" />
       </div>
       {/* Weekday headers */}
       <div className="grid grid-cols-7 gap-1 py-2">
         {[...Array(7)].map((_, i) => (
-          <div key={i} className="h-4 rounded bg-background-card" />
+          <div key={i} className="h-4 rounded bg-card" />
         ))}
       </div>
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-1">
         {[...Array(35)].map((_, i) => (
-          <div key={i} className="aspect-square rounded-lg bg-background-card" />
+          <div key={i} className="aspect-square rounded-lg bg-card" />
         ))}
       </div>
     </div>
@@ -222,7 +222,7 @@ export default function CalendarPage() {
   if (error) {
     return (
       <div className="flex h-[60vh] items-center justify-center p-4">
-        <p className="text-error">{error}</p>
+        <p className="text-destructive">{error}</p>
       </div>
     );
   }
@@ -325,7 +325,7 @@ function LogWeightModal({ date, onClose, onSave }: LogWeightModalProps) {
       <div className="w-full max-w-md rounded-t-2xl bg-background p-6 sm:rounded-2xl">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground">Log Weight</h2>
-          <button onClick={onClose} className="rounded-lg p-2 text-foreground-muted hover:bg-background-card">
+          <button onClick={onClose} className="rounded-lg p-2 text-muted-foreground hover:bg-card">
             ✕
           </button>
         </div>
@@ -339,17 +339,17 @@ function LogWeightModal({ date, onClose, onSave }: LogWeightModalProps) {
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder="Enter weight"
-              className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               autoFocus
             />
           </div>
 
-          {error && <p className="text-sm text-error">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <button
             type="submit"
             disabled={saving || !weight}
-            className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
+            className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Weight'}
           </button>
@@ -416,7 +416,7 @@ function LogInjectionModal({ date, onClose, onSave }: LogInjectionModalProps) {
       <div className="w-full max-w-md rounded-t-2xl bg-background p-6 sm:rounded-2xl">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground">Log Injection</h2>
-          <button onClick={onClose} className="rounded-lg p-2 text-foreground-muted hover:bg-background-card">
+          <button onClick={onClose} className="rounded-lg p-2 text-muted-foreground hover:bg-card">
             ✕
           </button>
         </div>
@@ -432,8 +432,8 @@ function LogInjectionModal({ date, onClose, onSave }: LogInjectionModalProps) {
                   onClick={() => setDoseMg(d)}
                   className={`rounded-lg py-3 text-sm font-medium transition-colors ${
                     doseMg === d
-                      ? 'bg-accent-primary text-background'
-                      : 'bg-background-card text-foreground hover:bg-background-card/80'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-card text-foreground hover:bg-card/80'
                   }`}
                 >
                   {d} mg
@@ -447,7 +447,7 @@ function LogInjectionModal({ date, onClose, onSave }: LogInjectionModalProps) {
             <select
               value={site}
               onChange={(e) => setSite(e.target.value)}
-              className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+              className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {VALID_SITES.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -455,12 +455,12 @@ function LogInjectionModal({ date, onClose, onSave }: LogInjectionModalProps) {
             </select>
           </div>
 
-          {error && <p className="text-sm text-error">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
           <button
             type="submit"
             disabled={saving}
-            className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
+            className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Injection'}
           </button>
