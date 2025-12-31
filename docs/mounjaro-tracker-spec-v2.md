@@ -574,6 +574,12 @@ function getSuggestedSite(lastSite: string): string {
 }
 ```
 
+> **Implementation Note (2025-12-31) - Jabs Page [x]:**
+> Implemented in `src/app/(app)/jabs/page.tsx`. Client component with parallel API fetching.
+> Components: `JabsStatCard`, `InjectionHistoryItem` in `src/components/jabs/`.
+> Features: 4 stat cards, injection history with dose change badges, Log Injection modal, site rotation.
+> Uses `Promise.all()` for parallel fetching of injections and next-due data.
+
 ---
 
 ## Calendar Page
@@ -640,6 +646,12 @@ function getSuggestedSite(lastSite: string): string {
 | 💉 | Injection |
 | ○ | Selected day |
 | [18] | Today (highlighted) |
+
+> **Implementation Note (2025-12-31) - Calendar Page [x]:**
+> Implemented in `src/app/(app)/calendar/page.tsx`. Client component with month navigation.
+> Components: `CalendarGrid`, `DayDetail` in `src/components/calendar/`.
+> Features: Month navigation, day indicators (weight/injection/log), day detail panel, 3 quick-action modals.
+> Fetches from `/api/calendar/[year]/[month]` endpoint. Day details fetched on selection.
 
 ---
 
@@ -783,6 +795,23 @@ function getSuggestedSite(lastSite: string): string {
 | Formatted Text | Reddit-style progress post (copy to clipboard) |
 | JSON | Complete structured data download |
 | Image | Dashboard PNG for sharing |
+
+> **Implementation Note (2025-12-31) - Settings Page [x]:**
+> Implemented in `src/app/(app)/settings/page.tsx`. Client component with parallel API fetching.
+> Components: `SettingsSection`, `SettingsItem` in `src/components/settings/`.
+> Features: Profile/Treatment/Preferences/Data/Support/Danger sections, 7 edit modals, Log Out, Export links.
+> Uses `Promise.all()` for parallel fetching of profile and preferences.
+
+---
+
+## Daily Log Page
+
+> **Implementation Note (2025-12-31) - Daily Log Page [x]:**
+> Implemented in `src/app/(app)/log/page.tsx`. Client component with collapsible sections.
+> Sections: Diet (hunger, meals, protein, water), Activity (workout, duration, steps),
+> Mental (motivation, cravings, mood), Side Effects (dynamic list with type/severity).
+> Pre-populates from existing log for today. Saves to `/api/daily-logs` endpoint.
+> Accessible from "Log Now" button on Summary page's TodaysLogCard.
 
 ---
 
