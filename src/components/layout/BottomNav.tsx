@@ -126,7 +126,13 @@ export function BottomNav() {
               href={item.href}
               className="flex flex-col items-center gap-1 px-3 py-1"
             >
-              <IconComponent active={isActive} />
+              {isActive ? (
+                <span className="rounded-full bg-accent-primary/20 px-4 py-2">
+                  <IconComponent active={isActive} />
+                </span>
+              ) : (
+                <IconComponent active={isActive} />
+              )}
               <span
                 className={`text-xs ${isActive ? 'text-accent-primary' : 'text-foreground-muted'}`}
               >
