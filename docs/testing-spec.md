@@ -283,9 +283,19 @@ vi.mock('next/headers', () => ({
   /api
     /weight/__tests__
       /route.api.test.ts
+      /[id].api.test.ts
     /injections/__tests__
       /route.api.test.ts
+      /[id].api.test.ts
+      /latest.api.test.ts
       /next-due.api.test.ts
+    /daily-logs/__tests__
+      /route.api.test.ts
+      /[date].api.test.ts
+      /week-summary.api.test.ts
+    /stats/__tests__
+      /summary.api.test.ts
+      /results.api.test.ts
 
 /e2e
   /onboarding.spec.ts
@@ -1476,12 +1486,13 @@ npm run test:all
      - `components/forms/InjectionForm.test.tsx`
      - `components/forms/DailyLogForm.test.tsx`
 
-4. ~~**Fourth**: Add API route tests~~ 🔄 IN PROGRESS
+4. ~~**Fourth**: Add API route tests~~ 🔄 IN PROGRESS (P1 complete)
    - ~~Test CRUD operations~~ ✅ (weight routes done - 14 tests)
-   - **Remaining API routes to test**:
-     - [ ] `/api/injections/*` - CRUD + next-due
-     - [ ] `/api/daily-logs/*` - CRUD + week-summary
-     - [ ] `/api/stats/*` - summary, results
+   - **P1 API tests complete** (2025-12-31):
+     - [x] `/api/injections/*` - 55 tests (route, [id], latest, next-due)
+     - [x] `/api/daily-logs/*` - 58 tests (route, [date], week-summary)
+     - [x] `/api/stats/*` - 32 tests (summary, results)
+   - **P2 API routes to test**:
      - [ ] `/api/profile` - GET, PUT
      - [ ] `/api/preferences` - GET, PUT
      - [ ] `/api/calendar/*` - month data
