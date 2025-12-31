@@ -6,8 +6,6 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Onboarding Flow', () => {
-  // Generate unique email for each test run
-  const testEmail = `test-${Date.now()}@example.com`;
   const testPassword = 'TestPassword123!';
 
   test.describe('Onboarding Page Structure', () => {
@@ -41,7 +39,7 @@ test.describe('Onboarding Flow', () => {
       await page.fill('input#confirmPassword', testPassword);
 
       // Submit registration and wait for API response
-      const [response] = await Promise.all([
+      await Promise.all([
         page.waitForResponse(
           (resp) => resp.url().includes('/api/auth/register') && resp.status() === 200,
           { timeout: 15000 }
