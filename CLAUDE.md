@@ -299,9 +299,10 @@ export function ExampleClient({ initialData }: Props) {
 Track overall progress here:
 
 - [x] Project scaffolding (Next.js 16, pnpm, Tailwind, TypeScript)
-- [x] Database schema (12 tables pushed to mj_tracker_dev)
+- [x] Database schema (13 tables - added password_reset_tokens)
 - [x] Authentication (NextAuth v5 with credentials provider)
-- [ ] API routes
+- [x] Password reset flow (forgot-password, reset-password API + pages)
+- [~] API routes (profile, preferences, weight, injections done)
 - [ ] Summary page
 - [ ] Results page (reference UI)
 - [ ] Jabs page
@@ -314,6 +315,32 @@ Track overall progress here:
 - [ ] Testing (unit)
 - [ ] Testing (E2E)
 - [ ] Production deployment
+
+### Completed API Routes (2025-12-31)
+
+| Route | Methods | File |
+|-------|---------|------|
+| `/api/auth/register` | POST | `src/app/api/auth/register/route.ts` |
+| `/api/auth/forgot-password` | POST | `src/app/api/auth/forgot-password/route.ts` |
+| `/api/auth/reset-password` | POST | `src/app/api/auth/reset-password/route.ts` |
+| `/api/profile` | GET, PUT | `src/app/api/profile/route.ts` |
+| `/api/preferences` | GET, PUT | `src/app/api/preferences/route.ts` |
+| `/api/weight` | GET, POST | `src/app/api/weight/route.ts` |
+| `/api/weight/[id]` | GET, PUT, DELETE | `src/app/api/weight/[id]/route.ts` |
+| `/api/weight/latest` | GET | `src/app/api/weight/latest/route.ts` |
+| `/api/weight/stats` | GET | `src/app/api/weight/stats/route.ts` |
+| `/api/injections` | GET, POST | `src/app/api/injections/route.ts` |
+| `/api/injections/[id]` | GET, PUT, DELETE | `src/app/api/injections/[id]/route.ts` |
+| `/api/injections/latest` | GET | `src/app/api/injections/latest/route.ts` |
+| `/api/injections/next-due` | GET | `src/app/api/injections/next-due/route.ts` |
+
+### Remaining API Routes
+
+- Daily logs (`/api/daily-logs/*`)
+- Stats (`/api/stats/summary`, `/api/stats/results`)
+- Calendar (`/api/calendar/[year]/[month]`)
+- Export (`/api/export/*`)
+- Notifications (`/api/notifications/*`)
 
 ---
 
