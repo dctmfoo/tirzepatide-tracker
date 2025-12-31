@@ -320,6 +320,18 @@ Show custom install banner after:
 | Warning | Yellow | `#eab308` |
 | Error/Alert | Red | `#ef4444` |
 
+> **Implementation Note (2025-12-31):**
+> Design tokens are implemented in `src/app/globals.css` using CSS variables and Tailwind v4's `@theme inline` directive.
+>
+> **Usage:** Use Tailwind classes like `bg-background`, `text-foreground-muted`, `bg-accent-primary` instead of hardcoded hex values.
+>
+> **Available tokens:**
+> - `bg-background` / `bg-background-card` - Background colors
+> - `text-foreground` / `text-foreground-muted` - Text colors
+> - `bg-accent-primary` / `bg-accent-secondary` - Accent colors
+> - `bg-error` / `bg-success` / `bg-warning` - Semantic colors
+> - `bg-dose-2-5`, `bg-dose-5-0`, etc. - Dose marker colors
+
 ---
 
 ## Summary Page
@@ -1257,11 +1269,26 @@ export const feetInchesToCm = (feet: number, inches: number): number => {
 
 ```
 POST   /api/auth/register
-POST   /api/auth/login
-POST   /api/auth/logout
+POST   /api/auth/login          (handled by NextAuth)
+POST   /api/auth/logout         (handled by NextAuth)
 POST   /api/auth/forgot-password
 POST   /api/auth/reset-password
+```
 
+> **Implementation Note (2025-12-31) - Authentication [x]:**
+> - NextAuth v5 (beta.30) with Credentials provider
+> - JWT strategy (30-day session)
+> - Files:
+>   - `src/lib/auth/config.ts` - NextAuth configuration
+>   - `src/lib/auth/index.ts` - Helper functions (auth, getRequiredSession)
+>   - `src/app/api/auth/[...nextauth]/route.ts` - NextAuth handler
+>   - `src/app/api/auth/register/route.ts` - Registration endpoint
+>   - `src/app/(auth)/login/page.tsx` - Login form
+>   - `src/app/(auth)/register/page.tsx` - Registration form
+> - Password: bcryptjs with 12 salt rounds
+> - Validation: Zod schema (email, min 8 chars, uppercase+lowercase+number)
+
+```
 GET    /api/profile
 PUT    /api/profile
 GET    /api/preferences

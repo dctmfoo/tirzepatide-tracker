@@ -146,9 +146,47 @@ pnpm add -D <package>   # Add dev dependency
 
 ### Styling
 - Tailwind CSS for all styling
-- Dark theme by default (`bg-[#0a0a0a]`)
+- Dark theme by default
 - Mobile-first responsive design
-- Use CSS variables for theme colors
+- **Use design tokens from `globals.css` - NEVER hardcode hex colors**
+
+#### Design Token System (MANDATORY)
+
+Design tokens are defined in `src/app/globals.css` using CSS variables and mapped to Tailwind via `@theme inline`.
+
+**Available tokens:**
+```css
+/* Backgrounds */
+bg-background         /* #0a0a0a - main background */
+bg-background-card    /* #1a2a3a - card/elevated surfaces */
+
+/* Text */
+text-foreground       /* #ffffff - primary text */
+text-foreground-muted /* #9ca3af - secondary text */
+
+/* Accents */
+bg-accent-primary     /* #00d4ff - cyan, primary actions */
+bg-accent-secondary   /* #a855f7 - purple, secondary actions */
+
+/* Semantic */
+text-error / bg-error     /* #ef4444 - errors */
+text-success / bg-success /* #22c55e - success */
+text-warning / bg-warning /* #eab308 - warnings */
+
+/* Dose colors (for charts) */
+bg-dose-2-5, bg-dose-5-0, bg-dose-7-5, etc.
+```
+
+**Usage examples:**
+```tsx
+// Correct - use tokens
+<div className="bg-background-card text-foreground">
+<button className="bg-accent-primary text-background">
+
+// Wrong - never hardcode
+<div className="bg-[#1a2a3a] text-white">
+<button className="bg-[#00d4ff]">
+```
 
 ### Database
 - Drizzle ORM with PostgreSQL
@@ -200,33 +238,31 @@ pnpm add -D <package>   # Add dev dependency
 
 ## Common Patterns
 
-### API Route Handler
+### API Route Handler (NextAuth v5)
 ```typescript
 // app/api/example/route.ts
-import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
-import { authOptions } from '@/lib/auth/config';
+import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
+  const session = await auth();
+  if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  // Access user ID: session.user.id
   // ... implementation
 }
 ```
 
-### Server Component with Data
+### Server Component with Data (NextAuth v5)
 ```typescript
 // app/(app)/example/page.tsx
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
+import { getRequiredSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export default async function ExamplePage() {
-  const session = await getServerSession();
-  if (!session) redirect('/login');
+  const session = await getRequiredSession(); // Redirects to /login if not authenticated
 
   const data = await db.query.example.findMany();
   return <ExampleComponent data={data} />;
@@ -264,7 +300,7 @@ Track overall progress here:
 
 - [x] Project scaffolding (Next.js 16, pnpm, Tailwind, TypeScript)
 - [x] Database schema (12 tables pushed to mj_tracker_dev)
-- [ ] Authentication
+- [x] Authentication (NextAuth v5 with credentials provider)
 - [ ] API routes
 - [ ] Summary page
 - [ ] Results page (reference UI)
