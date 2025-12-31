@@ -308,7 +308,7 @@ Track overall progress here:
 - [x] Results page (chart with dose-colored segments)
 - [x] Jabs page (injection history and log form)
 - [x] Calendar page (month grid with day details and log modals)
-- [ ] Settings page
+- [x] Settings page (profile, treatment, preferences, data export)
 - [ ] Daily log forms
 - [ ] PWA configuration
 - [ ] Email notifications
@@ -425,6 +425,35 @@ Calendar view with month navigation and day details (spec lines 579-643):
   - Skeleton loading state
   - Fetches calendar data from `/api/calendar/[year]/[month]`
   - Fetches daily log details when day selected
+
+### Settings Page Implementation (2025-12-31)
+
+Settings page with grouped sections and edit modals (spec lines 646-765):
+- **Files:**
+  - `src/app/(app)/settings/page.tsx` - Main Settings page (client component)
+  - `src/components/settings/SettingsSection.tsx` - Section container
+  - `src/components/settings/SettingsItem.tsx` - Clickable setting row
+  - `src/components/settings/index.ts` - Barrel exports
+- **Sections:**
+  - Profile: Personal Info, Goals, Account
+  - Treatment: Injection Schedule
+  - Preferences: Units, Notifications, Appearance
+  - Data: Export Data, Download All Data
+  - Support: Help, Feedback, Privacy, Terms
+  - Danger Zone: Delete Account
+- **Modals:**
+  - Personal Info (age, gender, height)
+  - Goals (goal weight, treatment start date)
+  - Injection Schedule (preferred day, reminder timing)
+  - Units (weight, height, date format)
+  - Notifications (email reminders, weekly report toggles)
+  - Export (text, JSON, image options)
+  - Delete Account (confirmation required)
+- **Features:**
+  - Log Out button with NextAuth signOut
+  - App version display
+  - Skeleton loading state
+  - Unit conversion display (kg/lbs/stone, cm/ft-in)
 
 ### Backend API Status: COMPLETE
 
