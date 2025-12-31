@@ -1234,10 +1234,17 @@ export const feetInchesToCm = (feet: number, inches: number): number => {
 /register               → Registration form
 /forgot-password        → Password reset request
 /reset-password         → Password reset form (with token)
-/onboarding             → Multi-step profile setup
-/onboarding/profile     → Step 1: Personal info
-/onboarding/goals       → Step 2: Weight goals
-/onboarding/first-entry → Step 3: First weight + injection
+/onboarding             → Single-screen setup (implemented)
+/onboarding/profile     → Step 1: Personal info (merged into /onboarding)
+/onboarding/goals       → Step 2: Weight goals (merged into /onboarding)
+/onboarding/first-entry → Step 3: First weight + injection (merged into /onboarding)
+
+> **Implementation Note (2025-12-31):**
+> Changed from multi-step to single-screen onboarding for better UX (74% of users abandon complex flows).
+> - Route: `/onboarding` - Single scrollable form with 3 collapsible sections
+> - Files: `src/app/(onboarding)/`, `src/components/onboarding/`, `src/lib/validations/onboarding.ts`
+> - API: `POST /api/onboarding/complete` - Creates profile, preferences, weight entry, injection atomically
+> - Flow: Register → /onboarding → Fill form → Submit → /summary
 
 /summary                → Summary dashboard (home)
 /results                → Results chart page (reference UI)
@@ -1395,7 +1402,15 @@ GET    /api/notifications/preferences → Get all toggles
 PUT    /api/notifications/preferences → Update toggles
 
 POST   /api/cron/send-notifications   → Cron endpoint for emails
+
+POST   /api/onboarding/complete       → Complete onboarding (create profile + entries)
 ```
+
+> **Implementation Note (2025-12-31) - Onboarding API [x]:**
+> - File: `src/app/api/onboarding/complete/route.ts`
+> - Creates in a single transaction: profile, userPreferences, weightEntry, injection
+> - Validates with Zod schema from `src/lib/validations/onboarding.ts`
+> - Returns 409 if profile already exists
 
 ---
 
@@ -1423,9 +1438,8 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     /weight/new/page.tsx
     layout.tsx
   /(onboarding)
-    /onboarding/page.tsx
-    /onboarding/[step]/page.tsx
-    layout.tsx
+    /onboarding/page.tsx      (single-screen form - implemented)
+    layout.tsx                (auth check, profile redirect - implemented)
   /~offline
     page.tsx              (PWA offline fallback page)
   /api
@@ -1452,6 +1466,7 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     /export/full/route.ts
     /notifications/preferences/route.ts
     /cron/send-notifications/route.ts
+    /onboarding/complete/route.ts   (implemented)
   layout.tsx
   manifest.ts             (PWA manifest - TypeScript)
   sw.ts                   (Serwist service worker source)
@@ -1475,6 +1490,12 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     InjectionForm.tsx
     DailyLogForm.tsx
     ProfileForm.tsx
+  /onboarding                 (implemented)
+    OnboardingForm.tsx        (main form with 3 sections)
+    CollapsibleSection.tsx    (expandable section wrapper)
+    WeightInput.tsx           (weight input with kg/lbs toggle)
+    HeightInput.tsx           (height input with cm/ft-in toggle)
+    index.ts                  (exports)
   /layout
     BottomNav.tsx
     Header.tsx
@@ -1531,6 +1552,8 @@ POST   /api/cron/send-notifications   → Cron endpoint for emails
     conversions.ts (units)
     dates.ts (date helpers)
     injection-logic.ts (due dates, status)
+  /validations               (implemented)
+    onboarding.ts            (Zod schemas + unit converters)
   /hooks
     useWeightStats.ts
     useInjectionStatus.ts
