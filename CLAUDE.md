@@ -263,7 +263,7 @@ export function ExampleClient({ initialData }: Props) {
 Track overall progress here:
 
 - [x] Project scaffolding (Next.js 16, pnpm, Tailwind, TypeScript)
-- [~] Database schema
+- [x] Database schema (12 tables pushed to mj_tracker_dev)
 - [ ] Authentication
 - [ ] API routes
 - [ ] Summary page
