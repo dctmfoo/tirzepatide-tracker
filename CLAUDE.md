@@ -307,7 +307,7 @@ Track overall progress here:
 - [x] Summary page (dashboard with all 4 sections)
 - [x] Results page (chart with dose-colored segments)
 - [x] Jabs page (injection history and log form)
-- [ ] Calendar page
+- [x] Calendar page (month grid with day details and log modals)
 - [ ] Settings page
 - [ ] Daily log forms
 - [ ] PWA configuration
@@ -404,6 +404,27 @@ Injection management page matching spec wireframe (lines 493-576):
   - Site rotation suggestion based on last injection
   - Empty state for new users
   - Skeleton loading state
+
+### Calendar Page Implementation (2025-12-31)
+
+Calendar view with month navigation and day details (spec lines 579-643):
+- **Files:**
+  - `src/app/(app)/calendar/page.tsx` - Main Calendar page (client component)
+  - `src/components/calendar/CalendarGrid.tsx` - Month grid with navigation
+  - `src/components/calendar/DayDetail.tsx` - Selected day panel with entries
+  - `src/components/calendar/index.ts` - Barrel exports
+- **Features:**
+  - Month navigation (← / →) with year rollover
+  - 7-column calendar grid with weekday headers
+  - Day indicators: 💉 (injection), ● (weight), · (daily log)
+  - Today highlighting with ring, selected day with accent background
+  - Legend showing indicator meanings
+  - Day detail panel showing entries for selected date
+  - Quick action buttons: Log Weight, Log Injection, Daily Log
+  - Three modals for logging entries with form validation
+  - Skeleton loading state
+  - Fetches calendar data from `/api/calendar/[year]/[month]`
+  - Fetches daily log details when day selected
 
 ### Backend API Status: COMPLETE
 
