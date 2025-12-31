@@ -208,8 +208,10 @@ bg-dose-2-5, bg-dose-5-0, bg-dose-7-5, etc.
 |---------|----------|
 | Main spec | `docs/mounjaro-tracker-spec-v2.md` |
 | Testing spec | `docs/testing-spec.md` |
-| DB Schema | `lib/db/schema.ts` |
-| Auth config | `lib/auth/config.ts` |
+| DB Schema | `src/lib/db/schema.ts` |
+| Auth config | `src/lib/auth/config.ts` |
+| **DAL (Data Access Layer)** | `src/lib/dal.ts` |
+| **Proxy (Auth Redirects)** | `src/proxy.ts` |
 | Theme colors | Spec line 302-321 |
 | API routes | Spec line 1256-1306 |
 | Page routes | Spec line 1217-1252 |
@@ -238,7 +240,33 @@ bg-dose-2-5, bg-dose-5-0, bg-dose-7-5, etc.
 
 ## Common Patterns
 
-### API Route Handler (NextAuth v5)
+### Authentication Architecture (CVE-2025-29927 Compliant)
+
+The app uses a **layered security model**:
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| **Proxy** | `src/proxy.ts` | Optimistic redirects (no DB calls) |
+| **DAL** | `src/lib/dal.ts` | Session verification at data access |
+| **API Routes** | `src/app/api/*/route.ts` | Auth checks before mutations |
+
+**Security Note:** Proxy alone is NOT secure (CVE-2025-29927). Always verify auth at the data layer using DAL functions.
+
+> **Next.js 16 Note:** The `middleware.ts` convention is deprecated. Use `proxy.ts` instead.
+
+### Layout with DAL (Recommended)
+```typescript
+// app/(app)/layout.tsx
+import { verifySessionWithProfile } from '@/lib/dal';
+
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  // Verifies session AND profile, redirects if either is missing
+  await verifySessionWithProfile();
+  return <>{children}</>;
+}
+```
+
+### API Route Handler
 ```typescript
 // app/api/example/route.ts
 import { NextResponse } from 'next/server';
@@ -247,26 +275,24 @@ import { db } from '@/lib/db';
 
 export async function GET() {
   const session = await auth();
-  if (!session?.user) {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   // Access user ID: session.user.id
-  // ... implementation
 }
 ```
 
-### Server Component with Data (NextAuth v5)
+### DAL Functions Available
 ```typescript
-// app/(app)/example/page.tsx
-import { getRequiredSession } from '@/lib/auth';
-import { db } from '@/lib/db';
-
-export default async function ExamplePage() {
-  const session = await getRequiredSession(); // Redirects to /login if not authenticated
-
-  const data = await db.query.example.findMany();
-  return <ExampleComponent data={data} />;
-}
+import {
+  verifySession,          // Returns session or redirects to /login
+  getSession,             // Returns session or null (no redirect)
+  getUserProfile,         // Returns profile or null
+  verifySessionWithProfile, // Returns session+profile or redirects
+  verifySessionForOnboarding, // For onboarding pages
+  redirectIfAuthenticated,  // For auth pages (login, register)
+  getUserPreferences,     // Returns preferences with defaults
+} from '@/lib/dal';
 ```
 
 ### Client Component
@@ -581,13 +607,51 @@ vercel logs         # View deployment logs
 
 All API routes are now implemented. Next: Testing or UI pages.
 
+### Authentication Architecture (2025-12-31)
+
+Implemented layered authentication following Next.js best practices (post-CVE-2025-29927):
+
+**Files:**
+- `src/proxy.ts` - Optimistic redirects (no DB calls) - Next.js 16 convention
+- `src/lib/dal.ts` - Data Access Layer with cached session verification
+- `src/lib/auth/config.ts` - NextAuth v5 configuration
+- `src/lib/auth/index.ts` - Auth exports (deprecated helpers point to DAL)
+
+**Pattern:**
+```
+User Request → Proxy (optimistic) → Layout (DAL) → API Route (auth check)
+```
+
+**Proxy Routes:**
+| Route Type | Behavior |
+|------------|----------|
+| Protected (`/summary`, `/results`, etc.) | Redirect to `/login` if unauthenticated |
+| Auth (`/login`, `/register`, etc.) | Redirect to `/summary` if authenticated |
+| API (`/api/*`) | Pass through (API handles own auth) |
+| Root (`/`) | Redirect to `/summary` if authenticated |
+
+**DAL Functions:**
+- `verifySession()` - Returns session or redirects to /login
+- `getSession()` - Returns session or null (for API routes)
+- `verifySessionWithProfile()` - Returns session+profile or redirects
+- `verifySessionForOnboarding()` - For onboarding pages
+- `redirectIfAuthenticated()` - For auth pages
+- `getUserProfile()` - Returns profile or null
+- `getUserPreferences()` - Returns preferences with defaults
+
+**Tests:**
+- `src/lib/__tests__/dal.test.ts` - 21 tests for DAL functions
+- `src/__tests__/proxy.test.ts` - 31 tests for proxy routes
+
 ### Testing Infrastructure (2025-12-31)
 
-**361 tests passing** - Testing infrastructure is operational.
+**413 tests passing** - Testing infrastructure is operational.
 
 | Category | Files | Tests |
 |----------|-------|-------|
 | Unit Tests | `src/lib/utils/__tests__/*` | 126 |
+| **DAL Tests** | `src/lib/__tests__/dal.test.ts` | 21 |
+| **Proxy Tests** | `src/__tests__/proxy.test.ts` | 31 |
 | API Tests - Weight | `src/app/api/weight/__tests__/*` | 14 |
 | API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
 | API Tests - Daily Logs | `src/app/api/daily-logs/__tests__/*` | 58 |
@@ -599,13 +663,15 @@ All API routes are now implemented. Next: Testing or UI pages.
 | E2E Tests | `e2e/*.spec.ts` | 6 test files |
 
 **Test Configuration:**
-- `vitest.config.ts` - Unit/component test config
+- `vitest.config.ts` - Unit/component test config (includes `server-only` alias)
 - `playwright.config.ts` - E2E test config
 - `tests/setup.ts` - Global test setup with Next.js mocks
 
 **Test Utilities:**
 - `tests/mocks/db.ts` - Drizzle database mocks
 - `tests/mocks/auth.ts` - NextAuth session mocks
+- `tests/mocks/dal.ts` - DAL function mocks
+- `tests/mocks/server-only.ts` - Mock for `server-only` package
 - `tests/factories/*` - Test data factories (user, weight, injection, daily-log)
 - `tests/utils/*` - Custom render, API helpers
 

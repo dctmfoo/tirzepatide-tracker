@@ -1357,15 +1357,22 @@ POST   /api/auth/reset-password
 > **Implementation Note (2025-12-31) - Authentication [x]:**
 > - NextAuth v5 (beta.30) with Credentials provider
 > - JWT strategy (30-day session)
+> - **Layered Security (CVE-2025-29927 compliant):**
+>   - Proxy (`src/proxy.ts`) - Optimistic redirects, no DB calls (Next.js 16 convention)
+>   - DAL (`src/lib/dal.ts`) - Session verification at data access with `cache()`
+>   - API Routes - Auth checks before mutations
 > - Files:
 >   - `src/lib/auth/config.ts` - NextAuth configuration
->   - `src/lib/auth/index.ts` - Helper functions (auth, getRequiredSession)
+>   - `src/lib/auth/index.ts` - Helper functions (deprecated, use DAL)
+>   - `src/lib/dal.ts` - Data Access Layer (verifySession, getSession, etc.)
+>   - `src/proxy.ts` - Route protection proxy (replaces deprecated middleware.ts)
 >   - `src/app/api/auth/[...nextauth]/route.ts` - NextAuth handler
 >   - `src/app/api/auth/register/route.ts` - Registration endpoint
 >   - `src/app/(auth)/login/page.tsx` - Login form
 >   - `src/app/(auth)/register/page.tsx` - Registration form
 > - Password: bcryptjs with 12 salt rounds
 > - Validation: Zod schema (email, min 8 chars, uppercase+lowercase+number)
+> - **Tests:** 21 DAL tests + 31 proxy tests
 
 ```
 GET    /api/profile

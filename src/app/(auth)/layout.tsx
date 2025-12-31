@@ -1,5 +1,4 @@
-import { auth } from '@/lib/auth/config';
-import { redirect } from 'next/navigation';
+import { redirectIfAuthenticated } from '@/lib/dal';
 
 export default async function AuthLayout({
   children,
@@ -7,16 +6,11 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   // Redirect to summary if already authenticated
-  const session = await auth();
-  if (session?.user) {
-    redirect('/summary');
-  }
+  await redirectIfAuthenticated();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {children}
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md">{children}</div>
     </div>
   );
 }

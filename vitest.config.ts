@@ -1,9 +1,19 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
+  resolve: {
+    alias: {
+      // Mock server-only for testing (it's a marker package that throws on client)
+      'server-only': path.resolve(__dirname, 'tests/mocks/server-only.ts'),
+    },
+  },
   test: {
     // Global test settings
     globals: true,

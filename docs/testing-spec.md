@@ -19,10 +19,13 @@ When setting up tests for this project, complete these steps in order:
 
 > **Implementation Note (2025-12-31):**
 > Testing infrastructure is now set up and operational. Current status:
-> - **361 tests passing** (126 unit + 235 API) + 6 E2E test files
+> - **413 tests passing** (126 unit + 52 auth/proxy + 235 API) + 6 E2E test files
 > - Configuration: `vitest.config.ts`, `playwright.config.ts`
 > - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
 > - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
+> - **Auth/Proxy tests (NEW):**
+>   - `src/lib/__tests__/dal.test.ts` (21 tests) - DAL function tests
+>   - `src/__tests__/proxy.test.ts` (31 tests) - Route protection tests (Next.js 16 proxy convention)
 > - API tests:
 >   - `src/app/api/weight/__tests__/*` (14 tests)
 >   - `src/app/api/injections/__tests__/*` (55 tests)
@@ -35,6 +38,7 @@ When setting up tests for this project, complete these steps in order:
 > - E2E tests: `e2e/*.spec.ts` (auth, onboarding, jabs, results, calendar, settings)
 > - Utility functions created: `src/lib/utils/{conversions,calculations,dates,injection-logic}.ts`
 > - **Component tests skipped**: Forms are inline in page components, tested via E2E instead
+> - **New mocks added**: `tests/mocks/dal.ts`, `tests/mocks/server-only.ts`
 
 ---
 
