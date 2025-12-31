@@ -1293,7 +1293,19 @@ GET    /api/profile
 PUT    /api/profile
 GET    /api/preferences
 PUT    /api/preferences
+```
 
+> **Implementation Note (2025-12-31) - Profile & Preferences API [x]:**
+> - Files:
+>   - `src/app/api/profile/route.ts` - GET/PUT profile
+>   - `src/app/api/preferences/route.ts` - GET/PUT preferences
+> - Profile fields: age, gender, heightCm, weights, treatmentStartDate, injection prefs
+> - Preferences fields: weightUnit, heightUnit, dateFormat, weekStartsOn, theme
+> - Auto-creates default preferences on first GET if none exist
+> - Zod validation on all PUT requests
+> - Returns 404 if profile not found (profile created during onboarding)
+
+```
 GET    /api/weight                    → List with pagination + date filters
 POST   /api/weight                    → Create entry
 GET    /api/weight/[id]               → Single entry
