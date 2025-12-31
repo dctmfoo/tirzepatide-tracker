@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
-import { eq, desc, asc } from 'drizzle-orm';
+import { eq, desc, asc, count } from 'drizzle-orm';
 
 // GET /api/stats/summary - Get summary page data
 export async function GET() {
@@ -34,9 +34,9 @@ export async function GET() {
       orderBy: [desc(schema.injections.injectionDate)],
     });
 
-    // Count total injections
-    const allInjections = await db
-      .select()
+    // Count total injections - use count instead of fetching all records
+    const [{ value: injectionCount }] = await db
+      .select({ value: count() })
       .from(schema.injections)
       .where(eq(schema.injections.userId, session.user.id));
 
@@ -48,7 +48,8 @@ export async function GET() {
       .select()
       .from(schema.weightEntries)
       .where(eq(schema.weightEntries.userId, session.user.id))
-      .orderBy(desc(schema.weightEntries.recordedAt));
+      .orderBy(desc(schema.weightEntries.recordedAt))
+      .limit(7);
 
     // Calculate next injection due
     let nextInjectionDue = null;
@@ -131,7 +132,7 @@ export async function GET() {
         lastRecorded: latestWeight?.recordedAt || null,
       },
       injection: {
-        totalCount: allInjections.length,
+        totalCount: Number(injectionCount),
         currentDose: latestInjection ? Number(latestInjection.doseMg) : null,
         lastInjection: latestInjection?.injectionDate || null,
         nextDue: nextInjectionDue,
@@ -150,7 +151,7 @@ export async function GET() {
         hasMental: !!todayLog?.mentalLog,
         hasDiet: !!todayLog?.dietLog,
       },
-      recentWeights: recentWeights.slice(0, 7).map((w) => ({
+      recentWeights: recentWeights.map((w) => ({
         weight: Number(w.weightKg),
         date: w.recordedAt,
       })),

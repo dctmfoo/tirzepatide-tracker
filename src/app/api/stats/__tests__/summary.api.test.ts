@@ -13,6 +13,7 @@ const mockSelect = vi.fn().mockReturnThis();
 const mockFrom = vi.fn().mockReturnThis();
 const mockWhere = vi.fn().mockReturnThis();
 const mockOrderBy = vi.fn();
+const mockLimit = vi.fn();
 
 vi.mock('@/lib/db', () => ({
   db: {
@@ -45,6 +46,7 @@ vi.mock('drizzle-orm', () => ({
   eq: vi.fn((a, b) => ({ type: 'eq', field: a, value: b })),
   desc: vi.fn((field) => ({ type: 'desc', field })),
   asc: vi.fn((field) => ({ type: 'asc', field })),
+  count: vi.fn(() => ({ type: 'count' })),
 }));
 
 describe('GET /api/stats/summary', () => {
@@ -59,10 +61,12 @@ describe('GET /api/stats/summary', () => {
     mockWhere.mockImplementation(() => {
       return {
         orderBy: mockOrderBy,
-        then: (resolve: (value: unknown[]) => void) => resolve([]),
+        // For count queries that don't use orderBy, resolve directly with count result
+        then: (resolve: (value: unknown[]) => void) => resolve([{ value: 0 }]),
       };
     });
-    mockOrderBy.mockResolvedValue([]);
+    mockOrderBy.mockReturnValue({ limit: mockLimit });
+    mockLimit.mockResolvedValue([]);
   });
 
   afterEach(() => {
@@ -181,13 +185,15 @@ describe('GET /api/stats/summary', () => {
       return Promise.resolve(null);
     });
 
+    // Mock the count query to return 1 injection
     mockWhere.mockImplementation(() => {
       return {
         orderBy: mockOrderBy,
-        then: (resolve: (value: unknown[]) => void) => resolve([{ id: 'inj-1', doseMg: '5' }]),
+        // Count query returns [{ value: count }] format
+        then: (resolve: (value: unknown[]) => void) => resolve([{ value: 1 }]),
       };
     });
-    mockOrderBy.mockResolvedValue([]);
+    mockLimit.mockResolvedValue([]);
 
     const response = await GET();
     const data = await response.json();
@@ -212,7 +218,7 @@ describe('GET /api/stats/summary', () => {
       }
       return Promise.resolve(null);
     });
-    mockOrderBy.mockResolvedValue([{ id: 'inj-1' }]);
+    mockLimit.mockResolvedValue([{ id: 'inj-1' }]);
 
     const response = await GET();
     const data = await response.json();
@@ -235,7 +241,7 @@ describe('GET /api/stats/summary', () => {
       }
       return Promise.resolve(null);
     });
-    mockOrderBy.mockResolvedValue([{ id: 'inj-1' }]);
+    mockLimit.mockResolvedValue([{ id: 'inj-1' }]);
 
     const response = await GET();
     const data = await response.json();
@@ -258,7 +264,7 @@ describe('GET /api/stats/summary', () => {
       }
       return Promise.resolve(null);
     });
-    mockOrderBy.mockResolvedValue([{ id: 'inj-1' }]);
+    mockLimit.mockResolvedValue([{ id: 'inj-1' }]);
 
     const response = await GET();
     const data = await response.json();
@@ -342,7 +348,7 @@ describe('GET /api/stats/summary', () => {
       { weightKg: '93.0', recordedAt: new Date('2025-01-14') },
       { weightKg: '93.5', recordedAt: new Date('2025-01-13') },
     ];
-    mockOrderBy.mockResolvedValue(recentWeights);
+    mockLimit.mockResolvedValue(recentWeights);
 
     const response = await GET();
     const data = await response.json();
@@ -357,17 +363,21 @@ describe('GET /api/stats/summary', () => {
     mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
     mockFindFirst.mockResolvedValue(null);
 
-    const recentWeights = Array.from({ length: 10 }, (_, i) => ({
+    // Database returns at most 7 weights due to .limit(7) in the query
+    // We simulate this by providing exactly 7 weights (what the DB would return)
+    const recentWeights = Array.from({ length: 7 }, (_, i) => ({
       weightKg: `${90 + i}`,
       recordedAt: new Date(`2025-01-${15 - i}`),
     }));
-    mockOrderBy.mockResolvedValue(recentWeights);
+    mockLimit.mockResolvedValue(recentWeights);
 
     const response = await GET();
     const data = await response.json();
 
     expect(response.status).toBe(200);
     expect(data.recentWeights).toHaveLength(7);
+    // Verify the limit function was called
+    expect(mockLimit).toHaveBeenCalled();
   });
 
   it('returns complete response structure', async () => {

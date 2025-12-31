@@ -163,7 +163,10 @@ export const dailyLogs = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
-  (table) => [unique('daily_logs_user_date').on(table.userId, table.logDate)]
+  (table) => [
+    unique('daily_logs_user_date').on(table.userId, table.logDate),
+    index('daily_logs_user_log_date').on(table.userId, table.logDate),
+  ]
 );
 
 export const dailyLogsRelations = relations(dailyLogs, ({ one, many }) => ({
@@ -181,16 +184,20 @@ export const dailyLogsRelations = relations(dailyLogs, ({ one, many }) => ({
 // SIDE EFFECTS
 // ============================================================================
 
-export const sideEffects = pgTable('side_effects', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  dailyLogId: uuid('daily_log_id')
-    .references(() => dailyLogs.id, { onDelete: 'cascade' })
-    .notNull(),
-  effectType: varchar('effect_type', { length: 50 }).notNull(),
-  severity: varchar('severity', { length: 20 }).notNull(), // None, Mild, Moderate, Severe
-  notes: text('notes'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const sideEffects = pgTable(
+  'side_effects',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    dailyLogId: uuid('daily_log_id')
+      .references(() => dailyLogs.id, { onDelete: 'cascade' })
+      .notNull(),
+    effectType: varchar('effect_type', { length: 50 }).notNull(),
+    severity: varchar('severity', { length: 20 }).notNull(), // None, Mild, Moderate, Severe
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [index('side_effects_daily_log_id').on(table.dailyLogId)]
+);
 
 export const sideEffectsRelations = relations(sideEffects, ({ one }) => ({
   dailyLog: one(dailyLogs, {
@@ -288,7 +295,10 @@ export const notificationPreferences = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
-  (table) => [unique('notification_prefs_user_type').on(table.userId, table.notificationType)]
+  (table) => [
+    unique('notification_prefs_user_type').on(table.userId, table.notificationType),
+    index('notification_prefs_user_id').on(table.userId),
+  ]
 );
 
 export const notificationPreferencesRelations = relations(notificationPreferences, ({ one }) => ({
@@ -324,17 +334,21 @@ export const passwordResetTokensRelations = relations(passwordResetTokens, ({ on
 // EMAIL LOGS
 // ============================================================================
 
-export const emailLogs = pgTable('email_logs', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id')
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull(),
-  notificationType: varchar('notification_type', { length: 50 }).notNull(),
-  sentAt: timestamp('sent_at').defaultNow().notNull(),
-  resendId: varchar('resend_id', { length: 100 }),
-  status: varchar('status', { length: 20 }).notNull(), // sent, failed, delivered, bounced
-  errorMessage: text('error_message'),
-});
+export const emailLogs = pgTable(
+  'email_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    notificationType: varchar('notification_type', { length: 50 }).notNull(),
+    sentAt: timestamp('sent_at').defaultNow().notNull(),
+    resendId: varchar('resend_id', { length: 100 }),
+    status: varchar('status', { length: 20 }).notNull(), // sent, failed, delivered, bounced
+    errorMessage: text('error_message'),
+  },
+  (table) => [index('email_logs_user_id').on(table.userId)]
+);
 
 export const emailLogsRelations = relations(emailLogs, ({ one }) => ({
   user: one(users, {
