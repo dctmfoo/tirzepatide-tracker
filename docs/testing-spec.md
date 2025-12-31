@@ -8,14 +8,24 @@
 
 When setting up tests for this project, complete these steps in order:
 
-- [ ] Install testing dependencies (see [Installation](#installation))
-- [ ] Create configuration files (see [Configuration Files](#configuration-files))
-- [ ] Set up test utilities and mocks (see [Test Utilities](#test-utilities))
-- [ ] Write unit tests for utility functions first (see [Unit Tests](#1-unit-tests))
+- [x] Install testing dependencies (see [Installation](#installation))
+- [x] Create configuration files (see [Configuration Files](#configuration-files))
+- [x] Set up test utilities and mocks (see [Test Utilities](#test-utilities))
+- [x] Write unit tests for utility functions first (see [Unit Tests](#1-unit-tests))
 - [ ] Add component tests for UI components (see [Component Tests](#2-component-tests))
-- [ ] Add API route tests (see [API Route Tests](#3-api-route-tests))
+- [~] Add API route tests (see [API Route Tests](#3-api-route-tests))
 - [ ] Add E2E tests for critical flows (see [E2E Tests](#4-e2e-tests))
 - [ ] Configure CI pipeline (see [CI/CD Integration](#cicd-integration))
+
+> **Implementation Note (2025-12-31):**
+> Testing infrastructure is now set up and operational. Current status:
+> - **140 tests passing** (126 unit + 14 API)
+> - Configuration: `vitest.config.ts`, `playwright.config.ts`
+> - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
+> - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
+> - API tests: `src/app/api/weight/__tests__/route.api.test.ts`
+> - E2E placeholder: `e2e/example.spec.ts`
+> - Utility functions created: `src/lib/utils/{conversions,calculations,dates,injection-logic}.ts`
 
 ---
 

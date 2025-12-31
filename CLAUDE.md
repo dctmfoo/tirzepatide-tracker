@@ -313,8 +313,8 @@ Track overall progress here:
 - [ ] PWA configuration
 - [ ] Email notifications
 - [ ] Data export
-- [ ] Testing (unit)
-- [ ] Testing (E2E)
+- [~] Testing (unit) - infrastructure complete, 140 tests passing
+- [ ] Testing (E2E) - placeholder in place
 - [ ] Production deployment
 
 ### Completed API Routes (2025-12-31)
@@ -363,6 +363,41 @@ Single-screen onboarding with collapsible sections:
 ### Backend API Status: COMPLETE
 
 All API routes are now implemented. Next: Testing or UI pages.
+
+### Testing Infrastructure (2025-12-31)
+
+**140 tests passing** - Testing infrastructure is operational.
+
+| Category | Files | Tests |
+|----------|-------|-------|
+| Unit Tests | `src/lib/utils/__tests__/*` | 126 |
+| API Tests | `src/app/api/weight/__tests__/*` | 14 |
+| E2E Tests | `e2e/example.spec.ts` | placeholder |
+
+**Test Configuration:**
+- `vitest.config.ts` - Unit/component test config
+- `playwright.config.ts` - E2E test config
+- `tests/setup.ts` - Global test setup with Next.js mocks
+
+**Test Utilities:**
+- `tests/mocks/db.ts` - Drizzle database mocks
+- `tests/mocks/auth.ts` - NextAuth session mocks
+- `tests/factories/*` - Test data factories (user, weight, injection, daily-log)
+- `tests/utils/*` - Custom render, API helpers
+
+**Utility Functions Created:**
+- `src/lib/utils/conversions.ts` - Weight/height unit conversions
+- `src/lib/utils/calculations.ts` - BMI, stats, progress calculations
+- `src/lib/utils/dates.ts` - Date formatting and utilities
+- `src/lib/utils/injection-logic.ts` - Injection scheduling, site rotation
+
+**Commands:**
+```bash
+pnpm test           # Watch mode
+pnpm test:run       # Run once
+pnpm test:coverage  # With coverage
+pnpm test:e2e       # E2E tests (requires running app)
+```
 
 ---
 
