@@ -339,8 +339,8 @@ Track overall progress here:
 - [ ] PWA configuration
 - [x] Email notifications (Resend integration with styled templates)
 - [ ] Data export
-- [~] Testing (unit) - infrastructure complete, 361 tests passing (P1+P2 API tests done)
-- [ ] Testing (E2E) - placeholder in place
+- [x] Testing (unit) - 599 tests passing, 90% coverage (all API routes tested except edge runtime image export)
+- [x] Testing (E2E) - 7 test files created for critical flows
 - [x] Production deployment (Vercel)
 
 ### Completed API Routes (2025-12-31)
@@ -643,24 +643,31 @@ User Request → Proxy (optimistic) → Layout (DAL) → API Route (auth check)
 - `src/lib/__tests__/dal.test.ts` - 21 tests for DAL functions
 - `src/__tests__/proxy.test.ts` - 31 tests for proxy routes
 
-### Testing Infrastructure (2025-12-31)
+### Testing Infrastructure (2026-01-01)
 
-**413 tests passing** - Testing infrastructure is operational.
+**599 tests passing** - Testing infrastructure is complete with 90% coverage.
 
 | Category | Files | Tests |
 |----------|-------|-------|
 | Unit Tests | `src/lib/utils/__tests__/*` | 126 |
-| **DAL Tests** | `src/lib/__tests__/dal.test.ts` | 21 |
-| **Proxy Tests** | `src/__tests__/proxy.test.ts` | 31 |
-| API Tests - Weight | `src/app/api/weight/__tests__/*` | 14 |
+| DAL Tests | `src/lib/__tests__/dal.test.ts` | 21 |
+| Proxy Tests | `src/__tests__/proxy.test.ts` | 31 |
+| API Tests - Auth | `src/app/api/auth/**/__tests__/*` | 43 |
+| API Tests - Weight | `src/app/api/weight/**/__tests__/*` | 50 |
 | API Tests - Injections | `src/app/api/injections/__tests__/*` | 55 |
 | API Tests - Daily Logs | `src/app/api/daily-logs/__tests__/*` | 58 |
 | API Tests - Stats | `src/app/api/stats/__tests__/*` | 32 |
 | API Tests - Profile | `src/app/api/profile/__tests__/*` | 16 |
 | API Tests - Preferences | `src/app/api/preferences/__tests__/*` | 16 |
 | API Tests - Calendar | `src/app/api/calendar/__tests__/*` | 18 |
-| API Tests - Export | `src/app/api/export/**/__tests__/*` | 25 |
-| E2E Tests | `e2e/*.spec.ts` | 6 test files |
+| API Tests - Export | `src/app/api/export/**/__tests__/*` | 76 |
+| API Tests - Other | Notifications, Onboarding, Cron | 46 |
+| E2E Tests | `e2e/*.spec.ts` | 7 test files |
+
+**Missing Test Coverage:**
+| Route | Reason |
+|-------|--------|
+| `/api/export/image` | Uses edge runtime + `ImageResponse` (OG image generation) - requires special test setup |
 
 **Test Configuration:**
 - `vitest.config.ts` - Unit/component test config (includes `server-only` alias)
@@ -689,22 +696,25 @@ pnpm test:coverage  # With coverage
 pnpm test:e2e       # E2E tests (requires running app)
 ```
 
-**Next Steps for Testing:**
+**Test Completion Summary (2026-01-01):**
 
-| Priority | Task | Status | Blocker |
-|----------|------|--------|---------|
-| P1 | API tests for `/api/injections/*` | ✅ Complete (55 tests) | - |
-| P1 | API tests for `/api/daily-logs/*` | ✅ Complete (58 tests) | - |
-| P1 | API tests for `/api/stats/*` | ✅ Complete (32 tests) | - |
-| P2 | API tests for `/api/profile` | ✅ Complete (16 tests) | - |
-| P2 | API tests for `/api/preferences` | ✅ Complete (16 tests) | - |
-| P2 | API tests for `/api/calendar/*` | ✅ Complete (18 tests) | - |
-| P2 | API tests for `/api/export/*` | ✅ Complete (25 tests) | - |
-| P2 | Component tests for forms | ⏭️ Skipped | See note below |
-| P2 | E2E tests for critical flows | ✅ Created (6 test files) | - |
-| P3 | CI/CD pipeline (GitHub Actions) | Not started | - |
+| Category | Status | Notes |
+|----------|--------|-------|
+| Unit tests | ✅ Complete | 126 tests for utility functions |
+| Auth/Proxy tests | ✅ Complete | 52 tests for DAL + proxy |
+| API tests - All routes | ✅ Complete | 421 tests (all routes except edge runtime) |
+| E2E tests | ✅ Created | 7 test files for critical flows |
+| Component tests | ⏭️ Skipped | Forms inline in pages, tested via E2E |
+| CI/CD pipeline | ⏳ Pending | GitHub Actions not configured |
 
-> **Note on Component Tests:** Forms are implemented inline within page components (e.g., Log Injection modal in `jabs/page.tsx`) rather than as separate reusable components. This architectural choice means form logic is tested via E2E tests instead of isolated component tests. If forms are later extracted into `components/forms/`, component tests can be added.
+**Remaining Work:**
+
+| Priority | Task | Notes |
+|----------|------|-------|
+| P3 | `/api/export/image` tests | Requires edge runtime test setup (low priority - OG image gen) |
+| P3 | CI/CD pipeline | GitHub Actions workflow for automated testing |
+
+> **Note on Component Tests:** Forms are implemented inline within page components (e.g., Log Injection modal in `jabs/page.tsx`) rather than as separate reusable components. This architectural choice means form logic is tested via E2E tests instead of isolated component tests.
 
 ---
 

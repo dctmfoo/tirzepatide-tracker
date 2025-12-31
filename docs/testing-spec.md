@@ -17,9 +17,9 @@ When setting up tests for this project, complete these steps in order:
 - [x] Add E2E tests for critical flows (see [E2E Tests](#4-e2e-tests))
 - [ ] Configure CI pipeline (see [CI/CD Integration](#cicd-integration))
 
-> **Implementation Note (2025-12-31):**
+> **Implementation Note (2026-01-01):**
 > Testing infrastructure is now set up and operational. Current status:
-> - **413 tests passing** (126 unit + 52 auth/proxy + 235 API) + 6 E2E test files
+> - **599 tests passing** (126 unit + 52 auth/proxy + 421 API) + 7 E2E test files
 > - Configuration: `vitest.config.ts`, `playwright.config.ts`
 > - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
 > - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
@@ -1506,17 +1506,17 @@ npm run test:all
 
 4. ~~**Fourth**: Add API route tests~~ ✅ COMPLETE (P1+P2)
    - ~~Test CRUD operations~~ ✅ (weight routes done - 14 tests)
-   - **P1 API tests complete** (2025-12-31):
+   - **P1 API tests complete** (2026-01-01):
      - [x] `/api/injections/*` - 55 tests (route, [id], latest, next-due)
      - [x] `/api/daily-logs/*` - 58 tests (route, [date], week-summary)
      - [x] `/api/stats/*` - 32 tests (summary, results)
-   - **P2 API tests complete** (2025-12-31):
+   - **P2 API tests complete** (2026-01-01):
      - [x] `/api/profile` - 16 tests (GET, PUT)
      - [x] `/api/preferences` - 16 tests (GET, PUT)
      - [x] `/api/calendar/*` - 18 tests (month data)
      - [x] `/api/export/*` - 25 tests (json 11, text 12, full 2)
 
-5. ~~**Fifth**: Add E2E tests for critical flows~~ ✅ CREATED (2025-12-31)
+5. ~~**Fifth**: Add E2E tests for critical flows~~ ✅ CREATED (2026-01-01)
    - **E2E test files created**:
      - `e2e/auth.spec.ts` - Login, register, redirect tests
      - `e2e/onboarding.spec.ts` - Full registration + onboarding flow
