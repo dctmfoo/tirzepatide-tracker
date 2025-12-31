@@ -29,15 +29,21 @@ When setting up tests for this project, complete these steps in order:
 > - `src/__tests__/proxy.test.ts` - 31 tests (route protection)
 > - API tests - 421 tests (all routes except edge runtime image export)
 >
-> **E2E Tests (Playwright):**
-> - `e2e/auth.setup.ts` - Auth fixture (registers user, completes onboarding, saves session)
-> - `e2e/auth.spec.ts` - Login, register, unauthenticated access tests
-> - `e2e/onboarding.spec.ts` - Full registration + onboarding flow
-> - `e2e/jabs.spec.ts` - Injection logging page tests (17 tests)
-> - `e2e/results.spec.ts` - Results/analytics page tests
-> - `e2e/calendar.spec.ts` - Calendar page tests
-> - `e2e/settings.spec.ts` - Settings page tests
-> - `e2e/example.spec.ts` - Basic smoke tests
+> **E2E Tests (Playwright) - Status:**
+>
+> | File | Tests | Status | Notes |
+> |------|-------|--------|-------|
+> | auth.setup.ts | 1 | ✅ | Auth fixture |
+> | auth.spec.ts | 17 | ✅ | Login, register, unauth access |
+> | jabs.spec.ts | 17 | ✅ | Injection logging (FULLY PASSING) |
+> | example.spec.ts | 2 | ⚠️ | Homepage OK, login selector issue |
+> | results.spec.ts | 20 | ⚠️ | ~10/20 pass, needs selector fixes |
+> | calendar.spec.ts | 21 | ⚠️ | ~6/21 pass, day selection needs fixes |
+> | settings.spec.ts | 29 | ⚠️ | ~18/29 pass, some modals need fixes |
+> | onboarding.spec.ts | 5 | ❌ | Tests expect multi-step flow |
+>
+> **Fully Passing:** auth.setup, auth.spec, jabs.spec (35 tests)
+> **Needs Fixes:** results, calendar, settings, onboarding (77 tests)
 >
 > **E2E Auth Architecture:**
 > - Setup project runs first to authenticate test user
