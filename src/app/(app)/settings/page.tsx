@@ -137,7 +137,7 @@ export default function SettingsPage() {
         />
         <SettingsItem
           label="Goals"
-          sublabel={`Goal: ${formatWeight(profile?.goalWeightKg ?? null)}`}
+          sublabel={`Start: ${formatWeight(profile?.startingWeightKg ?? null)}, Goal: ${formatWeight(profile?.goalWeightKg ?? null)}`}
           onClick={() => setActiveModal('goals')}
         />
         <SettingsItem
@@ -367,6 +367,7 @@ function GoalsModal({
   onClose: () => void;
   onSave: () => void;
 }) {
+  const [startingWeight, setStartingWeight] = useState(profile?.startingWeightKg?.toString() || '');
   const [goalWeight, setGoalWeight] = useState(profile?.goalWeightKg?.toString() || '');
   const [startDate, setStartDate] = useState(profile?.treatmentStartDate || '');
   const [saving, setSaving] = useState(false);
@@ -382,6 +383,7 @@ function GoalsModal({
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          startingWeightKg: startingWeight ? parseFloat(startingWeight) : null,
           goalWeightKg: goalWeight ? parseFloat(goalWeight) : null,
           treatmentStartDate: startDate || null,
         }),
@@ -399,6 +401,17 @@ function GoalsModal({
   return (
     <Modal title="Goals" onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <FormField label={`Starting Weight (${weightUnit})`}>
+          <input
+            type="number"
+            step="0.1"
+            value={startingWeight}
+            onChange={(e) => setStartingWeight(e.target.value)}
+            className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            placeholder="Enter starting weight"
+          />
+        </FormField>
+
         <FormField label={`Goal Weight (${weightUnit})`}>
           <input
             type="number"
