@@ -18,9 +18,9 @@ type JourneyProgressSectionProps = {
 function formatWeight(kg: number | null, unit: string = 'kg'): string {
   if (kg === null) return '—';
   if (unit === 'lbs') {
-    return `${(kg * 2.20462).toFixed(0)} lbs`;
+    return `${(kg * 2.20462).toFixed(1)} lbs`;
   }
-  return `${kg.toFixed(0)}kg`;
+  return `${kg.toFixed(1)}kg`;
 }
 
 function formatDate(dateString: string | null): string {

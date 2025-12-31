@@ -93,6 +93,10 @@ Format:
 - **Observation:** Goal Progress bar shows "95kg" as current weight when actual current weight is 94.6kg
 - **Impact:** Minor display inconsistency between "Current State" (94.6kg) and "Goal Progress" (95kg)
 - **Suggestion:** Use same precision for weight display across all components
+- **Status:** ✅ Fixed
+- **Root Cause:** `JourneyProgressSection` used `.toFixed(0)` while `CurrentStateSection` used `.toFixed(1)`
+- **Resolution:** Updated `formatWeight` in `JourneyProgressSection.tsx` to use `.toFixed(1)` for consistency
+- **Files:** `src/components/summary/JourneyProgressSection.tsx`
 
 ---
 
@@ -145,3 +149,4 @@ Format:
 | 2025-12-31 | #1 | Bug reported: Side effect type change validation failure |
 | 2025-12-31 | #1 | Bug fixed: null vs undefined mismatch in Zod validation |
 | 2025-12-31 | Obs #1 | Observation addressed: Implemented /log/[date] for date-specific logging |
+| 2025-12-31 | Obs #2 | Observation fixed: Weight display now uses 1 decimal place consistently |
