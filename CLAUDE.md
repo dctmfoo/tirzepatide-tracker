@@ -302,7 +302,7 @@ Track overall progress here:
 - [x] Database schema (13 tables - added password_reset_tokens)
 - [x] Authentication (NextAuth v5 with credentials provider)
 - [x] Password reset flow (forgot-password, reset-password API + pages)
-- [~] API routes (profile, preferences, weight, injections done)
+- [x] API routes (all 26 endpoints complete)
 - [ ] Summary page
 - [ ] Results page (reference UI)
 - [ ] Jabs page
@@ -340,10 +340,16 @@ Track overall progress here:
 | `/api/stats/results` | GET | `src/app/api/stats/results/route.ts` |
 | `/api/calendar/[year]/[month]` | GET | `src/app/api/calendar/[year]/[month]/route.ts` |
 
-### Remaining API Routes
+| `/api/export/json` | GET | `src/app/api/export/json/route.ts` |
+| `/api/export/text` | GET | `src/app/api/export/text/route.ts` |
+| `/api/export/image` | GET | `src/app/api/export/image/route.tsx` |
+| `/api/export/full` | GET | `src/app/api/export/full/route.ts` |
+| `/api/notifications/preferences` | GET, PUT | `src/app/api/notifications/preferences/route.ts` |
+| `/api/cron/send-notifications` | POST | `src/app/api/cron/send-notifications/route.ts` |
 
-- Export (`/api/export/*`)
-- Notifications (`/api/notifications/*`)
+### Backend API Status: COMPLETE
+
+All API routes are now implemented. Next: Testing or UI pages.
 
 ---
 
