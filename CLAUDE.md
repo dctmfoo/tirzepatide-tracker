@@ -465,18 +465,22 @@ Settings page with grouped sections and edit modals (spec lines 646-765):
 
 The `/log` page for daily wellness tracking:
 - **Files:**
-  - `src/app/(app)/log/page.tsx` - Main log form page (client component)
+  - `src/app/(app)/log/page.tsx` - Main log form page for today (client component)
   - `src/app/(app)/log/loading.tsx` - Loading skeleton
+  - `src/app/(app)/log/[date]/page.tsx` - Date-specific log page (client component)
+  - `src/app/(app)/log/[date]/loading.tsx` - Loading skeleton for date page
 - **Sections (collapsible):**
   - Diet: Hunger level, meals count, protein grams, water liters
   - Activity: Workout type, duration minutes, steps
   - Mental: Motivation, cravings, mood levels
   - Side Effects: Dynamic list with type and severity
 - **Features:**
-  - Pre-populates from existing log for today
+  - `/log` - logs for today, redirects to /summary on save
+  - `/log/[date]` - logs for any date (YYYY-MM-DD format), back button to /calendar
+  - Pre-populates from existing log for the date
   - Completion indicators on each section
   - Saves all sections in single API call to `/api/daily-logs`
-  - Redirects to /summary on successful save
+  - Calendar page navigates to `/log/[date]` when "Daily Log" button is clicked
 
 ### Quick Entry Pages Implementation (2025-12-31)
 

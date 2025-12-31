@@ -84,6 +84,9 @@ Format:
 - **Observation:** The /log page only allows logging for "today" - there's no date picker to log entries for past dates
 - **Impact:** Makes historical data entry difficult; users must log each day on that specific day
 - **Suggestion:** Add a date picker to allow backdating daily logs, or add a "Log for Date" option in the Calendar page
+- **Status:** ✅ Addressed
+- **Resolution:** Implemented `/log/[date]` route that accepts any date in YYYY-MM-DD format. Calendar page now navigates to `/log/[date]` when "Daily Log" button is clicked, allowing users to log for any selected date.
+- **Files:** `src/app/(app)/log/[date]/page.tsx`, `src/app/(app)/log/[date]/loading.tsx`, `src/app/(app)/calendar/page.tsx`
 
 ### Observation #2: Goal Progress Shows Rounded Current Weight
 - **Page:** /summary
@@ -141,3 +144,4 @@ Format:
 |------|-------|--------|
 | 2025-12-31 | #1 | Bug reported: Side effect type change validation failure |
 | 2025-12-31 | #1 | Bug fixed: null vs undefined mismatch in Zod validation |
+| 2025-12-31 | Obs #1 | Observation addressed: Implemented /log/[date] for date-specific logging |

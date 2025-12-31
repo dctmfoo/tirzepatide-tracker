@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { CalendarGrid, DayDetail } from '@/components/calendar';
 
 type CalendarDay = {
@@ -68,6 +69,7 @@ function getTodayString(): string {
 }
 
 export default function CalendarPage() {
+  const router = useRouter();
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
@@ -191,16 +193,18 @@ export default function CalendarPage() {
   // Modal states
   const [showWeightModal, setShowWeightModal] = useState(false);
   const [showInjectionModal, setShowInjectionModal] = useState(false);
-  const [showDailyLogModal, setShowDailyLogModal] = useState(false);
 
   const handleLogWeight = () => setShowWeightModal(true);
   const handleLogInjection = () => setShowInjectionModal(true);
-  const handleLogDaily = () => setShowDailyLogModal(true);
+  const handleLogDaily = () => {
+    if (selectedDate) {
+      router.push(`/log/${selectedDate}`);
+    }
+  };
 
   const handleModalClose = () => {
     setShowWeightModal(false);
     setShowInjectionModal(false);
-    setShowDailyLogModal(false);
   };
 
   const handleEntrySaved = () => {
@@ -269,13 +273,6 @@ export default function CalendarPage() {
         />
       )}
 
-      {showDailyLogModal && (
-        <LogDailyModal
-          date={selectedDate}
-          onClose={handleModalClose}
-          onSave={handleEntrySaved}
-        />
-      )}
     </div>
   );
 }
@@ -473,159 +470,3 @@ function LogInjectionModal({ date, onClose, onSave }: LogInjectionModalProps) {
   );
 }
 
-// Log Daily Modal
-type LogDailyModalProps = {
-  date: string;
-  onClose: () => void;
-  onSave: () => void;
-};
-
-const HUNGER_LEVELS = [
-  { value: 'none', label: 'None' },
-  { value: 'low', label: 'Low' },
-  { value: 'moderate', label: 'Moderate' },
-  { value: 'high', label: 'High' },
-  { value: 'extreme', label: 'Extreme' },
-] as const;
-
-const MOOD_LEVELS = [
-  { value: 'great', label: '😊 Great' },
-  { value: 'good', label: '🙂 Good' },
-  { value: 'okay', label: '😐 Okay' },
-  { value: 'low', label: '😔 Low' },
-  { value: 'bad', label: '😢 Bad' },
-] as const;
-
-function LogDailyModal({ date, onClose, onSave }: LogDailyModalProps) {
-  const [hungerLevel, setHungerLevel] = useState('moderate');
-  const [mood, setMood] = useState('good');
-  const [energyLevel, setEnergyLevel] = useState(5);
-  const [steps, setSteps] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/daily-logs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          logDate: date,
-          hungerLevel,
-          mood,
-          energyLevel,
-          steps: steps ? parseInt(steps) : undefined,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to save daily log');
-      }
-
-      onSave();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
-      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-background p-6 sm:rounded-2xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">Daily Log</h2>
-          <button onClick={onClose} className="rounded-lg p-2 text-foreground-muted hover:bg-background-card">
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Hunger Level */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Hunger Level</label>
-            <div className="flex flex-wrap gap-2">
-              {HUNGER_LEVELS.map((h) => (
-                <button
-                  key={h.value}
-                  type="button"
-                  onClick={() => setHungerLevel(h.value)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    hungerLevel === h.value
-                      ? 'bg-accent-primary text-background'
-                      : 'bg-background-card text-foreground hover:bg-background-card/80'
-                  }`}
-                >
-                  {h.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Mood */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Mood</label>
-            <div className="flex flex-wrap gap-2">
-              {MOOD_LEVELS.map((m) => (
-                <button
-                  key={m.value}
-                  type="button"
-                  onClick={() => setMood(m.value)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    mood === m.value
-                      ? 'bg-accent-primary text-background'
-                      : 'bg-background-card text-foreground hover:bg-background-card/80'
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Energy Level */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">
-              Energy Level: {energyLevel}/10
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={energyLevel}
-              onChange={(e) => setEnergyLevel(parseInt(e.target.value))}
-              className="w-full accent-accent-primary"
-            />
-          </div>
-
-          {/* Steps */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">Steps (optional)</label>
-            <input
-              type="number"
-              value={steps}
-              onChange={(e) => setSteps(e.target.value)}
-              placeholder="Enter steps"
-              className="w-full rounded-lg bg-background-card px-4 py-3 text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent-primary"
-            />
-          </div>
-
-          {error && <p className="text-sm text-error">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full rounded-xl bg-accent-primary py-3 font-medium text-background hover:bg-accent-primary/90 disabled:opacity-50"
-          >
-            {saving ? 'Saving...' : 'Save Daily Log'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
