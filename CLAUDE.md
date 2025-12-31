@@ -306,7 +306,7 @@ Track overall progress here:
 - [x] Onboarding flow (single-screen setup)
 - [x] Summary page (dashboard with all 4 sections)
 - [x] Results page (chart with dose-colored segments)
-- [ ] Jabs page
+- [x] Jabs page (injection history and log form)
 - [ ] Calendar page
 - [ ] Settings page
 - [ ] Daily log forms
@@ -387,6 +387,23 @@ Chart-focused analytics page matching reference design:
   - Dose badges showing dose transition points
   - Y-axis on right side, responsive layout
   - Updated BottomNav with pill-style active indicator
+
+### Jabs Page Implementation (2025-12-31)
+
+Injection management page matching spec wireframe (lines 493-576):
+- **Files:**
+  - `src/app/(app)/jabs/page.tsx` - Main Jabs page (client component)
+  - `src/components/jabs/JabsStatCard.tsx` - Stat card component
+  - `src/components/jabs/InjectionHistoryItem.tsx` - History list item
+  - `src/components/jabs/index.ts` - Barrel exports
+- **Features:**
+  - 4 stat cards: Total Injections, Current Dose, Weeks on Current Dose, Next Due
+  - Scrollable injection history with dose change indicators (⬆️ Dose Up)
+  - Edit buttons on each history entry
+  - Log Injection modal with dose grid, site dropdown, date picker, notes
+  - Site rotation suggestion based on last injection
+  - Empty state for new users
+  - Skeleton loading state
 
 ### Backend API Status: COMPLETE
 
