@@ -399,6 +399,18 @@ pnpm test:coverage  # With coverage
 pnpm test:e2e       # E2E tests (requires running app)
 ```
 
+**Next Steps for Testing:**
+
+| Priority | Task | Status | Blocker |
+|----------|------|--------|---------|
+| P1 | API tests for `/api/injections/*` | Not started | - |
+| P1 | API tests for `/api/daily-logs/*` | Not started | - |
+| P1 | API tests for `/api/stats/*` | Not started | - |
+| P2 | API tests for remaining routes | Not started | - |
+| P2 | Component tests for forms | Blocked | UI components |
+| P2 | E2E tests for critical flows | Blocked | UI pages |
+| P3 | CI/CD pipeline (GitHub Actions) | Not started | - |
+
 ---
 
 ## Agent Instructions

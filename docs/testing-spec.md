@@ -1454,27 +1454,45 @@ npm run test:all
 
 ## Next Steps for Implementation
 
-1. **First**: Set up the testing infrastructure
-   - Install dependencies
-   - Create config files
-   - Set up test utilities and mocks
+1. ~~**First**: Set up the testing infrastructure~~ ✅ DONE
+   - ~~Install dependencies~~ ✅
+   - ~~Create config files~~ ✅ (`vitest.config.ts`, `playwright.config.ts`)
+   - ~~Set up test utilities and mocks~~ ✅ (`tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`)
 
-2. **Second**: Write unit tests for utility functions
-   - These are pure functions, easiest to test
-   - High value, catches calculation bugs early
+2. ~~**Second**: Write unit tests for utility functions~~ ✅ DONE
+   - ~~These are pure functions, easiest to test~~ ✅ (126 tests)
+   - Created utility functions: `conversions.ts`, `calculations.ts`, `dates.ts`, `injection-logic.ts`
 
-3. **Third**: Add component tests for forms
+3. **Third**: Add component tests for forms ⏳ PENDING (blocked by UI)
    - Forms have complex validation logic
    - Critical for user experience
+   - **Waiting for**: UI components to be implemented
+   - **Priority files when ready**:
+     - `components/forms/WeightEntryForm.test.tsx`
+     - `components/forms/InjectionForm.test.tsx`
+     - `components/forms/DailyLogForm.test.tsx`
 
-4. **Fourth**: Add API route tests
-   - Test CRUD operations
-   - Test authentication/authorization
+4. ~~**Fourth**: Add API route tests~~ 🔄 IN PROGRESS
+   - ~~Test CRUD operations~~ ✅ (weight routes done - 14 tests)
+   - **Remaining API routes to test**:
+     - [ ] `/api/injections/*` - CRUD + next-due
+     - [ ] `/api/daily-logs/*` - CRUD + week-summary
+     - [ ] `/api/stats/*` - summary, results
+     - [ ] `/api/profile` - GET, PUT
+     - [ ] `/api/preferences` - GET, PUT
+     - [ ] `/api/calendar/*` - month data
+     - [ ] `/api/export/*` - json, text, image, full
 
-5. **Fifth**: Add E2E tests for critical flows
-   - Start with onboarding and weight logging
-   - Add more flows incrementally
+5. **Fifth**: Add E2E tests for critical flows ⏳ PENDING (blocked by UI)
+   - Placeholder created: `e2e/example.spec.ts`
+   - **Waiting for**: UI pages to be implemented
+   - **Priority flows when ready**:
+     - Onboarding flow (register → onboarding → summary)
+     - Weight logging flow
+     - Injection logging flow
+     - Results dashboard viewing
 
-6. **Finally**: Set up CI/CD pipeline
+6. **Finally**: Set up CI/CD pipeline ⏳ PENDING
    - Run tests on every PR
+   - GitHub Actions workflow template in spec
    - Block merges on test failures
