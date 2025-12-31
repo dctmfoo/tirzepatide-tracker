@@ -333,12 +333,15 @@ Track overall progress here:
 | `/api/injections/[id]` | GET, PUT, DELETE | `src/app/api/injections/[id]/route.ts` |
 | `/api/injections/latest` | GET | `src/app/api/injections/latest/route.ts` |
 | `/api/injections/next-due` | GET | `src/app/api/injections/next-due/route.ts` |
+| `/api/daily-logs` | GET, POST | `src/app/api/daily-logs/route.ts` |
+| `/api/daily-logs/[date]` | GET, PUT | `src/app/api/daily-logs/[date]/route.ts` |
+| `/api/daily-logs/week-summary` | GET | `src/app/api/daily-logs/week-summary/route.ts` |
+| `/api/stats/summary` | GET | `src/app/api/stats/summary/route.ts` |
+| `/api/stats/results` | GET | `src/app/api/stats/results/route.ts` |
+| `/api/calendar/[year]/[month]` | GET | `src/app/api/calendar/[year]/[month]/route.ts` |
 
 ### Remaining API Routes
 
-- Daily logs (`/api/daily-logs/*`)
-- Stats (`/api/stats/summary`, `/api/stats/results`)
-- Calendar (`/api/calendar/[year]/[month]`)
 - Export (`/api/export/*`)
 - Notifications (`/api/notifications/*`)
 

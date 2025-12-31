@@ -1352,12 +1352,40 @@ POST   /api/daily-logs                → Create/update for date
 GET    /api/daily-logs/[date]         → Single day
 PUT    /api/daily-logs/[date]         → Update
 GET    /api/daily-logs/week-summary   → Aggregated week data
+```
 
+> **Implementation Note (2025-12-31) - Daily Logs API [x]:**
+> - Files:
+>   - `src/app/api/daily-logs/route.ts` - GET (list) + POST (create/update)
+>   - `src/app/api/daily-logs/[date]/route.ts` - GET/PUT for specific date
+>   - `src/app/api/daily-logs/week-summary/route.ts` - Aggregated weekly data
+> - Handles nested data: sideEffects, activity, mental, diet
+> - Side effects: effectType, severity (None/Mild/Moderate/Severe)
+> - Activity: workoutType, durationMinutes, steps
+> - Mental: motivationLevel, cravingsLevel, moodLevel
+> - Diet: hungerLevel, mealsCount, proteinGrams, waterLiters
+
+```
 GET    /api/calendar/[year]/[month]   → Month data for calendar
+```
 
+> **Implementation Note (2025-12-31) - Calendar API [x]:**
+> - File: `src/app/api/calendar/[year]/[month]/route.ts`
+> - Returns array of days with: hasWeight, hasInjection, hasLog, sideEffectsCount
+> - Includes monthly summary: weightEntries, injections, logsCompleted, monthlyChange
+
+```
 GET    /api/stats/summary             → Summary page data
 GET    /api/stats/results             → Results page data
+```
 
+> **Implementation Note (2025-12-31) - Stats API [x]:**
+> - Files:
+>   - `src/app/api/stats/summary/route.ts` - Dashboard summary (weight, injection, treatment, today's log)
+>   - `src/app/api/stats/results/route.ts` - Chart data with period filters (all, 3m, 6m, 1y)
+> - Results includes: weightData, weeklyAverages, injectionData, doseHistory
+
+```
 GET    /api/export/text               → Formatted text export
 GET    /api/export/json               → JSON export
 GET    /api/export/image              → Generated image
