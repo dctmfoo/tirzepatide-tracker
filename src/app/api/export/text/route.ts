@@ -1,0 +1,126 @@
+import { NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+import { db, schema } from '@/lib/db';
+import { eq, asc, desc } from 'drizzle-orm';
+
+// GET /api/export/text - Export summary as formatted text
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Fetch user data
+    const [profile, weightEntries, injections] = await Promise.all([
+      db.query.profiles.findFirst({
+        where: eq(schema.profiles.userId, session.user.id),
+      }),
+      db
+        .select()
+        .from(schema.weightEntries)
+        .where(eq(schema.weightEntries.userId, session.user.id))
+        .orderBy(asc(schema.weightEntries.recordedAt)),
+      db
+        .select()
+        .from(schema.injections)
+        .where(eq(schema.injections.userId, session.user.id))
+        .orderBy(desc(schema.injections.injectionDate)),
+    ]);
+
+    // Calculate stats
+    const startingWeight = profile ? Number(profile.startingWeightKg) : null;
+    const goalWeight = profile ? Number(profile.goalWeightKg) : null;
+    const currentWeight = weightEntries.length > 0 ? Number(weightEntries[weightEntries.length - 1].weightKg) : null;
+    const totalLost = startingWeight && currentWeight ? startingWeight - currentWeight : null;
+    const remainingToGoal = goalWeight && currentWeight ? currentWeight - goalWeight : null;
+
+    // Calculate treatment duration
+    let treatmentWeeks = null;
+    if (profile?.treatmentStartDate) {
+      const startDate = new Date(profile.treatmentStartDate);
+      const now = new Date();
+      treatmentWeeks = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7));
+    }
+
+    // Build text output
+    const lines: string[] = [];
+    lines.push('═══════════════════════════════════════');
+    lines.push('       MOUNJARO TRACKER SUMMARY');
+    lines.push('═══════════════════════════════════════');
+    lines.push('');
+    lines.push(`Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`);
+    lines.push('');
+
+    // Weight Progress
+    lines.push('📊 WEIGHT PROGRESS');
+    lines.push('───────────────────────────────────────');
+    if (startingWeight) lines.push(`Starting Weight:  ${startingWeight.toFixed(1)} kg`);
+    if (currentWeight) lines.push(`Current Weight:   ${currentWeight.toFixed(1)} kg`);
+    if (goalWeight) lines.push(`Goal Weight:      ${goalWeight.toFixed(1)} kg`);
+    if (totalLost !== null) {
+      const direction = totalLost >= 0 ? '↓' : '↑';
+      lines.push(`Total Change:     ${direction} ${Math.abs(totalLost).toFixed(1)} kg`);
+    }
+    if (remainingToGoal !== null && remainingToGoal > 0) {
+      lines.push(`Remaining:        ${remainingToGoal.toFixed(1)} kg to goal`);
+    } else if (remainingToGoal !== null && remainingToGoal <= 0) {
+      lines.push(`🎉 GOAL REACHED! ${Math.abs(remainingToGoal).toFixed(1)} kg below goal`);
+    }
+    lines.push('');
+
+    // Treatment Info
+    lines.push('💉 TREATMENT INFO');
+    lines.push('───────────────────────────────────────');
+    if (profile?.treatmentStartDate) {
+      lines.push(`Started:          ${profile.treatmentStartDate}`);
+    }
+    if (treatmentWeeks !== null) {
+      lines.push(`Duration:         ${treatmentWeeks} weeks`);
+    }
+    lines.push(`Total Injections: ${injections.length}`);
+    if (injections.length > 0) {
+      const latestDose = Number(injections[0].doseMg);
+      lines.push(`Current Dose:     ${latestDose} mg`);
+    }
+    lines.push('');
+
+    // Recent Injections
+    if (injections.length > 0) {
+      lines.push('📅 RECENT INJECTIONS');
+      lines.push('───────────────────────────────────────');
+      injections.slice(0, 5).forEach((inj) => {
+        const date = new Date(inj.injectionDate).toLocaleDateString();
+        lines.push(`  ${date} - ${Number(inj.doseMg)} mg (${inj.injectionSite})`);
+      });
+      lines.push('');
+    }
+
+    // Weight History
+    if (weightEntries.length > 0) {
+      lines.push('📈 RECENT WEIGHTS');
+      lines.push('───────────────────────────────────────');
+      weightEntries.slice(-10).reverse().forEach((w) => {
+        const date = new Date(w.recordedAt).toLocaleDateString();
+        lines.push(`  ${date} - ${Number(w.weightKg).toFixed(1)} kg`);
+      });
+      lines.push('');
+    }
+
+    lines.push('═══════════════════════════════════════');
+    lines.push('     Generated by Mounjaro Tracker');
+    lines.push('═══════════════════════════════════════');
+
+    const textContent = lines.join('\n');
+
+    return new NextResponse(textContent, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Content-Disposition': `attachment; filename="mounjaro-summary-${new Date().toISOString().split('T')[0]}.txt"`,
+      },
+    });
+  } catch (error) {
+    console.error('GET /api/export/text error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
