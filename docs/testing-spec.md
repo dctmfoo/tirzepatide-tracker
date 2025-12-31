@@ -18,27 +18,32 @@ When setting up tests for this project, complete these steps in order:
 - [ ] Configure CI pipeline (see [CI/CD Integration](#cicd-integration))
 
 > **Implementation Note (2026-01-01):**
-> Testing infrastructure is now set up and operational. Current status:
-> - **599 tests passing** (126 unit + 52 auth/proxy + 421 API) + 7 E2E test files
+> Testing infrastructure is complete with 90% coverage. Current status:
+> - **599 unit/API tests passing** + **8 E2E test files** with auth fixture
 > - Configuration: `vitest.config.ts`, `playwright.config.ts`
 > - Test utilities: `tests/setup.ts`, `tests/mocks/*`, `tests/factories/*`, `tests/utils/*`
-> - Unit tests: `src/lib/utils/__tests__/*` (conversions, calculations, dates, injection-logic)
-> - **Auth/Proxy tests (NEW):**
->   - `src/lib/__tests__/dal.test.ts` (21 tests) - DAL function tests
->   - `src/__tests__/proxy.test.ts` (31 tests) - Route protection tests (Next.js 16 proxy convention)
-> - API tests:
->   - `src/app/api/weight/__tests__/*` (14 tests)
->   - `src/app/api/injections/__tests__/*` (55 tests)
->   - `src/app/api/daily-logs/__tests__/*` (58 tests)
->   - `src/app/api/stats/__tests__/*` (32 tests)
->   - `src/app/api/profile/__tests__/*` (16 tests)
->   - `src/app/api/preferences/__tests__/*` (16 tests)
->   - `src/app/api/calendar/**/__tests__/*` (18 tests)
->   - `src/app/api/export/**/__tests__/*` (25 tests)
-> - E2E tests: `e2e/*.spec.ts` (auth, onboarding, jabs, results, calendar, settings)
-> - Utility functions created: `src/lib/utils/{conversions,calculations,dates,injection-logic}.ts`
-> - **Component tests skipped**: Forms are inline in page components, tested via E2E instead
-> - **New mocks added**: `tests/mocks/dal.ts`, `tests/mocks/server-only.ts`
+>
+> **Unit Tests (599 total):**
+> - `src/lib/utils/__tests__/*` - 126 tests (conversions, calculations, dates, injection-logic)
+> - `src/lib/__tests__/dal.test.ts` - 21 tests (DAL functions)
+> - `src/__tests__/proxy.test.ts` - 31 tests (route protection)
+> - API tests - 421 tests (all routes except edge runtime image export)
+>
+> **E2E Tests (Playwright):**
+> - `e2e/auth.setup.ts` - Auth fixture (registers user, completes onboarding, saves session)
+> - `e2e/auth.spec.ts` - Login, register, unauthenticated access tests
+> - `e2e/onboarding.spec.ts` - Full registration + onboarding flow
+> - `e2e/jabs.spec.ts` - Injection logging page tests (17 tests)
+> - `e2e/results.spec.ts` - Results/analytics page tests
+> - `e2e/calendar.spec.ts` - Calendar page tests
+> - `e2e/settings.spec.ts` - Settings page tests
+> - `e2e/example.spec.ts` - Basic smoke tests
+>
+> **E2E Auth Architecture:**
+> - Setup project runs first to authenticate test user
+> - Session saved to `playwright/.auth/user.json`
+> - All protected page tests use stored session via `storageState`
+> - Unauthenticated tests run separately without session
 
 ---
 
