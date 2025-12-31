@@ -305,7 +305,7 @@ Track overall progress here:
 - [x] API routes (all 27 endpoints complete)
 - [x] Onboarding flow (single-screen setup)
 - [x] Summary page (dashboard with all 4 sections)
-- [ ] Results page (reference UI)
+- [x] Results page (chart with dose-colored segments)
 - [ ] Jabs page
 - [ ] Calendar page
 - [ ] Settings page
@@ -371,6 +371,22 @@ Dashboard with 4 sections per wireframe (spec lines 337-469):
   - `src/components/ui/` - Shared UI components (StatCard, Section, ProgressBar, ActionCard)
 - **Sections:** Action Required (injection + log), Current State (weight cards), Journey Progress (goal + timeline), Recent Activity
 - **Features:** Empty state for new users, responsive layout, unit conversion display
+
+### Results Page Implementation (2025-12-31)
+
+Chart-focused analytics page matching reference design:
+- **Files:**
+  - `src/app/(app)/results/page.tsx` - Main Results page (client component)
+  - `src/components/results/PeriodTabs.tsx` - Period selector (1m, 3m, 6m, All Time)
+  - `src/components/results/ResultsStatCard.tsx` - Stat card component
+  - `src/components/charts/WeightChart.tsx` - Recharts line chart with dose segments
+- **Features:**
+  - Period filtering with underline indicator
+  - 6 stat cards: Total change, Current BMI, Weight, Percent, Weekly avg, To goal
+  - Line chart with dose-colored segments (gray 2.5mg, purple 5.0mg, etc.)
+  - Dose badges showing dose transition points
+  - Y-axis on right side, responsive layout
+  - Updated BottomNav with pill-style active indicator
 
 ### Backend API Status: COMPLETE
 
