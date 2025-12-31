@@ -23,12 +23,14 @@ When setting up tests for this project, complete these steps in order:
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| Vitest | ^2.0.0 | Unit & component test runner |
+| Vitest | ^4.0.0 | Unit & component test runner |
 | @testing-library/react | ^16.0.0 | Component testing utilities |
+| @testing-library/dom | ^10.0.0 | Required peer dependency for RTL v16+ |
+| @testing-library/jest-dom | ^6.0.0 | Custom DOM matchers for testing |
 | @testing-library/user-event | ^14.0.0 | User interaction simulation |
-| Playwright | ^1.40.0 | E2E browser testing |
+| Playwright | ^1.57.0 | E2E browser testing |
 | next-test-api-route-handler | ^4.0.0 | API route testing |
-| @faker-js/faker | ^9.0.0 | Test data generation |
+| @faker-js/faker | ^10.0.0 | Test data generation (requires Node.js 20+) |
 
 ---
 
@@ -37,8 +39,9 @@ When setting up tests for this project, complete these steps in order:
 ```bash
 # Unit & Component Testing
 npm install -D vitest @vitejs/plugin-react jsdom \
-  @testing-library/react @testing-library/dom @testing-library/user-event \
-  vite-tsconfig-paths next-test-api-route-handler @faker-js/faker
+  @testing-library/react @testing-library/dom @testing-library/jest-dom \
+  @testing-library/user-event vite-tsconfig-paths \
+  next-test-api-route-handler @faker-js/faker
 
 # E2E Testing
 npm init playwright@latest
@@ -46,6 +49,8 @@ npm init playwright@latest
 # Install Playwright browsers
 npx playwright install
 ```
+
+> **Note:** @faker-js/faker v10+ requires Node.js 20 or above. If using Jest with CJS, stick with v9 due to [compatibility issues](https://github.com/faker-js/faker/issues/3606).
 
 Add to `package.json`:
 
@@ -324,6 +329,7 @@ vi.mock('@/lib/db', () => ({
 ```typescript
 import { vi } from 'vitest';
 import type { Session } from 'next-auth';
+import { getServerSession } from 'next-auth';
 
 export const mockSession: Session = {
   user: {
@@ -1209,8 +1215,9 @@ test.describe('Results Dashboard', () => {
     // Chart should be visible
     await expect(page.locator('[data-testid="weight-chart"]')).toBeVisible();
 
-    // Dose markers should be visible
-    await expect(page.locator('.dose-marker')).toHaveCount.greaterThan(0);
+    // Dose markers should be visible (at least one)
+    const doseMarkerCount = await page.locator('.dose-marker').count();
+    expect(doseMarkerCount).toBeGreaterThan(0);
   });
 
   test('chart is responsive on mobile', async ({ page }) => {
