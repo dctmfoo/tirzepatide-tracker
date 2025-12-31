@@ -302,7 +302,8 @@ Track overall progress here:
 - [x] Database schema (13 tables - added password_reset_tokens)
 - [x] Authentication (NextAuth v5 with credentials provider)
 - [x] Password reset flow (forgot-password, reset-password API + pages)
-- [x] API routes (all 26 endpoints complete)
+- [x] API routes (all 27 endpoints complete)
+- [x] Onboarding flow (single-screen setup)
 - [ ] Summary page
 - [ ] Results page (reference UI)
 - [ ] Jabs page
@@ -346,6 +347,18 @@ Track overall progress here:
 | `/api/export/full` | GET | `src/app/api/export/full/route.ts` |
 | `/api/notifications/preferences` | GET, PUT | `src/app/api/notifications/preferences/route.ts` |
 | `/api/cron/send-notifications` | POST | `src/app/api/cron/send-notifications/route.ts` |
+| `/api/onboarding/complete` | POST | `src/app/api/onboarding/complete/route.ts` |
+
+### Onboarding Implementation (2025-12-31)
+
+Single-screen onboarding with collapsible sections:
+- **Files:**
+  - `src/app/(onboarding)/layout.tsx` - Auth check, profile redirect
+  - `src/app/(onboarding)/onboarding/page.tsx` - Onboarding page
+  - `src/components/onboarding/` - Form components
+  - `src/lib/validations/onboarding.ts` - Zod schemas + unit converters
+- **Flow:** Register → /onboarding → Fill form → Submit → /summary
+- **Sections:** About You (age, gender, height), Goals (weights, start date), First Injection
 
 ### Backend API Status: COMPLETE
 
