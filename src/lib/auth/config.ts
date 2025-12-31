@@ -26,6 +26,7 @@ type ExtendedUser = User & {
 };
 
 const authConfig: NextAuthConfig = {
+  trustHost: true, // Trust host for E2E tests and reverse proxies
   providers: [
     Credentials({
       name: 'credentials',

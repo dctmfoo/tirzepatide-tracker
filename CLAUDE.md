@@ -474,7 +474,7 @@ All API routes are now implemented. Next: Testing or UI pages.
 | API Tests - Preferences | `src/app/api/preferences/__tests__/*` | 16 |
 | API Tests - Calendar | `src/app/api/calendar/__tests__/*` | 18 |
 | API Tests - Export | `src/app/api/export/**/__tests__/*` | 25 |
-| E2E Tests | `e2e/example.spec.ts` | placeholder |
+| E2E Tests | `e2e/*.spec.ts` | 6 test files |
 
 **Test Configuration:**
 - `vitest.config.ts` - Unit/component test config
@@ -512,9 +512,11 @@ pnpm test:e2e       # E2E tests (requires running app)
 | P2 | API tests for `/api/preferences` | ✅ Complete (16 tests) | - |
 | P2 | API tests for `/api/calendar/*` | ✅ Complete (18 tests) | - |
 | P2 | API tests for `/api/export/*` | ✅ Complete (25 tests) | - |
-| P2 | Component tests for forms | Blocked | UI components |
-| P2 | E2E tests for critical flows | Blocked | UI pages |
+| P2 | Component tests for forms | ⏭️ Skipped | See note below |
+| P2 | E2E tests for critical flows | ✅ Created (6 test files) | - |
 | P3 | CI/CD pipeline (GitHub Actions) | Not started | - |
+
+> **Note on Component Tests:** Forms are implemented inline within page components (e.g., Log Injection modal in `jabs/page.tsx`) rather than as separate reusable components. This architectural choice means form logic is tested via E2E tests instead of isolated component tests. If forms are later extracted into `components/forms/`, component tests can be added.
 
 ---
 
