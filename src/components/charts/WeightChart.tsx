@@ -170,9 +170,9 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
         })}
       </div>
 
-      <div className="h-72 w-full pt-8">
+      <div className="h-72 w-full overflow-hidden pt-8">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 10, right: 50, left: 10, bottom: 20 }}>
+          <ComposedChart data={chartData} margin={{ top: 10, right: 5, left: 10, bottom: 20 }}>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="#374151"

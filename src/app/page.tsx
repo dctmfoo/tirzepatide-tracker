@@ -1,12 +1,13 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { Homepage } from '@/components/homepage';
 
 export default async function Home() {
   const session = await auth();
 
   if (session?.user) {
     redirect('/summary');
-  } else {
-    redirect('/login');
   }
+
+  return <Homepage />;
 }
