@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { verifySession } from '@/lib/dal';
 import { getDailyLogData } from '@/lib/data/daily-log';
-import { LogFormClient, LogSkeleton } from '@/components/log';
+import { LogWizard, LogSkeleton } from '@/components/log';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ async function LogDateContent({ dateParam }: { dateParam: string }) {
   const initialData = await getDailyLogData(session.userId, dateParam);
 
   return (
-    <LogFormClient
+    <LogWizard
       logDate={dateParam}
       initialData={initialData}
       redirectTo="/calendar"
@@ -39,8 +39,8 @@ export default async function LogDatePage({ params }: Props) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center p-4">
         <p className="mb-4 text-error">Invalid date format. Use YYYY-MM-DD.</p>
-        <Link href="/calendar" className="text-accent-primary hover:underline">
-          ← Back to Calendar
+        <Link href="/calendar" className="text-primary hover:underline">
+          Back to Calendar
         </Link>
       </div>
     );

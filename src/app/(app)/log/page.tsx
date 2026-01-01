@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { verifySession } from '@/lib/dal';
 import { getDailyLogData } from '@/lib/data/daily-log';
-import { LogFormClient, LogSkeleton } from '@/components/log';
+import { LogWizard, LogSkeleton } from '@/components/log';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ async function LogContent() {
   const initialData = await getDailyLogData(session.userId, logDate);
 
   return (
-    <LogFormClient
+    <LogWizard
       logDate={logDate}
       initialData={initialData}
       redirectTo="/summary"

@@ -1,3 +1,2 @@
-export { CollapsibleSection } from './CollapsibleSection';
-export { LogFormClient } from './LogFormClient';
+export { LogWizard } from './LogWizard';
 export { LogSkeleton } from './LogSkeleton';
