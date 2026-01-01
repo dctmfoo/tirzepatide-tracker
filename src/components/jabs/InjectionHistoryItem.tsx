@@ -1,5 +1,8 @@
 'use client';
 
+import { Syringe, TrendingUp, TrendingDown, MapPin, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
 type InjectionHistoryItemProps = {
   id: string;
   date: Date;
@@ -46,30 +49,52 @@ export function InjectionHistoryItem({
   const isIncrease = isDoseChange && previousDose !== undefined && doseMg > previousDose;
 
   return (
-    <div className="rounded-xl bg-card p-4">
+    <div className="overflow-hidden rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-foreground">{formatDate(date)}</span>
-            {isDoseChange && (
-              <span className="rounded-full bg-accent-secondary/20 px-2 py-0.5 text-xs font-medium text-accent-secondary">
-                {isIncrease ? '⬆️ Dose Up' : '⬇️ Dose Down'}
-              </span>
-            )}
+        <div className="flex gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500/15">
+            <Syringe className="h-5 w-5 text-violet-500" />
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {formatSite(site)} · Week {weekNumber}
-          </p>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold text-foreground">{formatDate(date)}</span>
+              {isDoseChange && (
+                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                  isIncrease
+                    ? 'bg-success/15 text-success'
+                    : 'bg-warning/15 text-warning'
+                }`}>
+                  {isIncrease ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
+                  {isIncrease ? 'Dose Up' : 'Dose Down'}
+                </span>
+              )}
+            </div>
+            <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                {formatSite(site)}
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                Week {weekNumber}
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-bold text-foreground">{doseMg}mg</span>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold tabular-nums text-foreground">{doseMg}mg</span>
           {onEdit && (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => onEdit(id)}
-              className="rounded-lg px-3 py-1 text-sm text-primary hover:bg-primary/10"
             >
               Edit
-            </button>
+            </Button>
           )}
         </div>
       </div>
