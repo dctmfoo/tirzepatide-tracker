@@ -340,12 +340,10 @@ describe('GET /api/stats/results', () => {
   it('respects period=all (no date filter)', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
 
-    const firstEntry = { recordedAt: new Date('2024-01-01') };
-    mockOrderBy.mockResolvedValue([]);
-    mockFindFirst.mockImplementation((table: string) => {
-      if (table === 'weightEntries') return Promise.resolve(firstEntry);
-      return Promise.resolve(null);
-    });
+    // When period=all, start date comes from the first weight entry in results
+    const firstEntry = { recordedAt: new Date('2024-01-01'), weightKg: '90.00' };
+    mockOrderBy.mockResolvedValue([firstEntry]);
+    mockFindFirst.mockResolvedValue(null);
 
     const request = new NextRequest('http://localhost:3000/api/stats/results?period=all');
     const response = await GET(request);

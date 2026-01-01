@@ -210,18 +210,22 @@ export const sideEffectsRelations = relations(sideEffects, ({ one }) => ({
 // ACTIVITY LOGS
 // ============================================================================
 
-export const activityLogs = pgTable('activity_logs', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  dailyLogId: uuid('daily_log_id')
-    .references(() => dailyLogs.id, { onDelete: 'cascade' })
-    .notNull()
-    .unique(),
-  workoutType: varchar('workout_type', { length: 50 }), // Strength training, Cardio, Walking, Rest day, Other
-  durationMinutes: integer('duration_minutes'),
-  steps: integer('steps'),
-  notes: text('notes'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const activityLogs = pgTable(
+  'activity_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    dailyLogId: uuid('daily_log_id')
+      .references(() => dailyLogs.id, { onDelete: 'cascade' })
+      .notNull()
+      .unique(),
+    workoutType: varchar('workout_type', { length: 50 }), // Strength training, Cardio, Walking, Rest day, Other
+    durationMinutes: integer('duration_minutes'),
+    steps: integer('steps'),
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [index('activity_logs_daily_log_id_idx').on(table.dailyLogId)]
+);
 
 export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
   dailyLog: one(dailyLogs, {
@@ -234,18 +238,22 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
 // MENTAL LOGS
 // ============================================================================
 
-export const mentalLogs = pgTable('mental_logs', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  dailyLogId: uuid('daily_log_id')
-    .references(() => dailyLogs.id, { onDelete: 'cascade' })
-    .notNull()
-    .unique(),
-  motivationLevel: varchar('motivation_level', { length: 20 }), // Low, Medium, High
-  cravingsLevel: varchar('cravings_level', { length: 20 }), // None, Low, Medium, High, Intense
-  moodLevel: varchar('mood_level', { length: 20 }), // Poor, Fair, Good, Great, Excellent
-  notes: text('notes'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const mentalLogs = pgTable(
+  'mental_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    dailyLogId: uuid('daily_log_id')
+      .references(() => dailyLogs.id, { onDelete: 'cascade' })
+      .notNull()
+      .unique(),
+    motivationLevel: varchar('motivation_level', { length: 20 }), // Low, Medium, High
+    cravingsLevel: varchar('cravings_level', { length: 20 }), // None, Low, Medium, High, Intense
+    moodLevel: varchar('mood_level', { length: 20 }), // Poor, Fair, Good, Great, Excellent
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [index('mental_logs_daily_log_id_idx').on(table.dailyLogId)]
+);
 
 export const mentalLogsRelations = relations(mentalLogs, ({ one }) => ({
   dailyLog: one(dailyLogs, {
@@ -258,19 +266,23 @@ export const mentalLogsRelations = relations(mentalLogs, ({ one }) => ({
 // DIET LOGS
 // ============================================================================
 
-export const dietLogs = pgTable('diet_logs', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  dailyLogId: uuid('daily_log_id')
-    .references(() => dailyLogs.id, { onDelete: 'cascade' })
-    .notNull()
-    .unique(),
-  hungerLevel: varchar('hunger_level', { length: 20 }), // None, Low, Moderate, High, Intense
-  mealsCount: integer('meals_count'),
-  proteinGrams: integer('protein_grams'),
-  waterLiters: decimal('water_liters', { precision: 3, scale: 2 }),
-  notes: text('notes'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const dietLogs = pgTable(
+  'diet_logs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    dailyLogId: uuid('daily_log_id')
+      .references(() => dailyLogs.id, { onDelete: 'cascade' })
+      .notNull()
+      .unique(),
+    hungerLevel: varchar('hunger_level', { length: 20 }), // None, Low, Moderate, High, Intense
+    mealsCount: integer('meals_count'),
+    proteinGrams: integer('protein_grams'),
+    waterLiters: decimal('water_liters', { precision: 3, scale: 2 }),
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [index('diet_logs_daily_log_id_idx').on(table.dailyLogId)]
+);
 
 export const dietLogsRelations = relations(dietLogs, ({ one }) => ({
   dailyLog: one(dailyLogs, {

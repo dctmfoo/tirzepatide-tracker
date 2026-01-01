@@ -79,12 +79,6 @@ export async function GET(request: NextRequest) {
       where: eq(schema.profiles.userId, session.user.id),
     });
 
-    // Get first and latest weights for stats
-    const firstWeight = await db.query.weightEntries.findFirst({
-      where: eq(schema.weightEntries.userId, session.user.id),
-      orderBy: [asc(schema.weightEntries.recordedAt)],
-    });
-
     // Format weight data for charts
     const weightData = weightEntries.map((w) => ({
       date: w.recordedAt,
@@ -148,7 +142,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       period: {
-        start: dateStart?.toISOString() || (firstWeight?.recordedAt?.toISOString() ?? null),
+        start: dateStart?.toISOString() || (weightEntries[0]?.recordedAt?.toISOString() ?? null),
         end: dateEnd.toISOString(),
       },
       weight: {
@@ -167,6 +161,7 @@ export async function GET(request: NextRequest) {
         },
         goal: profile ? Number(profile.goalWeightKg) : null,
         starting: profile ? Number(profile.startingWeightKg) : null,
+        heightCm: profile ? Number(profile.heightCm) : null,
       },
       injections: {
         data: injectionData,
