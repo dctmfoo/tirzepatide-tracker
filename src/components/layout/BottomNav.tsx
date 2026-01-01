@@ -114,8 +114,8 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background">
-      <div className="mx-auto flex max-w-lg items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background pb-safe">
+      <div className="mx-auto flex max-w-lg items-center justify-around py-3">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const IconComponent = iconComponents[item.icon as keyof typeof iconComponents];
@@ -125,17 +125,15 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               prefetch={true}
-              className="flex flex-col items-center gap-1 px-3 py-1"
+              className="flex min-h-[48px] min-w-[48px] flex-col items-center justify-center gap-1 px-4 py-2"
             >
-              {isActive ? (
-                <span className="rounded-full bg-primary/20 px-4 py-2">
-                  <IconComponent active={isActive} />
-                </span>
-              ) : (
-                <IconComponent active={isActive} />
-              )}
               <span
-                className={`text-xs ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`rounded-full px-4 py-2 ${isActive ? 'bg-primary/20' : 'bg-transparent'}`}
+              >
+                <IconComponent active={isActive} />
+              </span>
+              <span
+                className={`text-xs font-medium ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
               >
                 {item.label}
               </span>

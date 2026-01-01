@@ -110,7 +110,8 @@ export async function GET() {
     }
 
     // Get today's log summary
-    const today = new Date().toISOString().split('T')[0];
+    const todayDate = new Date();
+    const today = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
     const todayLog = await db.query.dailyLogs.findFirst({
       where: and(
         eq(schema.dailyLogs.userId, session.user.id),

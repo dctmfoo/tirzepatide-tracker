@@ -13,8 +13,13 @@ import {
 } from '@/components/summary';
 import { getSuggestedSite } from '@/lib/utils/injection-logic';
 
+function getTodayString(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+}
+
 async function getSummaryData(userId: string) {
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayString();
 
   // Fetch all independent data in parallel for better performance
   const [

@@ -22,7 +22,7 @@ const features = [
 export function Homepage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto px-4">
+      <div className="max-w-lg mx-auto px-4 px-safe pt-safe pb-safe">
         {/* Header */}
         <header className="pt-8 pb-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
