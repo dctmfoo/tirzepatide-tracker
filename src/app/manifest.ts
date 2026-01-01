@@ -33,5 +33,28 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
     ],
+    screenshots: [
+      {
+        src: '/screenshots/mobile-summary.png',
+        sizes: '390x844',
+        type: 'image/png',
+        form_factor: 'narrow',
+        label: 'Summary dashboard showing weight progress and next injection',
+      },
+      {
+        src: '/screenshots/mobile-results.png',
+        sizes: '390x844',
+        type: 'image/png',
+        form_factor: 'narrow',
+        label: 'Results chart showing weight trend over time',
+      },
+      {
+        src: '/screenshots/desktop-summary.png',
+        sizes: '1280x800',
+        type: 'image/png',
+        form_factor: 'wide',
+        label: 'Desktop view of summary dashboard',
+      },
+    ],
   };
 }
