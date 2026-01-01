@@ -35,6 +35,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   themeColor: '#0a0a0a',
   viewportFit: 'cover',
+  // Make viewport resize when keyboard appears (Chrome 108+, Firefox 132+)
+  interactiveWidget: 'resizes-content',
 };
 
 export default function RootLayout({

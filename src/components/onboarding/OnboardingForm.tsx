@@ -6,6 +6,8 @@ import { CollapsibleSection } from './CollapsibleSection';
 import { WeightInput } from './WeightInput';
 import { HeightInput } from './HeightInput';
 import { PushNotificationPrompt } from './PushNotificationPrompt';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   onboardingSchema,
   type OnboardingFormData,
@@ -162,9 +164,9 @@ export function OnboardingForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {submitError && (
-        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg text-sm">
-          {submitError}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
       )}
 
       {/* Section 1: About You */}
@@ -374,13 +376,14 @@ export function OnboardingForm() {
 
       {/* Submit Button */}
       <div className="pt-4">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-4 px-6 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg"
+          size="lg"
+          className="w-full rounded-xl py-4 text-lg"
         >
           {isSubmitting ? 'Setting up...' : 'Start My Journey'}
-        </button>
+        </Button>
       </div>
     </form>
   );

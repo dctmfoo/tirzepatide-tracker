@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CalendarGrid } from './CalendarGrid';
 import { DayDetail } from './DayDetail';
 import { LogWeightModal } from './LogWeightModal';
-import { CalendarLogInjectionModal } from './CalendarLogInjectionModal';
+import { LogInjectionModal } from '@/components/jabs/LogInjectionModal';
 import type { CalendarData, CalendarDay } from '@/lib/data/calendar';
 
 type DayEntry = {
@@ -144,11 +144,6 @@ export function CalendarClient({ initialData }: Props) {
     }
   };
 
-  const handleModalClose = () => {
-    setShowWeightModal(false);
-    setShowInjectionModal(false);
-  };
-
   return (
     <div className="pb-24">
       {/* Page Header */}
@@ -181,13 +176,17 @@ export function CalendarClient({ initialData }: Props) {
       )}
 
       {/* Modals */}
-      {showWeightModal && (
-        <LogWeightModal date={selectedDate} onClose={handleModalClose} />
-      )}
+      <LogWeightModal
+        open={showWeightModal}
+        onOpenChange={setShowWeightModal}
+        date={selectedDate}
+      />
 
-      {showInjectionModal && (
-        <CalendarLogInjectionModal date={selectedDate} onClose={handleModalClose} />
-      )}
+      <LogInjectionModal
+        open={showInjectionModal}
+        onOpenChange={setShowInjectionModal}
+        fixedDate={selectedDate}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 type WizardFooterProps = {
   onPrev: () => Promise<void>;
@@ -39,32 +40,34 @@ export function WizardFooter({
     <div className="fixed bottom-20 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent px-4 pb-4 pt-6">
       <div className="flex gap-3">
         {!isFirst && (
-          <button
+          <Button
             type="button"
             onClick={handlePrev}
-            className="flex-1 py-4 rounded-xl bg-card border border-border font-medium text-foreground transition-colors hover:bg-accent"
+            variant="outline"
+            className="flex-1 rounded-xl py-4"
           >
             Back
-          </button>
+          </Button>
         )}
 
         {isFirst && (
-          <button
+          <Button
             type="button"
             onClick={handleNext}
-            className="flex-1 py-4 rounded-xl bg-card border border-border text-muted-foreground font-medium transition-colors hover:bg-accent"
+            variant="outline"
+            className="flex-1 rounded-xl py-4 text-muted-foreground"
           >
             Skip
-          </button>
+          </Button>
         )}
 
-        <button
+        <Button
           type="button"
           onClick={isLast ? handleFinish : handleNext}
-          className="flex-1 py-4 rounded-xl bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90"
+          className="flex-1 rounded-xl py-4"
         >
           {isLast ? 'Done' : 'Next'}
-        </button>
+        </Button>
       </div>
     </div>
   );

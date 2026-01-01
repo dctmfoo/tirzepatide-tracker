@@ -4,6 +4,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { signOut } from 'next-auth/react';
 import { SettingsSection, SettingsItem } from '@/components/settings';
 import { usePushNotifications } from '@/lib/push';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type Profile = {
   age: number | null;
@@ -210,64 +220,62 @@ export default function SettingsPage() {
 
       {/* Log Out Button */}
       <div className="px-4 py-4">
-        <button
+        <Button
           onClick={handleLogout}
-          className="w-full rounded-xl bg-card py-3 font-medium text-foreground hover:bg-card/80"
+          variant="secondary"
+          className="w-full rounded-xl py-3"
         >
           Log Out
-        </button>
+        </Button>
         <p className="mt-4 text-center text-xs text-muted-foreground">App Version 1.0.0</p>
       </div>
 
       {/* Modals */}
-      {activeModal === 'personalInfo' && (
-        <PersonalInfoModal
-          profile={profile}
-          onClose={handleModalClose}
-          onSave={handleSave}
-        />
-      )}
+      <PersonalInfoModal
+        profile={profile}
+        open={activeModal === 'personalInfo'}
+        onOpenChange={(open) => !open && handleModalClose()}
+        onSave={handleSave}
+      />
 
-      {activeModal === 'goals' && (
-        <GoalsModal
-          profile={profile}
-          weightUnit={preferences?.weightUnit || 'kg'}
-          onClose={handleModalClose}
-          onSave={handleSave}
-        />
-      )}
+      <GoalsModal
+        profile={profile}
+        weightUnit={preferences?.weightUnit || 'kg'}
+        open={activeModal === 'goals'}
+        onOpenChange={(open) => !open && handleModalClose()}
+        onSave={handleSave}
+      />
 
-      {activeModal === 'injectionSchedule' && (
-        <InjectionScheduleModal
-          preferences={preferences}
-          onClose={handleModalClose}
-          onSave={handleSave}
-        />
-      )}
+      <InjectionScheduleModal
+        preferences={preferences}
+        open={activeModal === 'injectionSchedule'}
+        onOpenChange={(open) => !open && handleModalClose()}
+        onSave={handleSave}
+      />
 
-      {activeModal === 'units' && (
-        <UnitsModal
-          preferences={preferences}
-          onClose={handleModalClose}
-          onSave={handleSave}
-        />
-      )}
+      <UnitsModal
+        preferences={preferences}
+        open={activeModal === 'units'}
+        onOpenChange={(open) => !open && handleModalClose()}
+        onSave={handleSave}
+      />
 
-      {activeModal === 'notifications' && (
-        <NotificationsModal
-          preferences={preferences}
-          onClose={handleModalClose}
-          onSave={handleSave}
-        />
-      )}
+      <NotificationsModal
+        preferences={preferences}
+        open={activeModal === 'notifications'}
+        onOpenChange={(open) => !open && handleModalClose()}
+        onSave={handleSave}
+      />
 
-      {activeModal === 'export' && (
-        <ExportModal onClose={handleModalClose} />
-      )}
+      <ExportModal
+        open={activeModal === 'export'}
+        onOpenChange={(open) => !open && handleModalClose()}
+      />
 
-      {activeModal === 'deleteAccount' && (
-        <DeleteAccountModal onClose={handleModalClose} />
-      )}
+      <DeleteAccountModal
+        open={activeModal === 'deleteAccount'}
+        onOpenChange={(open) => !open && handleModalClose()}
+      />
     </div>
   );
 }
@@ -275,11 +283,13 @@ export default function SettingsPage() {
 // Personal Info Modal
 function PersonalInfoModal({
   profile,
-  onClose,
+  open,
+  onOpenChange,
   onSave,
 }: {
   profile: Profile | null;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
   const [age, setAge] = useState(profile?.age?.toString() || '');
@@ -314,7 +324,7 @@ function PersonalInfoModal({
   };
 
   return (
-    <Modal title="Personal Info" onClose={onClose}>
+    <Modal title="Personal Info" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Age">
           <input
@@ -346,11 +356,15 @@ function PersonalInfoModal({
           />
         </FormField>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <Button type="submit" disabled={saving} className="w-full rounded-xl py-3">
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );
@@ -360,12 +374,14 @@ function PersonalInfoModal({
 function GoalsModal({
   profile,
   weightUnit,
-  onClose,
+  open,
+  onOpenChange,
   onSave,
 }: {
   profile: Profile | null;
   weightUnit: string;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
   const [startingWeight, setStartingWeight] = useState(profile?.startingWeightKg?.toString() || '');
@@ -400,7 +416,7 @@ function GoalsModal({
   };
 
   return (
-    <Modal title="Goals" onClose={onClose}>
+    <Modal title="Goals" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label={`Starting Weight (${weightUnit})`}>
           <input
@@ -433,11 +449,15 @@ function GoalsModal({
           />
         </FormField>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <Button type="submit" disabled={saving} className="w-full rounded-xl py-3">
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );
@@ -446,11 +466,13 @@ function GoalsModal({
 // Injection Schedule Modal
 function InjectionScheduleModal({
   preferences,
-  onClose,
+  open,
+  onOpenChange,
   onSave,
 }: {
   preferences: Preferences | null;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
   const [preferredDay, setPreferredDay] = useState<string>(
@@ -496,7 +518,7 @@ function InjectionScheduleModal({
   ];
 
   return (
-    <Modal title="Injection Schedule" onClose={onClose}>
+    <Modal title="Injection Schedule" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Preferred Injection Day">
           <select value={preferredDay} onChange={(e) => setPreferredDay(e.target.value)} className="input">
@@ -515,11 +537,15 @@ function InjectionScheduleModal({
           </select>
         </FormField>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <Button type="submit" disabled={saving} className="w-full rounded-xl py-3">
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );
@@ -528,11 +554,13 @@ function InjectionScheduleModal({
 // Units Modal
 function UnitsModal({
   preferences,
-  onClose,
+  open,
+  onOpenChange,
   onSave,
 }: {
   preferences: Preferences | null;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
   const [weightUnit, setWeightUnit] = useState(preferences?.weightUnit || 'kg');
@@ -563,7 +591,7 @@ function UnitsModal({
   };
 
   return (
-    <Modal title="Units" onClose={onClose}>
+    <Modal title="Units" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Weight">
           <select value={weightUnit} onChange={(e) => setWeightUnit(e.target.value)} className="input">
@@ -587,11 +615,15 @@ function UnitsModal({
           </select>
         </FormField>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <Button type="submit" disabled={saving} className="w-full rounded-xl py-3">
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );
@@ -600,11 +632,13 @@ function UnitsModal({
 // Notifications Modal
 function NotificationsModal({
   preferences,
-  onClose,
+  open,
+  onOpenChange,
   onSave,
 }: {
   preferences: Preferences | null;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
   const [emailNotifications, setEmailNotifications] = useState(preferences?.emailNotifications ?? true);
@@ -652,7 +686,7 @@ function NotificationsModal({
   };
 
   return (
-    <Modal title="Notifications" onClose={onClose}>
+    <Modal title="Notifications" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Push Notifications Section */}
         <div className="rounded-lg bg-card p-4">
@@ -667,65 +701,56 @@ function NotificationsModal({
                     : 'Get injection reminders on this device'}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={handlePushToggle}
+            <Switch
+              checked={isPushSubscribed}
+              onCheckedChange={handlePushToggle}
               disabled={!isPushSupported || isPushLoading || pushPermission === 'denied'}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                isPushSubscribed ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  isPushSubscribed ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            />
           </div>
           {pushError && <p className="mt-2 text-sm text-destructive">{pushError}</p>}
         </div>
 
         {/* Email Notifications */}
-        <label className="flex items-center justify-between rounded-lg bg-card p-4">
+        <label className="flex cursor-pointer items-center justify-between rounded-lg bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Email Reminders</p>
             <p className="text-sm text-muted-foreground">Get injection reminders via email</p>
           </div>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={emailNotifications}
-            onChange={(e) => setEmailNotifications(e.target.checked)}
-            className="h-5 w-5 accent-primary"
+            onCheckedChange={(checked) => setEmailNotifications(checked === true)}
           />
         </label>
 
-        <label className="flex items-center justify-between rounded-lg bg-card p-4">
+        <label className="flex cursor-pointer items-center justify-between rounded-lg bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Weekly Report</p>
             <p className="text-sm text-muted-foreground">Receive weekly progress summary</p>
           </div>
-          <input
-            type="checkbox"
+          <Checkbox
             checked={weeklyReport}
-            onChange={(e) => setWeeklyReport(e.target.checked)}
-            className="h-5 w-5 accent-primary"
+            onCheckedChange={(checked) => setWeeklyReport(checked === true)}
           />
         </label>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-        <button type="submit" disabled={saving} className="w-full rounded-xl bg-primary py-3 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <Button type="submit" disabled={saving} className="w-full rounded-xl py-3">
           {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );
 }
 
 // Export Modal
-function ExportModal({ onClose }: { onClose: () => void }) {
+function ExportModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   return (
-    <Modal title="Export Data" onClose={onClose}>
+    <Modal title="Export Data" open={open} onOpenChange={onOpenChange}>
       <div className="space-y-3">
         <button
           onClick={() => window.open('/api/export/text', '_blank')}
@@ -765,7 +790,7 @@ function ExportModal({ onClose }: { onClose: () => void }) {
 }
 
 // Delete Account Modal
-function DeleteAccountModal({ onClose }: { onClose: () => void }) {
+function DeleteAccountModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [confirmText, setConfirmText] = useState('');
   const [deleting, setDeleting] = useState(false);
 
@@ -775,11 +800,11 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
     // TODO: Implement account deletion API
     alert('Account deletion is not yet implemented');
     setDeleting(false);
-    onClose();
+    onOpenChange(false);
   };
 
   return (
-    <Modal title="Delete Account" onClose={onClose}>
+    <Modal title="Delete Account" open={open} onOpenChange={onOpenChange}>
       <div className="space-y-4">
         <div className="rounded-lg bg-destructive/10 p-4">
           <p className="text-sm text-destructive">
@@ -797,40 +822,40 @@ function DeleteAccountModal({ onClose }: { onClose: () => void }) {
           />
         </FormField>
 
-        <button
+        <Button
           onClick={handleDelete}
           disabled={confirmText !== 'DELETE' || deleting}
-          className="w-full rounded-xl bg-destructive py-3 font-medium text-white hover:bg-destructive/90 disabled:opacity-50"
+          variant="destructive"
+          className="w-full rounded-xl py-3"
         >
           {deleting ? 'Deleting...' : 'Delete My Account'}
-        </button>
+        </Button>
       </div>
     </Modal>
   );
 }
 
-// Reusable Modal Component
+// Reusable Modal Component using shadcn Dialog
 function Modal({
   title,
   children,
-  onClose,
+  open,
+  onOpenChange,
 }: {
   title: string;
   children: React.ReactNode;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
-      <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-background p-6 sm:rounded-2xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">{title}</h2>
-          <button onClick={onClose} className="rounded-lg p-2 text-muted-foreground hover:bg-card">
-            ✕
-          </button>
-        </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
         {children}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

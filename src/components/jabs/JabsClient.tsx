@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { JabsStatCard } from './JabsStatCard';
 import { InjectionHistoryItem } from './InjectionHistoryItem';
 import { LogInjectionModal } from './LogInjectionModal';
+import { Button } from '@/components/ui/button';
 import type { JabsData } from '@/lib/data/jabs';
 
 type Props = {
@@ -23,14 +24,6 @@ function calculateWeekNumber(injectionDate: Date, treatmentStartDate?: Date): nu
 
 export function JabsClient({ data }: Props) {
   const [showModal, setShowModal] = useState(false);
-
-  const handleLogInjection = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
 
   const handleEditInjection = (id: string) => {
     // TODO: Open edit modal with injection data
@@ -104,22 +97,21 @@ export function JabsClient({ data }: Props) {
 
       {/* Log Injection Button */}
       <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 pb-4">
-        <button
-          onClick={handleLogInjection}
-          className="rounded-xl bg-accent-primary px-8 py-3 font-medium text-background shadow-lg hover:bg-accent-primary/90"
+        <Button
+          onClick={() => setShowModal(true)}
+          className="rounded-xl px-8 py-3 shadow-lg"
         >
           + Log Injection
-        </button>
+        </Button>
       </div>
 
       {/* Log Injection Modal */}
-      {showModal && (
-        <LogInjectionModal
-          onClose={handleCloseModal}
-          suggestedSite={data.suggestedSite}
-          lastDose={data.currentDose}
-        />
-      )}
+      <LogInjectionModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        suggestedSite={data.suggestedSite}
+        lastDose={data.currentDose}
+      />
     </div>
   );
 }
