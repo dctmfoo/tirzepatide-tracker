@@ -1839,6 +1839,31 @@ export function ResultsSkeleton() {
 
 ---
 
+## Performance Optimizations
+
+> **Implementation Note (2026-01-01):**
+>
+> **Server Component Conversion:**
+> - Converted Results, Jabs, Calendar, Log pages from Client to Server Components
+> - Added Suspense boundaries with skeleton loading states
+> - Created server-side data fetching in `src/lib/data/` with React `cache()`
+> - Extracted interactive parts to Client Components in `src/components/*/`
+>
+> **Database Indexes Added:**
+> - `activity_logs_daily_log_id_idx`
+> - `mental_logs_daily_log_id_idx`
+> - `diet_logs_daily_log_id_idx`
+>
+> **API Optimizations:**
+> - `/api/stats/results` now includes `heightCm` (removed redundant profile fetch)
+>
+> **Other:**
+> - Loading skeletons for all 5 main routes
+> - Link prefetching in BottomNav
+> - Parallel DB queries in Summary page
+
+---
+
 ## Related Documentation
 
 | Document | Purpose |

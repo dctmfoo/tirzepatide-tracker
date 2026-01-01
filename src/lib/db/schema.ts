@@ -34,6 +34,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   dailyLogs: many(dailyLogs),
   notificationPreferences: many(notificationPreferences),
   emailLogs: many(emailLogs),
+  pushSubscriptions: many(pushSubscriptions),
 }));
 
 // ============================================================================
@@ -343,6 +344,33 @@ export const passwordResetTokensRelations = relations(passwordResetTokens, ({ on
 }));
 
 // ============================================================================
+// PUSH SUBSCRIPTIONS
+// ============================================================================
+
+export const pushSubscriptions = pgTable(
+  'push_subscriptions',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    endpoint: text('endpoint').notNull().unique(),
+    p256dh: text('p256dh').notNull(), // Public key for encryption
+    auth: text('auth').notNull(), // Auth secret
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => [index('push_subscriptions_user_id').on(table.userId)]
+);
+
+export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [pushSubscriptions.userId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================================
 // EMAIL LOGS
 // ============================================================================
 
@@ -411,3 +439,6 @@ export type NewEmailLog = typeof emailLogs.$inferInsert;
 
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type NewPasswordResetToken = typeof passwordResetTokens.$inferInsert;
+
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CollapsibleSection } from './CollapsibleSection';
 import { WeightInput } from './WeightInput';
 import { HeightInput } from './HeightInput';
+import { PushNotificationPrompt } from './PushNotificationPrompt';
 import {
   onboardingSchema,
   type OnboardingFormData,
@@ -27,6 +28,7 @@ export function OnboardingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [showPushPrompt, setShowPushPrompt] = useState(false);
 
   // Form state
   const [age, setAge] = useState<number | undefined>();
@@ -117,9 +119,8 @@ export function OnboardingForm() {
           return;
         }
 
-        // Success - redirect to summary
-        router.push('/summary');
-        router.refresh();
+        // Success - show push notification prompt
+        setShowPushPrompt(true);
       } catch {
         setSubmitError('Failed to save. Please try again.');
       } finally {
@@ -142,11 +143,21 @@ export function OnboardingForm() {
     ]
   );
 
+  const handlePushPromptComplete = useCallback(() => {
+    router.push('/summary');
+    router.refresh();
+  }, [router]);
+
   const inputClasses =
     'w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all';
 
   const selectClasses =
     'w-full px-4 py-3 bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all appearance-none cursor-pointer';
+
+  // Show push notification prompt after successful form submission
+  if (showPushPrompt) {
+    return <PushNotificationPrompt onComplete={handlePushPromptComplete} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

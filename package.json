@@ -34,6 +34,7 @@
     "react-dom": "19.2.3",
     "recharts": "^3.6.0",
     "resend": "^6.6.0",
+    "web-push": "^3.6.7",
     "zod": "^4.2.1"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@types/node": "^20.19.27",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "dotenv": "^17.2.3",

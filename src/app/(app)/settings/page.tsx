@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { signOut } from 'next-auth/react';
 import { SettingsSection, SettingsItem } from '@/components/settings';
+import { usePushNotifications } from '@/lib/push';
 
 type Profile = {
   age: number | null;
@@ -611,6 +612,24 @@ function NotificationsModal({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const {
+    isSupported: isPushSupported,
+    isSubscribed: isPushSubscribed,
+    isLoading: isPushLoading,
+    permission: pushPermission,
+    error: pushError,
+    subscribeToPush,
+    unsubscribeFromPush,
+  } = usePushNotifications();
+
+  const handlePushToggle = async () => {
+    if (isPushSubscribed) {
+      await unsubscribeFromPush();
+    } else {
+      await subscribeToPush();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -635,6 +654,38 @@ function NotificationsModal({
   return (
     <Modal title="Notifications" onClose={onClose}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Push Notifications Section */}
+        <div className="rounded-lg bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-foreground">Push Notifications</p>
+              <p className="text-sm text-muted-foreground">
+                {!isPushSupported
+                  ? 'Not supported in this browser'
+                  : pushPermission === 'denied'
+                    ? 'Blocked - enable in browser settings'
+                    : 'Get injection reminders on this device'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handlePushToggle}
+              disabled={!isPushSupported || isPushLoading || pushPermission === 'denied'}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                isPushSubscribed ? 'bg-primary' : 'bg-muted'
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                  isPushSubscribed ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+          {pushError && <p className="mt-2 text-sm text-destructive">{pushError}</p>}
+        </div>
+
+        {/* Email Notifications */}
         <label className="flex items-center justify-between rounded-lg bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Email Reminders</p>

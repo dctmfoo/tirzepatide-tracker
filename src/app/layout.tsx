@@ -16,6 +16,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Mounjaro Tracker',
   description: 'Track your Mounjaro treatment progress',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Mounjaro Tracker',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
+  icons: {
+    apple: '/icons/icon-192.png',
+  },
 };
 
 export const viewport: Viewport = {

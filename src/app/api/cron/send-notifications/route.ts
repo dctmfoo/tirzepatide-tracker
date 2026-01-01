@@ -9,6 +9,7 @@ import {
   weightReminderTemplate,
   weeklySummaryTemplate,
 } from '@/lib/email';
+import { sendInjectionReminderPush, isPushConfigured } from '@/lib/push/send';
 
 // Verify cron secret to prevent unauthorized access
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -18,6 +19,7 @@ type NotificationResults = {
   injectionOverdue: number;
   weightReminders: number;
   weeklySummaries: number;
+  pushNotifications: number;
   errors: string[];
 };
 
@@ -35,6 +37,7 @@ export async function POST(request: NextRequest) {
       injectionOverdue: 0,
       weightReminders: 0,
       weeklySummaries: 0,
+      pushNotifications: 0,
       errors: [],
     };
 
@@ -91,6 +94,7 @@ export async function POST(request: NextRequest) {
       success: true,
       timestamp: now.toISOString(),
       emailConfigured: isEmailConfigured(),
+      pushConfigured: isPushConfigured(),
       results,
     });
   } catch (error) {
@@ -125,17 +129,31 @@ async function checkInjectionNotifications(
   const msUntilDue = nextDue.getTime() - now.getTime();
   const daysUntilDue = Math.ceil(msUntilDue / (1000 * 60 * 60 * 24));
   const reminderDays = user.profile?.reminderDaysBefore ?? 1;
+  const currentDose = `${Number(lastInjection.doseMg)}mg`;
+  const dueDateFormatted = nextDue.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   // Check if reminder should be sent
   if (daysUntilDue === reminderDays && daysUntilDue > 0) {
     const template = injectionReminderTemplate({
       daysUntilDue,
-      dueDate: nextDue.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
-      currentDose: `${Number(lastInjection.doseMg)}mg`,
+      dueDate: dueDateFormatted,
+      currentDose,
     });
 
+    // Send email notification
     await sendAndLogEmail(user.id, user.email, 'injection_reminder', template);
     results.injectionReminders++;
+
+    // Send push notification
+    const pushResult = await sendInjectionReminderPush(
+      user.id,
+      daysUntilDue,
+      dueDateFormatted,
+      currentDose
+    );
+    if (pushResult.sent > 0) {
+      results.pushNotifications += pushResult.sent;
+    }
   }
 
   // Check if overdue notification should be sent (1-3 days overdue)
@@ -146,8 +164,20 @@ async function checkInjectionNotifications(
       lastInjectionDate: lastDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
     });
 
+    // Send email notification
     await sendAndLogEmail(user.id, user.email, 'injection_overdue', template);
     results.injectionOverdue++;
+
+    // Send push notification for overdue
+    const pushResult = await sendInjectionReminderPush(
+      user.id,
+      daysUntilDue,
+      dueDateFormatted,
+      currentDose
+    );
+    if (pushResult.sent > 0) {
+      results.pushNotifications += pushResult.sent;
+    }
   }
 }
 
