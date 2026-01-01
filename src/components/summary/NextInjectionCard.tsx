@@ -78,12 +78,14 @@ export function NextInjectionCard({
           </>
         )}
 
-        <Link
-          href="/jabs/new"
-          className="mt-2 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          Log Injection
-        </Link>
+        {(status === 'not_started' || status === 'due_today' || status === 'overdue') && (
+          <Link
+            href="/jabs/new"
+            className="mt-2 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Log Injection
+          </Link>
+        )}
       </div>
     </div>
   );
