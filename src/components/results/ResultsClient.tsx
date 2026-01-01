@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { Scale, User, BarChart3, Target } from 'lucide-react';
 import { PeriodTabs } from './PeriodTabs';
+import { HeroStat } from './HeroStat';
 import { ResultsStatCard } from './ResultsStatCard';
+import { Insights } from './Insights';
 import { WeightChart } from '@/components/charts';
 import type { ResultsData } from '@/lib/data/results';
 
@@ -12,18 +15,19 @@ type Props = {
   data: ResultsData;
 };
 
-function formatDateRange(start: Date | null, end: Date): string {
-  if (!start) return '';
-  const formatOptions: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
-  const startStr = start.toLocaleDateString('en-US', formatOptions);
-  const endStr = end.toLocaleDateString('en-US', { ...formatOptions, year: 'numeric' });
-  return `${startStr} – ${endStr}`;
-}
-
 function calculateBMI(weightKg: number | null, heightCm: number | null): number | null {
   if (!weightKg || !heightCm) return null;
   const heightM = heightCm / 100;
   return Number((weightKg / (heightM * heightM)).toFixed(1));
+}
+
+function getBMICategory(bmi: number): { text: string; variant: 'success' | 'warning' | 'destructive' | 'default' } {
+  if (bmi < 18.5) return { text: 'Underweight', variant: 'warning' };
+  if (bmi < 25) return { text: 'Normal', variant: 'success' };
+  if (bmi < 30) return { text: 'Overweight', variant: 'warning' };
+  if (bmi < 35) return { text: 'Obese I', variant: 'destructive' };
+  if (bmi < 40) return { text: 'Obese II', variant: 'destructive' };
+  return { text: 'Obese III', variant: 'destructive' };
 }
 
 export function ResultsClient({ data }: Props) {
@@ -55,20 +59,18 @@ export function ResultsClient({ data }: Props) {
 
     const current = weights[weights.length - 1];
     const start = weights[0];
-    const min = Math.min(...weights);
-    const max = Math.max(...weights);
-    const avg = weights.reduce((a, b) => a + b, 0) / weights.length;
     const change = current - start;
     const percentChange = ((current - start) / start) * 100;
 
-    return { current, start, min, max, avg, change, percentChange };
+    return { current, start, change, percentChange };
   }, [filteredData]);
 
-  // Calculate BMI - let React Compiler handle memoization
-  const bmi =
-    stats?.current && data.profile?.heightCm
-      ? calculateBMI(stats.current, data.profile.heightCm)
-      : null;
+  // Calculate BMI
+  const bmi = stats?.current && data.profile?.heightCm
+    ? calculateBMI(stats.current, data.profile.heightCm)
+    : null;
+
+  const bmiCategory = bmi ? getBMICategory(bmi) : null;
 
   // Calculate weekly averages
   const weeklyAverages = useMemo(() => {
@@ -121,6 +123,28 @@ export function ResultsClient({ data }: Props) {
     return history;
   }, [filteredData]);
 
+  // Get current and previous dose for insights
+  const { currentDose, previousDose, doseChangeWeeks } = useMemo(() => {
+    if (doseHistory.length === 0) {
+      return { currentDose: null, previousDose: null, doseChangeWeeks: null };
+    }
+    const current = doseHistory[doseHistory.length - 1];
+    const previous = doseHistory.length > 1 ? doseHistory[doseHistory.length - 2] : null;
+
+    let weeks = null;
+    if (current) {
+      const changeDate = new Date(current.date);
+      const now = new Date();
+      weeks = Math.floor((now.getTime() - changeDate.getTime()) / (7 * 24 * 60 * 60 * 1000));
+    }
+
+    return {
+      currentDose: current?.dose ?? null,
+      previousDose: previous?.dose ?? null,
+      doseChangeWeeks: weeks,
+    };
+  }, [doseHistory]);
+
   // Format weight data for chart
   const chartData = useMemo(() => {
     return filteredData.weightEntries.map((w) => ({
@@ -129,28 +153,34 @@ export function ResultsClient({ data }: Props) {
     }));
   }, [filteredData]);
 
-  // Calculate period date range
-  const periodRange = useMemo(() => {
-    if (filteredData.weightEntries.length === 0) {
-      return { start: null, end: new Date() };
-    }
-    return {
-      start: new Date(filteredData.weightEntries[0].recordedAt),
-      end: new Date(),
-    };
+  // Calculate period start date
+  const periodStartDate = useMemo(() => {
+    if (filteredData.weightEntries.length === 0) return null;
+    return new Date(filteredData.weightEntries[0].recordedAt);
   }, [filteredData]);
 
-  // To goal calculation - let React Compiler handle memoization
-  const toGoal =
-    stats?.current && data.profile?.goalWeightKg
-      ? stats.current - data.profile.goalWeightKg
-      : null;
+  // To goal calculation
+  const toGoal = stats?.current && data.profile?.goalWeightKg
+    ? stats.current - data.profile.goalWeightKg
+    : null;
+
+  // Goal progress percentage (0-100)
+  const goalProgress = useMemo(() => {
+    if (!data.profile?.goalWeightKg || !data.profile?.startingWeightKg || !stats?.current) {
+      return null;
+    }
+    const totalToLose = data.profile.startingWeightKg - data.profile.goalWeightKg;
+    if (totalToLose <= 0) return null;
+    const lost = data.profile.startingWeightKg - stats.current;
+    const progress = (lost / totalToLose) * 100;
+    return Math.min(100, Math.max(0, progress));
+  }, [data.profile, stats]);
 
   if (!stats) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center p-4 text-center">
         <p className="text-lg text-foreground">No data for this period</p>
-        <p className="mt-2 text-foreground-muted">
+        <p className="mt-2 text-muted-foreground">
           Try selecting a different time range
         </p>
       </div>
@@ -158,65 +188,73 @@ export function ResultsClient({ data }: Props) {
   }
 
   return (
-    <div className="pb-4">
-      {/* Period Tabs */}
-      <PeriodTabs selected={period} onChange={setPeriod} />
-
-      {/* Weight Change Header */}
-      <div className="flex items-center justify-between px-4 py-4">
-        <h2 className="text-xl font-bold text-foreground">Weight Change</h2>
-        <span className="text-sm text-foreground-muted">
-          {formatDateRange(periodRange.start, periodRange.end)}
-        </span>
+    <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
+      {/* Header + Period Tabs */}
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-xl font-bold text-foreground">Results</h1>
+        <PeriodTabs selected={period} onChange={setPeriod} />
       </div>
 
-      {/* Stat Cards Grid */}
-      <div className="grid grid-cols-3 gap-3 px-4">
+      {/* Hero Stat Section */}
+      <HeroStat
+        totalChange={stats.change}
+        percentChange={stats.percentChange}
+        startDate={periodStartDate}
+        goalProgress={goalProgress}
+      />
+
+      {/* Secondary Stats Grid - 2x2 */}
+      <div className="grid grid-cols-2 gap-3">
         <ResultsStatCard
-          icon="📦"
-          label="Total change"
-          value={stats.change.toFixed(2)}
+          icon={Scale}
+          iconColor="primary"
+          label="Current"
+          value={stats.current.toFixed(1)}
           unit="kg"
         />
         <ResultsStatCard
-          icon="🧍"
-          label="Current BMI"
+          icon={User}
+          iconColor="amber"
+          label="BMI"
           value={bmi}
+          badge={bmiCategory ? { text: bmiCategory.text, variant: bmiCategory.variant } : undefined}
         />
         <ResultsStatCard
-          icon="📋"
-          label="Weight"
-          value={stats.current.toFixed(2)}
-          unit="kg"
-        />
-        <ResultsStatCard
-          icon="%"
-          label="Percent"
-          value={stats.percentChange.toFixed(1)}
-          unit="%"
-        />
-        <ResultsStatCard
-          icon="📊"
-          label="Weekly avg"
+          icon={BarChart3}
+          iconColor="emerald"
+          label="Weekly Avg"
           value={weeklyAvgLoss !== null ? weeklyAvgLoss.toFixed(2) : null}
           unit="kg/wk"
         />
         <ResultsStatCard
-          icon="🚩"
-          label="To goal"
-          value={toGoal !== null ? toGoal.toFixed(2) : null}
+          icon={Target}
+          iconColor="violet"
+          label="To Goal"
+          value={toGoal !== null ? toGoal.toFixed(1) : null}
           unit="kg"
+          subtext={data.profile?.goalWeightKg ? `Target: ${data.profile.goalWeightKg}kg` : undefined}
         />
       </div>
 
-      {/* Weight Chart */}
-      <div className="mt-6 px-4">
+      {/* Weight Chart - flex-1 to fill remaining space */}
+      <div className="min-h-0 flex-1">
         <WeightChart
           data={chartData}
           doseHistory={doseHistory}
           goalWeight={data.profile?.goalWeightKg ?? null}
         />
       </div>
+
+      {/* Insights Section */}
+      <Insights
+        weeklyAvgLoss={weeklyAvgLoss}
+        totalWeeks={weeklyAverages.length}
+        currentDose={currentDose}
+        previousDose={previousDose}
+        doseChangeWeeks={doseChangeWeeks}
+        toGoal={toGoal}
+        percentChange={stats.percentChange}
+      />
     </div>
   );
 }
