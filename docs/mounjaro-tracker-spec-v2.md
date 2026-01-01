@@ -346,13 +346,15 @@ Show custom install banner after:
 
 > **Implementation Note (2025-12-31) - Results Page [x]:**
 > - Files:
->   - `src/app/(app)/results/page.tsx` - Main Results page (client component for period switching)
->   - `src/components/results/PeriodTabs.tsx` - Period selector (1m, 3m, 6m, All Time) with cyan underline
->   - `src/components/results/ResultsStatCard.tsx` - Stat card with cyan icon
->   - `src/components/charts/WeightChart.tsx` - Recharts line chart with dose-colored segments
+>   - `src/app/(app)/results/page.tsx` - Server Component with Suspense
+>   - `src/lib/data/results.ts` - Server-side data fetching with React cache()
+>   - `src/components/results/ResultsClient.tsx` - Client component for interactivity
+>   - `src/components/results/ResultsSkeleton.tsx` - Loading skeleton
+>   - `src/components/results/PeriodTabs.tsx` - Period selector (1m, 3m, 6m, All Time)
+>   - `src/components/charts/WeightChart.tsx` - Recharts line chart with dose segments
 > - 6 stat cards: Total change, Current BMI, Weight, Percent, Weekly avg, To goal
-> - Chart features: dose-colored line segments (gray 2.5mg, purple 5.0mg, etc.), dose badges, Y-axis on right side
-> - Uses `/api/stats/results` for data with period filtering
+> - Chart features: dose-colored line segments, dose badges, Y-axis on right side
+> - **Performance (2026-01-01):** Converted to Server Component for faster initial load
 
 ---
 
@@ -587,10 +589,15 @@ function getSuggestedSite(lastSite: string): string {
 ```
 
 > **Implementation Note (2025-12-31) - Jabs Page [x]:**
-> Implemented in `src/app/(app)/jabs/page.tsx`. Client component with parallel API fetching.
-> Components: `JabsStatCard`, `InjectionHistoryItem` in `src/components/jabs/`.
-> Features: 4 stat cards, injection history with dose change badges, Log Injection modal, site rotation.
-> Uses `Promise.all()` for parallel fetching of injections and next-due data.
+> - Files:
+>   - `src/app/(app)/jabs/page.tsx` - Server Component with Suspense
+>   - `src/lib/data/jabs.ts` - Server-side data fetching with React cache()
+>   - `src/lib/actions/injections.ts` - Server action for creating injections
+>   - `src/components/jabs/JabsClient.tsx` - Client component for interactivity
+>   - `src/components/jabs/JabsSkeleton.tsx` - Loading skeleton
+>   - `src/components/jabs/LogInjectionModal.tsx` - Modal using useTransition
+> - Features: 4 stat cards, injection history with dose change badges, site rotation
+> - **Performance (2026-01-01):** Converted to Server Component for faster initial load
 
 ---
 
@@ -660,10 +667,14 @@ function getSuggestedSite(lastSite: string): string {
 | [18] | Today (highlighted) |
 
 > **Implementation Note (2025-12-31) - Calendar Page [x]:**
-> Implemented in `src/app/(app)/calendar/page.tsx`. Client component with month navigation.
-> Components: `CalendarGrid`, `DayDetail` in `src/components/calendar/`.
-> Features: Month navigation, day indicators (weight/injection/log), day detail panel, 3 quick-action modals.
-> Fetches from `/api/calendar/[year]/[month]` endpoint. Day details fetched on selection.
+> - Files:
+>   - `src/app/(app)/calendar/page.tsx` - Server Component with Suspense
+>   - `src/lib/data/calendar.ts` - Server-side data fetching with React cache()
+>   - `src/components/calendar/CalendarClient.tsx` - Client component for interactivity
+>   - `src/components/calendar/CalendarSkeleton.tsx` - Loading skeleton
+>   - `src/components/calendar/LogWeightModal.tsx`, `CalendarLogInjectionModal.tsx` - Modals
+> - Features: Month navigation, day indicators, day detail panel, 3 quick-action modals
+> - **Performance (2026-01-01):** Converted to Server Component for faster initial load
 
 ---
 
@@ -819,11 +830,15 @@ function getSuggestedSite(lastSite: string): string {
 ## Daily Log Page
 
 > **Implementation Note (2025-12-31) - Daily Log Page [x]:**
-> Implemented in `src/app/(app)/log/page.tsx`. Client component with collapsible sections.
-> Sections: Diet (hunger, meals, protein, water), Activity (workout, duration, steps),
-> Mental (motivation, cravings, mood), Side Effects (dynamic list with type/severity).
-> Pre-populates from existing log for today. Saves to `/api/daily-logs` endpoint.
-> Accessible from "Log Now" button on Summary page's TodaysLogCard.
+> - Files:
+>   - `src/app/(app)/log/page.tsx`, `src/app/(app)/log/[date]/page.tsx` - Server Components with Suspense
+>   - `src/lib/data/daily-log.ts` - Server-side data fetching with React cache()
+>   - `src/components/log/LogFormClient.tsx` - Shared client form component
+>   - `src/components/log/LogSkeleton.tsx` - Loading skeleton
+>   - `src/components/log/CollapsibleSection.tsx` - Reusable section component
+> - Sections: Diet, Activity, Mental, Side Effects (collapsible)
+> - Pre-populates from existing log. Saves to `/api/daily-logs` endpoint.
+> - **Performance (2026-01-01):** Converted to Server Component, deduplicated ~1400 lines of code
 
 ---
 

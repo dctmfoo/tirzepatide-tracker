@@ -402,55 +402,36 @@ Dashboard with 4 sections per wireframe (spec lines 337-469):
 
 Chart-focused analytics page matching reference design:
 - **Files:**
-  - `src/app/(app)/results/page.tsx` - Main Results page (client component)
-  - `src/components/results/PeriodTabs.tsx` - Period selector (1m, 3m, 6m, All Time)
-  - `src/components/results/ResultsStatCard.tsx` - Stat card component
-  - `src/components/charts/WeightChart.tsx` - Recharts line chart with dose segments
+  - `src/app/(app)/results/page.tsx` - Server Component with Suspense
+  - `src/lib/data/results.ts` - Server-side data fetching
+  - `src/components/results/ResultsClient.tsx` - Client component for interactivity
+  - `src/components/results/ResultsSkeleton.tsx` - Loading skeleton
 - **Features:**
-  - Period filtering with underline indicator
-  - 6 stat cards: Total change, Current BMI, Weight, Percent, Weekly avg, To goal
-  - Line chart with dose-colored segments (gray 2.5mg, purple 5.0mg, etc.)
-  - Dose badges showing dose transition points
+  - Period filtering, 6 stat cards, dose-colored chart segments
   - Y-axis on right side, responsive layout
-  - Updated BottomNav with pill-style active indicator
 
 ### Jabs Page Implementation (2025-12-31)
 
-Injection management page matching spec wireframe (lines 493-576):
+Injection management page:
 - **Files:**
-  - `src/app/(app)/jabs/page.tsx` - Main Jabs page (client component)
-  - `src/components/jabs/JabsStatCard.tsx` - Stat card component
-  - `src/components/jabs/InjectionHistoryItem.tsx` - History list item
-  - `src/components/jabs/index.ts` - Barrel exports
+  - `src/app/(app)/jabs/page.tsx` - Server Component with Suspense
+  - `src/lib/data/jabs.ts` - Server-side data fetching
+  - `src/lib/actions/injections.ts` - Server action for creating injections
+  - `src/components/jabs/JabsClient.tsx` - Client component for interactivity
+  - `src/components/jabs/JabsSkeleton.tsx` - Loading skeleton
 - **Features:**
-  - 4 stat cards: Total Injections, Current Dose, Weeks on Current Dose, Next Due
-  - Scrollable injection history with dose change indicators (⬆️ Dose Up)
-  - Edit buttons on each history entry
-  - Log Injection modal with dose grid, site dropdown, date picker, notes
-  - Site rotation suggestion based on last injection
-  - Empty state for new users
-  - Skeleton loading state
+  - 4 stat cards, injection history with dose badges, site rotation, Log Injection modal
 
 ### Calendar Page Implementation (2025-12-31)
 
-Calendar view with month navigation and day details (spec lines 579-643):
+Calendar view with month navigation and day details:
 - **Files:**
-  - `src/app/(app)/calendar/page.tsx` - Main Calendar page (client component)
-  - `src/components/calendar/CalendarGrid.tsx` - Month grid with navigation
-  - `src/components/calendar/DayDetail.tsx` - Selected day panel with entries
-  - `src/components/calendar/index.ts` - Barrel exports
+  - `src/app/(app)/calendar/page.tsx` - Server Component with Suspense
+  - `src/lib/data/calendar.ts` - Server-side data fetching
+  - `src/components/calendar/CalendarClient.tsx` - Client component for interactivity
+  - `src/components/calendar/CalendarSkeleton.tsx` - Loading skeleton
 - **Features:**
-  - Month navigation (← / →) with year rollover
-  - 7-column calendar grid with weekday headers
-  - Day indicators: 💉 (injection), ● (weight), · (daily log)
-  - Today highlighting with ring, selected day with accent background
-  - Legend showing indicator meanings
-  - Day detail panel showing entries for selected date
-  - Quick action buttons: Log Weight, Log Injection, Daily Log
-  - Three modals for logging entries with form validation
-  - Skeleton loading state
-  - Fetches calendar data from `/api/calendar/[year]/[month]`
-  - Fetches daily log details when day selected
+  - Month navigation, day indicators, day detail panel, 3 quick-action modals
 
 ### Settings Page Implementation (2025-12-31)
 
@@ -481,32 +462,38 @@ Settings page with grouped sections and edit modals (spec lines 646-765):
   - Skeleton loading state
   - Unit conversion display (kg/lbs/stone, cm/ft-in)
 
-### Performance Optimizations (2025-12-31)
+### Performance Optimizations (2026-01-01)
 
-- **Loading skeletons**: All 5 main routes have `loading.tsx` for instant navigation feedback
-- **Link prefetching**: BottomNav uses `prefetch={true}` on all navigation links
-- **Parallel queries**: Summary page uses `Promise.all()` for 6 parallel DB queries (was 10+ sequential)
+**Server Component Conversion:**
+- Converted Results, Jabs, Calendar, Log pages from Client to Server Components
+- Added Suspense boundaries with skeleton loading states
+- Created server-side data fetching in `src/lib/data/` with React `cache()`
+- Extracted interactive parts to Client Components in `src/components/*/`
+
+**Database Indexes Added:**
+- `activity_logs_daily_log_id_idx`
+- `mental_logs_daily_log_id_idx`
+- `diet_logs_daily_log_id_idx`
+
+**API Optimizations:**
+- `/api/stats/results` now includes `heightCm` (removed redundant profile fetch)
+
+**Other:**
+- Loading skeletons for all 5 main routes
+- Link prefetching in BottomNav
+- Parallel DB queries in Summary page
 
 ### Daily Log Page Implementation (2025-12-31)
 
 The `/log` page for daily wellness tracking:
 - **Files:**
-  - `src/app/(app)/log/page.tsx` - Main log form page for today (client component)
-  - `src/app/(app)/log/loading.tsx` - Loading skeleton
-  - `src/app/(app)/log/[date]/page.tsx` - Date-specific log page (client component)
-  - `src/app/(app)/log/[date]/loading.tsx` - Loading skeleton for date page
-- **Sections (collapsible):**
-  - Diet: Hunger level, meals count, protein grams, water liters
-  - Activity: Workout type, duration minutes, steps
-  - Mental: Motivation, cravings, mood levels
-  - Side Effects: Dynamic list with type and severity
-- **Features:**
-  - `/log` - logs for today, redirects to /summary on save
-  - `/log/[date]` - logs for any date (YYYY-MM-DD format), back button to /calendar
-  - Pre-populates from existing log for the date
-  - Completion indicators on each section
-  - Saves all sections in single API call to `/api/daily-logs`
-  - Calendar page navigates to `/log/[date]` when "Daily Log" button is clicked
+  - `src/app/(app)/log/page.tsx`, `src/app/(app)/log/[date]/page.tsx` - Server Components with Suspense
+  - `src/lib/data/daily-log.ts` - Server-side data fetching
+  - `src/components/log/LogFormClient.tsx` - Shared client form component
+  - `src/components/log/LogSkeleton.tsx` - Loading skeleton
+  - `src/components/log/CollapsibleSection.tsx` - Reusable section component
+- **Sections:** Diet, Activity, Mental, Side Effects (collapsible)
+- **Features:** Pre-populates from existing log, saves to `/api/daily-logs`
 
 ### Quick Entry Pages Implementation (2025-12-31)
 
