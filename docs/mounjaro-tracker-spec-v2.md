@@ -255,6 +255,18 @@ Show custom install banner after:
 | Firefox | ✅ Service workers, limited install |
 | Android | ✅ Full support |
 
+> **Implementation Note (2026-01-01) - PWA Configuration [x]:**
+> - Files:
+>   - `next.config.ts` - Serwist wrapper with `reloadOnOnline: false`
+>   - `tsconfig.json` - Added `webworker` lib and `@serwist/next/typings`
+>   - `src/app/manifest.ts` - TypeScript PWA manifest
+>   - `src/app/sw.ts` - Service worker with defaultCache + offline fallback
+>   - `src/app/~offline/page.tsx` - Offline fallback page
+>   - `public/icons/` - PWA icons (192, 384, 512, maskable PNG)
+>   - `scripts/generate-icons.mjs` - Icon generation script (Sharp)
+> - Build uses `--webpack` flag (Serwist doesn't support Turbopack yet)
+> - Production: https://mj-tracker-xi.vercel.app
+
 ---
 
 ## Reference UI - Results Dashboard
