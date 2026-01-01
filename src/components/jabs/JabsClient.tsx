@@ -96,7 +96,7 @@ export function JabsClient({ data }: Props) {
       </div>
 
       {/* Log Injection Button */}
-      <div className="fixed bottom-20 left-0 right-0 flex justify-center px-4 pb-4">
+      <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 flex justify-center px-4">
         <Button
           onClick={() => setShowModal(true)}
           className="rounded-xl px-8 py-3 shadow-lg"
