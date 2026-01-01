@@ -15,6 +15,11 @@ const eslintConfig = defineConfig([
     // Playwright report files (generated)
     "playwright-report/**",
     "test-results/**",
+    // Serwist PWA generated files
+    "public/sw.js",
+    "public/sw.js.map",
+    "public/swe-worker*.js",
+    "public/workbox-*.js",
   ]),
 ]);
 

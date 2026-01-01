@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --webpack",
+    "build:turbo": "next build",
+    "generate:icons": "node scripts/generate-icons.mjs",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
@@ -54,6 +56,7 @@
     "jsdom": "^27.4.0",
     "next-test-api-route-handler": "^5.0.3",
     "serwist": "^9.4.2",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.0.3",

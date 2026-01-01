@@ -336,7 +336,7 @@ Track overall progress here:
 - [x] Calendar page (month grid with day details and log modals)
 - [x] Settings page (profile, treatment, preferences, data export)
 - [x] Daily log forms (/log page with diet, activity, mental, side effects)
-- [ ] PWA configuration
+- [x] PWA configuration (Serwist service worker, manifest, offline page)
 - [x] Email notifications (Resend integration with styled templates)
 - [ ] Data export
 - [x] Testing (unit) - 599 tests passing, 90% coverage (all API routes tested except edge runtime image export)
@@ -715,6 +715,47 @@ pnpm test:e2e       # E2E tests (requires running app)
 | P3 | CI/CD pipeline | GitHub Actions workflow for automated testing |
 
 > **Note on Component Tests:** Forms are implemented inline within page components (e.g., Log Injection modal in `jabs/page.tsx`) rather than as separate reusable components. This architectural choice means form logic is tested via E2E tests instead of isolated component tests.
+
+### PWA Implementation (2026-01-01)
+
+Progressive Web App configuration using Serwist (recommended by Next.js, successor to next-pwa):
+
+**Files:**
+| File | Purpose |
+|------|---------|
+| `next.config.ts` | Serwist wrapper with security headers |
+| `tsconfig.json` | Added `webworker` lib and `@serwist/next/typings` |
+| `src/app/manifest.ts` | TypeScript PWA manifest |
+| `src/app/sw.ts` | Service worker with caching strategies |
+| `src/app/~offline/page.tsx` | Offline fallback page |
+| `public/icons/` | PWA icons (192, 384, 512, maskable) |
+| `scripts/generate-icons.mjs` | Icon generation script (uses Sharp) |
+
+**Build Configuration:**
+- Uses `--webpack` flag for builds (Serwist doesn't support Turbopack yet)
+- `pnpm build` - Production build with service worker
+- `pnpm build:turbo` - Turbopack build (no PWA)
+- `pnpm generate:icons` - Regenerate placeholder icons
+
+**Caching Strategy (via `defaultCache`):**
+| Route Type | Strategy |
+|------------|----------|
+| Static assets | Cache First |
+| HTML pages | Stale While Revalidate |
+| API GET | Network First (Cache Fallback) |
+| API mutations | Network Only |
+
+**Offline Capabilities:**
+- Cached pages viewable offline
+- Offline fallback page shown for uncached routes
+- Form submissions require connection
+
+**Testing PWA:**
+```bash
+pnpm build && pnpm start  # PWA only works in production
+# Open Chrome DevTools > Application > Service Workers
+# Use Lighthouse PWA audit
+```
 
 ---
 

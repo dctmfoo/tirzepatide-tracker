@@ -4,7 +4,8 @@ import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
 import { eq, desc, asc } from 'drizzle-orm';
 
-export const runtime = 'edge';
+// Note: Using Node.js runtime (default) because database queries require it
+// ImageResponse from next/og works on both edge and Node.js runtimes
 
 // GET /api/export/image - Generate shareable progress image
 export async function GET() {
