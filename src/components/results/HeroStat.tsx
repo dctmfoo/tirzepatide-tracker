@@ -1,5 +1,5 @@
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import { ProgressRing } from './ProgressRing';
+import { ProgressRing } from '@/components/ui';
 
 type HeroStatProps = {
   totalChange: number;

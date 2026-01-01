@@ -1,4 +1,6 @@
-import { StatCard, Section } from '@/components/ui';
+import { Scale, TrendingDown, TrendingUp } from 'lucide-react';
+import { Section } from '@/components/ui';
+import { SummaryStatCard } from './SummaryStatCard';
 
 type CurrentStateSectionProps = {
   currentWeight: number | null;
@@ -19,18 +21,18 @@ type CurrentStateSectionProps = {
 function formatWeight(kg: number | null, unit: string = 'kg'): string {
   if (kg === null) return '—';
   if (unit === 'lbs') {
-    return `${(kg * 2.20462).toFixed(1)} lbs`;
+    return (kg * 2.20462).toFixed(1);
   }
-  return `${kg.toFixed(1)}kg`;
+  return kg.toFixed(1);
 }
 
 function formatWeightChange(kg: number | null, unit: string = 'kg'): string {
   if (kg === null) return '—';
   const sign = kg >= 0 ? '+' : '';
   if (unit === 'lbs') {
-    return `${sign}${(kg * 2.20462).toFixed(1)} lbs`;
+    return `${sign}${(kg * 2.20462).toFixed(1)}`;
   }
-  return `${sign}${kg.toFixed(1)}kg`;
+  return `${sign}${kg.toFixed(1)}`;
 }
 
 function formatRelativeDate(dateString: string | null): string {
@@ -51,25 +53,33 @@ export function CurrentStateSection({
   weeklyStats,
   weightUnit = 'kg',
 }: CurrentStateSectionProps) {
+  const isLoss = lastWeightChange !== null && lastWeightChange < 0;
+  const unitLabel = weightUnit === 'lbs' ? 'lbs' : 'kg';
+
   return (
     <Section title="Current State">
       <div className="grid grid-cols-2 gap-3">
-        <StatCard
+        <SummaryStatCard
+          icon={Scale}
+          iconColor="primary"
           label="Current"
           value={formatWeight(currentWeight, weightUnit)}
-          variant="large"
+          unit={unitLabel}
         />
-        <StatCard
+        <SummaryStatCard
+          icon={isLoss ? TrendingDown : TrendingUp}
+          iconColor={isLoss ? 'success' : 'warning'}
           label="Since Last"
           value={formatWeightChange(lastWeightChange, weightUnit)}
-          sublabel={lastWeightDate ? `(${formatRelativeDate(lastWeightDate)})` : undefined}
+          unit={unitLabel}
+          subtext={lastWeightDate ? formatRelativeDate(lastWeightDate) : undefined}
         />
       </div>
 
       {weeklyStats && (
-        <div className="mt-3 rounded-lg bg-card p-4">
+        <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card p-4">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="font-medium text-foreground">This Week</h3>
+            <h3 className="font-semibold text-foreground">This Week</h3>
             <span className="text-xs text-muted-foreground">
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} week
             </span>
@@ -78,7 +88,7 @@ export function CurrentStateSection({
             <div className="flex justify-between">
               <span className="text-muted-foreground">Weight</span>
               <span className={`font-medium ${weeklyStats.weightChange && weeklyStats.weightChange < 0 ? 'text-success' : 'text-foreground'}`}>
-                {formatWeightChange(weeklyStats.weightChange, weightUnit)} ↓
+                {formatWeightChange(weeklyStats.weightChange, weightUnit)}{unitLabel}
               </span>
             </div>
             {weeklyStats.avgHunger && (

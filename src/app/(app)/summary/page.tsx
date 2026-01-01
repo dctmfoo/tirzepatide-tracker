@@ -240,15 +240,24 @@ async function getSummaryData(userId: string) {
 
 function SummarySkeleton() {
   return (
-    <div className="animate-pulse space-y-6 p-4">
+    <div className="flex min-h-[calc(100svh-140px)] animate-pulse flex-col gap-4 overflow-x-hidden p-4">
       <div className="h-8 w-32 rounded bg-card" />
+      {/* Action Required skeleton */}
       <div className="space-y-3">
-        <div className="h-32 rounded-lg bg-card" />
+        <div className="h-28 rounded-xl bg-card" />
+        <div className="h-24 rounded-xl bg-card" />
+      </div>
+      {/* Current State skeleton */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="h-20 rounded-lg bg-card" />
         <div className="h-20 rounded-lg bg-card" />
       </div>
+      {/* Journey Progress skeleton */}
+      <div className="h-28 rounded-xl bg-card" />
+      <div className="h-20 rounded-xl bg-card" />
       <div className="grid grid-cols-2 gap-3">
-        <div className="h-24 rounded-lg bg-card" />
-        <div className="h-24 rounded-lg bg-card" />
+        <div className="h-20 rounded-lg bg-card" />
+        <div className="h-20 rounded-lg bg-card" />
       </div>
     </div>
   );
@@ -266,9 +275,9 @@ async function SummaryContent() {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
       {/* Header */}
-      <h1 className="text-2xl font-bold text-foreground">Summary</h1>
+      <h1 className="text-xl font-bold text-foreground">Summary</h1>
 
       {/* Action Required Section */}
       <Section title="Action Required">
