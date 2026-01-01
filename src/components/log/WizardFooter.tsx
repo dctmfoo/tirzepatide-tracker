@@ -37,7 +37,7 @@ export function WizardFooter({
   };
 
   return (
-    <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 bg-gradient-to-t from-background via-background to-transparent px-4 pt-6">
+    <div className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 bg-gradient-to-t from-background via-background to-transparent px-4 pt-6">
       <div className="flex gap-3">
         {!isFirst && (
           <Button
