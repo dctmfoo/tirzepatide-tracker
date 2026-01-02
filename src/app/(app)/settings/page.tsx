@@ -5,15 +5,16 @@ import { signOut } from 'next-auth/react';
 import { SettingsSection, SettingsItem } from '@/components/settings';
 import { usePushNotifications } from '@/lib/push';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+} from '@/components/ui/responsive-modal';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Profile = {
   age: number | null;
@@ -38,15 +39,17 @@ type Preferences = {
 
 function SettingsSkeleton() {
   return (
-    <div className="animate-pulse space-y-6 p-4">
+    <div className="space-y-6 p-4">
       {[...Array(4)].map((_, i) => (
         <div key={i}>
-          <div className="mb-2 h-4 w-24 rounded bg-card" />
-          <div className="space-y-1 rounded-xl bg-card p-4">
-            {[...Array(3)].map((_, j) => (
-              <div key={j} className="h-12 rounded bg-background/50" />
-            ))}
-          </div>
+          <Skeleton className="mb-2 h-4 w-24" />
+          <Skeleton className="rounded-xl p-4">
+            <div className="space-y-1">
+              {[...Array(3)].map((_, j) => (
+                <Skeleton key={j} className="h-12 bg-background/50" />
+              ))}
+            </div>
+          </Skeleton>
         </div>
       ))}
     </div>
@@ -835,7 +838,7 @@ function DeleteAccountModal({ open, onOpenChange }: { open: boolean; onOpenChang
   );
 }
 
-// Reusable Modal Component using shadcn Dialog
+// Reusable Modal Component using ResponsiveModal (Dialog on desktop, Drawer on mobile)
 function Modal({
   title,
   children,
@@ -848,14 +851,14 @@ function Modal({
   onOpenChange: (open: boolean) => void;
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-        {children}
-      </DialogContent>
-    </Dialog>
+    <ResponsiveModal open={open} onOpenChange={onOpenChange}>
+      <ResponsiveModalContent>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle>{title}</ResponsiveModalTitle>
+        </ResponsiveModalHeader>
+        <div className="px-4 pb-4 sm:px-0 sm:pb-0">{children}</div>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
 }
 

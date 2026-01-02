@@ -1,6 +1,5 @@
 import { Scale, TrendingDown, TrendingUp } from 'lucide-react';
-import { Section } from '@/components/ui';
-import { SummaryStatCard } from './SummaryStatCard';
+import { Section, StatCard } from '@/components/ui';
 
 type CurrentStateSectionProps = {
   currentWeight: number | null;
@@ -59,14 +58,14 @@ export function CurrentStateSection({
   return (
     <Section title="Current State">
       <div className="grid grid-cols-2 gap-3">
-        <SummaryStatCard
+        <StatCard
           icon={Scale}
           iconColor="primary"
           label="Current"
           value={formatWeight(currentWeight, weightUnit)}
           unit={unitLabel}
         />
-        <SummaryStatCard
+        <StatCard
           icon={isLoss ? TrendingDown : TrendingUp}
           iconColor={isLoss ? 'success' : 'warning'}
           label="Since Last"

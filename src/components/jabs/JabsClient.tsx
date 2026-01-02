@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { Syringe, Pill, Calendar, Clock, Plus } from 'lucide-react';
-import { JabsStatCard } from './JabsStatCard';
 import { InjectionHistoryItem } from './InjectionHistoryItem';
 import { LogInjectionModal } from './LogInjectionModal';
 import { Button } from '@/components/ui/button';
-import { Section } from '@/components/ui';
+import { Section, StatCard } from '@/components/ui';
 import type { JabsData } from '@/lib/data/jabs';
 
 type Props = {
@@ -24,7 +23,7 @@ function calculateWeekNumber(injectionDate: Date, treatmentStartDate?: Date): nu
   return Math.max(1, Math.floor(diffDays / 7) + 1);
 }
 
-function getNextDueColor(status: string | undefined): string {
+function getNextDueColor(status: string | undefined): 'destructive' | 'warning' | 'success' {
   if (status === 'overdue') return 'destructive';
   if (status === 'due_today' || status === 'due_soon') return 'warning';
   return 'success';
@@ -62,32 +61,36 @@ export function JabsClient({ data }: Props) {
 
       {/* Stat Cards Grid */}
       <div className="grid grid-cols-2 gap-3">
-        <JabsStatCard
+        <StatCard
           icon={Syringe}
           iconColor="violet"
           label="Total Injections"
           value={data.totalInjections}
+          className="rounded-xl"
         />
-        <JabsStatCard
+        <StatCard
           icon={Pill}
           iconColor="amber"
           label="Current Dose"
           value={data.currentDose}
           unit="mg"
+          className="rounded-xl"
         />
-        <JabsStatCard
+        <StatCard
           icon={Calendar}
           iconColor="blue"
           label="On Current Dose"
           value={data.weeksOnCurrentDose > 0 ? data.weeksOnCurrentDose : '< 1'}
           unit={data.weeksOnCurrentDose > 0 ? 'weeks' : 'week'}
+          className="rounded-xl"
         />
-        <JabsStatCard
+        <StatCard
           icon={Clock}
           iconColor={getNextDueColor(data.nextDue?.status)}
           label="Next Due"
           value={data.nextDue ? formatNextDueDate(data.nextDue.date) : null}
-          sublabel={data.nextDue ? `${data.nextDue.daysUntil} days` : undefined}
+          subtext={data.nextDue ? `${data.nextDue.daysUntil} days` : undefined}
+          className="rounded-xl"
         />
       </div>
 

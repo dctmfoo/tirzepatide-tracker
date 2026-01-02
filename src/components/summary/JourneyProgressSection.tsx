@@ -1,6 +1,5 @@
 import { Target, Calendar, Flag, Flame, Pill } from 'lucide-react';
-import { Section, ProgressRing } from '@/components/ui';
-import { SummaryStatCard } from './SummaryStatCard';
+import { Section, ProgressRing, StatCard } from '@/components/ui';
 
 type JourneyProgressSectionProps = {
   startWeight: number | null;
@@ -134,7 +133,7 @@ export function JourneyProgressSection({
 
       {/* Milestone and Streak Cards */}
       <div className="mt-3 grid grid-cols-2 gap-3">
-        <SummaryStatCard
+        <StatCard
           icon={Flag}
           iconColor="amber"
           label="Next Milestone"
@@ -146,7 +145,7 @@ export function JourneyProgressSection({
               : 'Set a goal'
           }
         />
-        <SummaryStatCard
+        <StatCard
           icon={Flame}
           iconColor="orange"
           label="Streak"

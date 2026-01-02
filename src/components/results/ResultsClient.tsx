@@ -4,9 +4,9 @@ import { useState, useMemo } from 'react';
 import { Scale, User, BarChart3, Target } from 'lucide-react';
 import { PeriodTabs } from './PeriodTabs';
 import { HeroStat } from './HeroStat';
-import { ResultsStatCard } from './ResultsStatCard';
 import { Insights } from './Insights';
 import { WeightChart } from '@/components/charts';
+import { StatCard } from '@/components/ui';
 import type { ResultsData } from '@/lib/data/results';
 
 type Period = '1m' | '3m' | '6m' | 'all';
@@ -205,28 +205,28 @@ export function ResultsClient({ data }: Props) {
 
       {/* Secondary Stats Grid - 2x2 */}
       <div className="grid grid-cols-2 gap-3">
-        <ResultsStatCard
+        <StatCard
           icon={Scale}
           iconColor="primary"
           label="Current"
           value={stats.current.toFixed(1)}
           unit="kg"
         />
-        <ResultsStatCard
+        <StatCard
           icon={User}
           iconColor="amber"
           label="BMI"
           value={bmi}
           badge={bmiCategory ? { text: bmiCategory.text, variant: bmiCategory.variant } : undefined}
         />
-        <ResultsStatCard
+        <StatCard
           icon={BarChart3}
           iconColor="emerald"
           label="Weekly Avg"
           value={weeklyAvgLoss !== null ? weeklyAvgLoss.toFixed(2) : null}
           unit="kg/wk"
         />
-        <ResultsStatCard
+        <StatCard
           icon={Target}
           iconColor="violet"
           label="To Goal"

@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
 import { eq, desc, and } from 'drizzle-orm';
 import { Section } from '@/components/ui';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   NextInjectionCard,
   TodaysLogCard,
@@ -240,24 +241,24 @@ async function getSummaryData(userId: string) {
 
 function SummarySkeleton() {
   return (
-    <div className="flex min-h-[calc(100svh-140px)] animate-pulse flex-col gap-4 overflow-x-hidden p-4">
-      <div className="h-8 w-32 rounded bg-card" />
+    <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
+      <Skeleton className="h-8 w-32" />
       {/* Action Required skeleton */}
       <div className="space-y-3">
-        <div className="h-28 rounded-xl bg-card" />
-        <div className="h-24 rounded-xl bg-card" />
+        <Skeleton className="h-28 rounded-xl" />
+        <Skeleton className="h-24 rounded-xl" />
       </div>
       {/* Current State skeleton */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="h-20 rounded-lg bg-card" />
-        <div className="h-20 rounded-lg bg-card" />
+        <Skeleton className="h-20 rounded-lg" />
+        <Skeleton className="h-20 rounded-lg" />
       </div>
       {/* Journey Progress skeleton */}
-      <div className="h-28 rounded-xl bg-card" />
-      <div className="h-20 rounded-xl bg-card" />
+      <Skeleton className="h-28 rounded-xl" />
+      <Skeleton className="h-20 rounded-xl" />
       <div className="grid grid-cols-2 gap-3">
-        <div className="h-20 rounded-lg bg-card" />
-        <div className="h-20 rounded-lg bg-card" />
+        <Skeleton className="h-20 rounded-lg" />
+        <Skeleton className="h-20 rounded-lg" />
       </div>
     </div>
   );
