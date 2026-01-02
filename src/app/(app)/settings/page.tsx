@@ -32,9 +32,13 @@ type Preferences = {
   weekStartsOn: string;
   preferredInjectionDay: number | null;
   reminderTiming: string;
-  emailNotifications: boolean;
-  weeklyReport: boolean;
   theme: string;
+};
+
+type NotificationPreference = {
+  notificationType: string;
+  enabled: boolean;
+  description: string;
 };
 
 function SettingsSkeleton() {
@@ -59,14 +63,19 @@ function SettingsSkeleton() {
 export default function SettingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
+  const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreference[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  // Get push notification status for display
+  const { isSubscribed: isPushSubscribed, isLoading: isPushLoading } = usePushNotifications();
+
   const fetchData = useCallback(async () => {
     try {
-      const [profileRes, prefsRes] = await Promise.all([
+      const [profileRes, prefsRes, notifRes] = await Promise.all([
         fetch('/api/profile'),
         fetch('/api/preferences'),
+        fetch('/api/notifications/preferences'),
       ]);
 
       if (profileRes.ok) {
@@ -77,6 +86,11 @@ export default function SettingsPage() {
       if (prefsRes.ok) {
         const data = await prefsRes.json();
         setPreferences(data);
+      }
+
+      if (notifRes.ok) {
+        const data = await notifRes.json();
+        setNotificationPrefs(data.preferences || []);
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error);
@@ -131,6 +145,30 @@ export default function SettingsPage() {
     return days[day];
   };
 
+  const getNotificationStatusText = (): string => {
+    if (isPushLoading) return 'Checking...';
+
+    const enabledNotifs: string[] = [];
+
+    if (isPushSubscribed) {
+      enabledNotifs.push('Push');
+    }
+
+    // Check email-based notifications (injection_reminder uses email, weekly_summary)
+    const injectionReminder = notificationPrefs.find((p) => p.notificationType === 'injection_reminder');
+    const weeklySummary = notificationPrefs.find((p) => p.notificationType === 'weekly_summary');
+
+    if (injectionReminder?.enabled || weeklySummary?.enabled) {
+      enabledNotifs.push('Email');
+    }
+
+    if (enabledNotifs.length === 0) {
+      return 'Disabled';
+    }
+
+    return `${enabledNotifs.join(' & ')} enabled`;
+  };
+
   if (loading) {
     return <SettingsSkeleton />;
   }
@@ -179,7 +217,7 @@ export default function SettingsPage() {
         />
         <SettingsItem
           label="Notifications"
-          sublabel={preferences?.emailNotifications ? 'Email reminders enabled' : 'Disabled'}
+          sublabel={getNotificationStatusText()}
           onClick={() => setActiveModal('notifications')}
         />
         <SettingsItem
@@ -264,7 +302,7 @@ export default function SettingsPage() {
       />
 
       <NotificationsModal
-        preferences={preferences}
+        notificationPrefs={notificationPrefs}
         open={activeModal === 'notifications'}
         onOpenChange={(open) => !open && handleModalClose()}
         onSave={handleSave}
@@ -634,20 +672,31 @@ function UnitsModal({
 
 // Notifications Modal
 function NotificationsModal({
-  preferences,
+  notificationPrefs,
   open,
   onOpenChange,
   onSave,
 }: {
-  preferences: Preferences | null;
+  notificationPrefs: NotificationPreference[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
-  const [emailNotifications, setEmailNotifications] = useState(preferences?.emailNotifications ?? true);
-  const [weeklyReport, setWeeklyReport] = useState(preferences?.weeklyReport ?? false);
+  // Get initial values from props
+  const getInitialValue = (type: string) =>
+    notificationPrefs.find((p) => p.notificationType === type)?.enabled ?? true;
+
+  const [injectionReminder, setInjectionReminder] = useState(getInitialValue('injection_reminder'));
+  const [weeklySummary, setWeeklySummary] = useState(getInitialValue('weekly_summary'));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync state when props change
+  useEffect(() => {
+    setInjectionReminder(getInitialValue('injection_reminder'));
+    setWeeklySummary(getInitialValue('weekly_summary'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notificationPrefs]);
 
   const {
     isSupported: isPushSupported,
@@ -673,10 +722,15 @@ function NotificationsModal({
     setError(null);
 
     try {
-      const response = await fetch('/api/preferences', {
+      const response = await fetch('/api/notifications/preferences', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ emailNotifications, weeklyReport }),
+        body: JSON.stringify({
+          preferences: [
+            { notificationType: 'injection_reminder', enabled: injectionReminder },
+            { notificationType: 'weekly_summary', enabled: weeklySummary },
+          ],
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to save');
@@ -720,8 +774,8 @@ function NotificationsModal({
             <p className="text-sm text-muted-foreground">Get injection reminders via email</p>
           </div>
           <Checkbox
-            checked={emailNotifications}
-            onCheckedChange={(checked) => setEmailNotifications(checked === true)}
+            checked={injectionReminder}
+            onCheckedChange={(checked) => setInjectionReminder(checked === true)}
           />
         </label>
 
@@ -731,8 +785,8 @@ function NotificationsModal({
             <p className="text-sm text-muted-foreground">Receive weekly progress summary</p>
           </div>
           <Checkbox
-            checked={weeklyReport}
-            onCheckedChange={(checked) => setWeeklyReport(checked === true)}
+            checked={weeklySummary}
+            onCheckedChange={(checked) => setWeeklySummary(checked === true)}
           />
         </label>
 
