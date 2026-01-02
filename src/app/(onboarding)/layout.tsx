@@ -9,8 +9,8 @@ export default async function OnboardingLayout({
   await verifySessionForOnboarding();
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-lg px-4 px-safe pt-safe py-8">{children}</div>
+    <div className="min-h-[100svh] bg-background overflow-x-hidden">
+      <div className="mx-auto max-w-lg px-4 px-safe pt-safe">{children}</div>
     </div>
   );
 }

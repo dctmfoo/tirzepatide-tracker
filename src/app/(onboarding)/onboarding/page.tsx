@@ -1,18 +1,5 @@
-import { OnboardingForm } from '@/components/onboarding/OnboardingForm';
+import { OnboardingCardFlow } from '@/components/onboarding/OnboardingCardFlow';
 
 export default function OnboardingPage() {
-  return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Welcome to Mounjaro Tracker
-        </h1>
-        <p className="text-muted-foreground">
-          Let&apos;s set up your journey in just a few steps
-        </p>
-      </div>
-
-      <OnboardingForm />
-    </div>
-  );
+  return <OnboardingCardFlow />;
 }

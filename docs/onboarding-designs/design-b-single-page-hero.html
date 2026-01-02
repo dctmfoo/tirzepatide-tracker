@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Design B - Single Page Hero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: #0a0a0a;
+            --background-card: #171717;
+            --background-secondary: #262626;
+            --foreground: #fafafa;
+            --foreground-muted: #737373;
+            --primary: #00d4ff;
+            --success: #22c55e;
+            --warning: #eab308;
+            --destructive: #ef4444;
+            --violet: #a855f7;
+            --blue: #3b82f6;
+            --amber: #eab308;
+            --border: #404040;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            margin: 0;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--background); }
+        ::-webkit-scrollbar-thumb { background: var(--background-secondary); border-radius: 3px; }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Smooth section reveal */
+        .section-card {
+            transition: all 0.3s ease;
+        }
+        .section-card.completed {
+            border-color: var(--success);
+        }
+        .section-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+        }
+
+        /* Floating progress indicator */
+        .floating-progress {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 100;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: { DEFAULT: '#0a0a0a', card: '#171717', secondary: '#262626' },
+                        foreground: { DEFAULT: '#fafafa', muted: '#737373' },
+                        primary: '#00d4ff',
+                        success: '#22c55e',
+                        warning: '#eab308',
+                        destructive: '#ef4444',
+                        violet: '#a855f7',
+                        blue: '#3b82f6',
+                        amber: '#eab308',
+                        border: '#404040',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Hero Header -->
+        <header class="relative overflow-hidden">
+            <!-- Background gradient -->
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-violet/10 to-background"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,212,255,0.15),transparent_50%)]"></div>
+
+            <div class="relative max-w-lg mx-auto px-4 pt-8 pb-12">
+                <!-- Logo/Brand -->
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+                        <i data-lucide="activity" class="w-6 h-6 text-primary"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-foreground">Mounjaro Tracker</h2>
+                        <p class="text-xs text-foreground-muted">Your journey starts here</p>
+                    </div>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-foreground mb-2">Welcome!</h1>
+                    <p class="text-foreground-muted">Let's set up your profile in just a few minutes. All fields are required to get started.</p>
+                </div>
+
+                <!-- Progress Summary -->
+                <div class="flex gap-2">
+                    <div class="flex-1 h-1.5 rounded-full bg-primary" id="progress-1"></div>
+                    <div class="flex-1 h-1.5 rounded-full bg-background-secondary" id="progress-2"></div>
+                    <div class="flex-1 h-1.5 rounded-full bg-background-secondary" id="progress-3"></div>
+                </div>
+                <p class="text-xs text-foreground-muted mt-2" id="progress-text">Section 1 of 3 complete</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-lg mx-auto px-4 pb-32 -mt-2">
+            <!-- Section 1: About You -->
+            <section class="section-card active bg-background-card rounded-2xl border-2 border-primary p-5 mb-4" id="section-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-foreground">About You</h3>
+                            <p class="text-xs text-foreground-muted">Basic information</p>
+                        </div>
+                    </div>
+                    <div class="hidden" id="check-1">
+                        <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center">
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Age -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Age</label>
+                        <div class="relative">
+                            <input type="number" id="age" placeholder="Enter age" min="18" max="120"
+                                class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">years</span>
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Gender</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="gender-btn group px-2 py-3 rounded-xl border border-border bg-background hover:border-primary/50 transition-all flex flex-col items-center gap-1" data-value="male">
+                                <div class="w-8 h-8 rounded-full bg-blue/15 flex items-center justify-center group-hover:bg-blue/25 transition-all">
+                                    <i data-lucide="user" class="w-4 h-4 text-blue"></i>
+                                </div>
+                                <span class="text-xs text-foreground-muted group-hover:text-foreground">Male</span>
+                            </button>
+                            <button class="gender-btn group px-2 py-3 rounded-xl border border-border bg-background hover:border-primary/50 transition-all flex flex-col items-center gap-1" data-value="female">
+                                <div class="w-8 h-8 rounded-full bg-pink-500/15 flex items-center justify-center group-hover:bg-pink-500/25 transition-all">
+                                    <i data-lucide="user" class="w-4 h-4 text-pink-500"></i>
+                                </div>
+                                <span class="text-xs text-foreground-muted group-hover:text-foreground">Female</span>
+                            </button>
+                            <button class="gender-btn group px-2 py-3 rounded-xl border border-border bg-background hover:border-primary/50 transition-all flex flex-col items-center gap-1" data-value="non-binary">
+                                <div class="w-8 h-8 rounded-full bg-violet/15 flex items-center justify-center group-hover:bg-violet/25 transition-all">
+                                    <i data-lucide="users" class="w-4 h-4 text-violet"></i>
+                                </div>
+                                <span class="text-xs text-foreground-muted group-hover:text-foreground">Non-bin</span>
+                            </button>
+                            <button class="gender-btn group px-2 py-3 rounded-xl border border-border bg-background hover:border-primary/50 transition-all flex flex-col items-center gap-1" data-value="other">
+                                <div class="w-8 h-8 rounded-full bg-amber/15 flex items-center justify-center group-hover:bg-amber/25 transition-all">
+                                    <i data-lucide="star" class="w-4 h-4 text-amber"></i>
+                                </div>
+                                <span class="text-xs text-foreground-muted group-hover:text-foreground">Other</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Height -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-foreground">Height</label>
+                            <div class="flex bg-background-secondary rounded-lg p-0.5">
+                                <button class="height-unit px-3 py-1 text-xs font-medium rounded-md bg-primary text-background" data-unit="cm">cm</button>
+                                <button class="height-unit px-3 py-1 text-xs font-medium rounded-md text-foreground-muted hover:text-foreground" data-unit="ft">ft/in</button>
+                            </div>
+                        </div>
+                        <div id="height-input-cm">
+                            <div class="relative">
+                                <input type="number" placeholder="175" min="100" max="250"
+                                    class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">cm</span>
+                            </div>
+                        </div>
+                        <div id="height-input-ft" class="hidden grid grid-cols-2 gap-3">
+                            <div class="relative">
+                                <input type="number" placeholder="5" min="3" max="8"
+                                    class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">ft</span>
+                            </div>
+                            <div class="relative">
+                                <input type="number" placeholder="8" min="0" max="11"
+                                    class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Goals -->
+            <section class="section-card bg-background-card rounded-2xl border-2 border-border p-5 mb-4" id="section-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-success/15 flex items-center justify-center">
+                            <i data-lucide="target" class="w-5 h-5 text-success"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-foreground">Your Goals</h3>
+                            <p class="text-xs text-foreground-muted">Weight targets & timeline</p>
+                        </div>
+                    </div>
+                    <div class="hidden" id="check-2">
+                        <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center">
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Weight Goal Visualization -->
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-destructive/10 via-warning/10 to-success/10 border border-border/50">
+                        <div class="flex items-center justify-between">
+                            <div class="text-center">
+                                <div class="w-16 h-16 rounded-full bg-background border-2 border-border flex items-center justify-center mb-1">
+                                    <span class="text-lg font-bold" id="start-weight-display">--</span>
+                                </div>
+                                <span class="text-xs text-foreground-muted">Start</span>
+                            </div>
+                            <div class="flex-1 px-4">
+                                <div class="h-0.5 bg-gradient-to-r from-destructive via-warning to-success"></div>
+                                <div class="flex justify-center mt-2">
+                                    <span class="text-xs font-medium text-success" id="weight-diff">Enter weights</span>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 rounded-full bg-success/15 border-2 border-success flex items-center justify-center mb-1">
+                                    <span class="text-lg font-bold text-success" id="goal-weight-display">--</span>
+                                </div>
+                                <span class="text-xs text-foreground-muted">Goal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Starting Weight -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-sm font-medium text-foreground">Starting Weight</label>
+                            <div class="flex bg-background-secondary rounded-lg p-0.5">
+                                <button class="weight-unit px-3 py-1 text-xs font-medium rounded-md bg-primary text-background" data-unit="kg">kg</button>
+                                <button class="weight-unit px-3 py-1 text-xs font-medium rounded-md text-foreground-muted hover:text-foreground" data-unit="lbs">lbs</button>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <input type="number" id="starting-weight" placeholder="85" step="0.1"
+                                class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted" id="start-unit-label">kg</span>
+                        </div>
+                    </div>
+
+                    <!-- Goal Weight -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Goal Weight</label>
+                        <div class="relative">
+                            <input type="number" id="goal-weight" placeholder="70" step="0.1"
+                                class="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-success focus:border-transparent transition-all">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted" id="goal-unit-label">kg</span>
+                        </div>
+                    </div>
+
+                    <!-- Treatment Start Date -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">
+                            When did you start treatment?
+                        </label>
+                        <div class="relative">
+                            <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground-muted pointer-events-none"></i>
+                            <input type="date" id="treatment-date"
+                                class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: First Injection -->
+            <section class="section-card bg-background-card rounded-2xl border-2 border-border p-5 mb-4" id="section-3">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-violet/15 flex items-center justify-center">
+                            <i data-lucide="syringe" class="w-5 h-5 text-violet"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-foreground">First Injection</h3>
+                            <p class="text-xs text-foreground-muted">Log your initial dose</p>
+                        </div>
+                    </div>
+                    <div class="hidden" id="check-3">
+                        <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center">
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Injection Date -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Injection Date</label>
+                        <div class="relative">
+                            <i data-lucide="calendar-check" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-violet pointer-events-none"></i>
+                            <input type="date" id="injection-date"
+                                class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-violet focus:border-transparent transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Dose Selection - Visual Pills -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Dose</label>
+                        <div class="grid grid-cols-6 gap-1.5">
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="2.5">
+                                <span class="text-sm font-bold">2.5</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="5.0">
+                                <span class="text-sm font-bold">5.0</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="7.5">
+                                <span class="text-sm font-bold">7.5</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="10.0">
+                                <span class="text-sm font-bold">10</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="12.5">
+                                <span class="text-sm font-bold">12.5</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                            <button class="dose-btn aspect-square rounded-xl border border-border bg-background flex flex-col items-center justify-center hover:border-violet/50 hover:bg-violet/5 transition-all" data-dose="15.0">
+                                <span class="text-sm font-bold">15</span>
+                                <span class="text-[10px] text-foreground-muted">mg</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Injection Site - Visual Body Map -->
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Injection Site</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="space-y-2">
+                                <p class="text-xs text-center text-foreground-muted">Abdomen</p>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="abdomen_left">
+                                    <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i>Left
+                                </button>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="abdomen_right">
+                                    Right<i data-lucide="arrow-right" class="w-3 h-3 inline ml-1"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-xs text-center text-foreground-muted">Thigh</p>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="thigh_left">
+                                    <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i>Left
+                                </button>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="thigh_right">
+                                    Right<i data-lucide="arrow-right" class="w-3 h-3 inline ml-1"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-xs text-center text-foreground-muted">Arm</p>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="arm_left">
+                                    <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i>Left
+                                </button>
+                                <button class="site-btn w-full py-3 rounded-xl border border-border bg-background text-sm hover:border-violet/50 hover:bg-violet/5 transition-all" data-site="arm_right">
+                                    Right<i data-lucide="arrow-right" class="w-3 h-3 inline ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Progress Indicator -->
+        <div class="floating-progress">
+            <div class="relative w-16 h-16">
+                <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#262626" stroke-width="8"/>
+                    <circle id="progress-ring" cx="50" cy="50" r="45" fill="none" stroke="#00d4ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" class="transition-all duration-500"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-sm font-bold text-primary" id="progress-percent">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Bottom CTA -->
+        <footer class="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-border/50 p-4">
+            <div class="max-w-lg mx-auto">
+                <button id="submit-btn" class="w-full py-4 rounded-xl bg-primary text-background font-semibold text-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    Complete Setup
+                </button>
+                <p class="text-center text-xs text-foreground-muted mt-2">Fill all fields to continue</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Track form completion
+        const formState = {
+            age: false,
+            gender: false,
+            height: false,
+            startWeight: false,
+            goalWeight: false,
+            treatmentDate: false,
+            injectionDate: false,
+            dose: false,
+            site: false
+        };
+
+        function updateProgress() {
+            const completed = Object.values(formState).filter(Boolean).length;
+            const total = Object.keys(formState).length;
+            const percent = Math.round((completed / total) * 100);
+
+            // Update circular progress
+            const ring = document.getElementById('progress-ring');
+            const circumference = 283;
+            ring.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+
+            // Update section progress bars
+            const section1Complete = formState.age && formState.gender && formState.height;
+            const section2Complete = formState.startWeight && formState.goalWeight && formState.treatmentDate;
+            const section3Complete = formState.injectionDate && formState.dose && formState.site;
+
+            document.getElementById('progress-1').className = section1Complete ? 'flex-1 h-1.5 rounded-full bg-success' : 'flex-1 h-1.5 rounded-full bg-primary';
+            document.getElementById('progress-2').className = section2Complete ? 'flex-1 h-1.5 rounded-full bg-success' : section1Complete ? 'flex-1 h-1.5 rounded-full bg-primary' : 'flex-1 h-1.5 rounded-full bg-background-secondary';
+            document.getElementById('progress-3').className = section3Complete ? 'flex-1 h-1.5 rounded-full bg-success' : section2Complete ? 'flex-1 h-1.5 rounded-full bg-primary' : 'flex-1 h-1.5 rounded-full bg-background-secondary';
+
+            // Update section cards
+            if (section1Complete) {
+                document.getElementById('section-1').classList.add('completed');
+                document.getElementById('section-1').classList.remove('active');
+                document.getElementById('check-1').classList.remove('hidden');
+            }
+            if (section2Complete) {
+                document.getElementById('section-2').classList.add('completed');
+                document.getElementById('check-2').classList.remove('hidden');
+            }
+            if (section3Complete) {
+                document.getElementById('section-3').classList.add('completed');
+                document.getElementById('check-3').classList.remove('hidden');
+            }
+
+            // Update progress text
+            const sectionsComplete = [section1Complete, section2Complete, section3Complete].filter(Boolean).length;
+            document.getElementById('progress-text').textContent = `${sectionsComplete} of 3 sections complete`;
+
+            // Enable/disable submit button
+            document.getElementById('submit-btn').disabled = completed < total;
+        }
+
+        // Form input handlers
+        document.getElementById('age').addEventListener('input', (e) => {
+            formState.age = e.target.value >= 18 && e.target.value <= 120;
+            updateProgress();
+        });
+
+        document.querySelectorAll('.gender-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('border-primary', 'bg-primary/10'));
+                btn.classList.add('border-primary', 'bg-primary/10');
+                formState.gender = true;
+                updateProgress();
+            });
+        });
+
+        document.querySelectorAll('.height-unit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.height-unit').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-background');
+                    b.classList.add('text-foreground-muted');
+                });
+                btn.classList.add('bg-primary', 'text-background');
+                btn.classList.remove('text-foreground-muted');
+
+                const isCm = btn.dataset.unit === 'cm';
+                document.getElementById('height-input-cm').classList.toggle('hidden', !isCm);
+                document.getElementById('height-input-ft').classList.toggle('hidden', isCm);
+                document.getElementById('height-input-ft').classList.toggle('grid', !isCm);
+            });
+        });
+
+        document.querySelector('#height-input-cm input').addEventListener('input', (e) => {
+            formState.height = e.target.value >= 100 && e.target.value <= 250;
+            updateProgress();
+        });
+
+        // Weight inputs
+        document.getElementById('starting-weight').addEventListener('input', (e) => {
+            formState.startWeight = e.target.value > 0;
+            document.getElementById('start-weight-display').textContent = e.target.value || '--';
+            updateWeightDiff();
+            updateProgress();
+        });
+
+        document.getElementById('goal-weight').addEventListener('input', (e) => {
+            formState.goalWeight = e.target.value > 0;
+            document.getElementById('goal-weight-display').textContent = e.target.value || '--';
+            updateWeightDiff();
+            updateProgress();
+        });
+
+        function updateWeightDiff() {
+            const start = parseFloat(document.getElementById('starting-weight').value) || 0;
+            const goal = parseFloat(document.getElementById('goal-weight').value) || 0;
+            const diff = start - goal;
+            if (start > 0 && goal > 0) {
+                document.getElementById('weight-diff').textContent = diff > 0 ? `-${diff.toFixed(1)} kg to go` : 'Set a lower goal';
+                document.getElementById('weight-diff').className = diff > 0 ? 'text-xs font-medium text-success' : 'text-xs font-medium text-warning';
+            }
+        }
+
+        document.querySelectorAll('.weight-unit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.weight-unit').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-background');
+                    b.classList.add('text-foreground-muted');
+                });
+                btn.classList.add('bg-primary', 'text-background');
+                btn.classList.remove('text-foreground-muted');
+
+                const unit = btn.dataset.unit;
+                document.getElementById('start-unit-label').textContent = unit;
+                document.getElementById('goal-unit-label').textContent = unit;
+            });
+        });
+
+        document.getElementById('treatment-date').addEventListener('change', (e) => {
+            formState.treatmentDate = !!e.target.value;
+            updateProgress();
+        });
+
+        document.getElementById('injection-date').addEventListener('change', (e) => {
+            formState.injectionDate = !!e.target.value;
+            updateProgress();
+        });
+
+        document.querySelectorAll('.dose-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.dose-btn').forEach(b => b.classList.remove('border-violet', 'bg-violet/15'));
+                btn.classList.add('border-violet', 'bg-violet/15');
+                formState.dose = true;
+                updateProgress();
+            });
+        });
+
+        document.querySelectorAll('.site-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.site-btn').forEach(b => b.classList.remove('border-violet', 'bg-violet/15'));
+                btn.classList.add('border-violet', 'bg-violet/15');
+                formState.site = true;
+                updateProgress();
+            });
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            alert('Onboarding complete! Redirecting to dashboard...');
+        });
+
+        // Set max date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('treatment-date').max = today;
+        document.getElementById('injection-date').max = today;
+    </script>
+</body>
+</html>

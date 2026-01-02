@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Design Concepts - Mounjaro Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: #0a0a0a;
+            --background-card: #171717;
+            --foreground: #fafafa;
+            --foreground-muted: #737373;
+            --primary: #00d4ff;
+            --success: #22c55e;
+            --violet: #a855f7;
+            --amber: #eab308;
+            --border: #404040;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .design-card {
+            transition: all 0.3s ease;
+        }
+        .design-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: { DEFAULT: '#0a0a0a', card: '#171717', secondary: '#262626' },
+                        foreground: { DEFAULT: '#fafafa', muted: '#737373' },
+                        primary: '#00d4ff',
+                        success: '#22c55e',
+                        warning: '#eab308',
+                        destructive: '#ef4444',
+                        violet: '#a855f7',
+                        blue: '#3b82f6',
+                        amber: '#eab308',
+                        border: '#404040',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="border-b border-border/50 bg-background-card/50 backdrop-blur sticky top-0 z-50">
+            <div class="max-w-4xl mx-auto px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                        <i data-lucide="layout" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-foreground">Onboarding Design Concepts</h1>
+                        <p class="text-xs text-foreground-muted">Mounjaro Tracker Redesign</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto px-6 py-10">
+            <!-- Intro -->
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold text-foreground mb-3">Choose a Design Approach</h2>
+                <p class="text-foreground-muted">Three distinct approaches to improve the onboarding experience. Each design follows the project's design system with proper date pickers, visual feedback, and mobile-first responsive layouts.</p>
+            </div>
+
+            <!-- Design Cards Grid -->
+            <div class="grid gap-6">
+                <!-- Design A -->
+                <a href="design-a-wizard-stepper.html" class="design-card block bg-background-card rounded-2xl border border-border overflow-hidden hover:border-primary/50">
+                    <div class="p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="layers" class="w-7 h-7 text-primary"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">Design A</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-foreground mb-2">Wizard Stepper</h3>
+                                <p class="text-foreground-muted text-sm mb-4">
+                                    Multi-step wizard with visual progress bar. One focused section per step with clear navigation. Includes a final review step before submission.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">4 Steps</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Progress Bar</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Step Indicators</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Review Summary</span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 hidden sm:block">
+                                <i data-lucide="arrow-right" class="w-5 h-5 text-foreground-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-1 bg-gradient-to-r from-primary to-blue-500"></div>
+                </a>
+
+                <!-- Design B -->
+                <a href="design-b-single-page-hero.html" class="design-card block bg-background-card rounded-2xl border border-border overflow-hidden hover:border-success/50">
+                    <div class="p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-success/15 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="scroll" class="w-7 h-7 text-success"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-medium text-success bg-success/10 px-2 py-0.5 rounded">Design B</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-foreground mb-2">Single Page Hero</h3>
+                                <p class="text-foreground-muted text-sm mb-4">
+                                    Enhanced single-page design with visual hero header and distinct section cards. Floating circular progress indicator and weight goal visualization.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Hero Header</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Section Cards</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Floating Progress</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Weight Viz</span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 hidden sm:block">
+                                <i data-lucide="arrow-right" class="w-5 h-5 text-foreground-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-1 bg-gradient-to-r from-success to-emerald-500"></div>
+                </a>
+
+                <!-- Design C -->
+                <a href="design-c-card-flow.html" class="design-card block bg-background-card rounded-2xl border border-border overflow-hidden hover:border-violet/50">
+                    <div class="p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-xl bg-violet/15 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="message-circle" class="w-7 h-7 text-violet"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-medium text-violet bg-violet/10 px-2 py-0.5 rounded">Design C</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-foreground mb-2">Conversational Card Flow</h3>
+                                <p class="text-foreground-muted text-sm mb-4">
+                                    One question per card in a conversational style. Cards fade as answered, auto-scrolling to the next. Feels like a guided conversation.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">9 Questions</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Auto-scroll</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Conversational</span>
+                                    <span class="text-xs bg-background-secondary px-2 py-1 rounded-full text-foreground-muted">Dot Progress</span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 hidden sm:block">
+                                <i data-lucide="arrow-right" class="w-5 h-5 text-foreground-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-1 bg-gradient-to-r from-violet to-purple-500"></div>
+                </a>
+            </div>
+
+            <!-- Comparison Section -->
+            <div class="mt-12 bg-background-card rounded-2xl border border-border p-6">
+                <h3 class="font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+                    <i data-lucide="git-compare" class="w-5 h-5 text-foreground-muted"></i>
+                    Design Comparison
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-border">
+                                <th class="text-left py-3 px-2 text-foreground-muted font-medium">Feature</th>
+                                <th class="text-center py-3 px-2 text-primary font-medium">A: Wizard</th>
+                                <th class="text-center py-3 px-2 text-success font-medium">B: Single Page</th>
+                                <th class="text-center py-3 px-2 text-violet font-medium">C: Card Flow</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-border/50">
+                                <td class="py-3 px-2 text-foreground">Native Date Picker</td>
+                                <td class="text-center py-3 px-2"><i data-lucide="check" class="w-4 h-4 text-success mx-auto"></i></td>
+                                <td class="text-center py-3 px-2"><i data-lucide="check" class="w-4 h-4 text-success mx-auto"></i></td>
+                                <td class="text-center py-3 px-2"><i data-lucide="check" class="w-4 h-4 text-success mx-auto"></i></td>
+                            </tr>
+                            <tr class="border-b border-border/50">
+                                <td class="py-3 px-2 text-foreground">Progress Indication</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Step bar</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Circular + sections</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Dots + bar</td>
+                            </tr>
+                            <tr class="border-b border-border/50">
+                                <td class="py-3 px-2 text-foreground">Review Before Submit</td>
+                                <td class="text-center py-3 px-2"><i data-lucide="check" class="w-4 h-4 text-success mx-auto"></i></td>
+                                <td class="text-center py-3 px-2"><i data-lucide="minus" class="w-4 h-4 text-foreground-muted mx-auto"></i></td>
+                                <td class="text-center py-3 px-2"><i data-lucide="minus" class="w-4 h-4 text-foreground-muted mx-auto"></i></td>
+                            </tr>
+                            <tr class="border-b border-border/50">
+                                <td class="py-3 px-2 text-foreground">Mobile Scrolling</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Minimal</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Full page</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Auto-guided</td>
+                            </tr>
+                            <tr class="border-b border-border/50">
+                                <td class="py-3 px-2 text-foreground">Visual Feedback</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Hero cards</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Weight viz</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Card states</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-2 text-foreground">Best For</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Clarity</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Overview</td>
+                                <td class="text-center py-3 px-2 text-foreground-muted">Engagement</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Common Improvements -->
+            <div class="mt-8 bg-gradient-to-br from-primary/10 to-violet/10 rounded-2xl border border-primary/20 p-6">
+                <h3 class="font-bold text-lg text-foreground mb-4 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-primary"></i>
+                    Improvements in All Designs
+                </h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="calendar" class="w-4 h-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground text-sm">Native Date Pickers</p>
+                            <p class="text-xs text-foreground-muted">Proper HTML5 date inputs with styled indicators</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-success/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-success"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground text-sm">Visual Progress</p>
+                            <p class="text-xs text-foreground-muted">Clear indication of completion status</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-violet/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="palette" class="w-4 h-4 text-violet"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground text-sm">Design System</p>
+                            <p class="text-xs text-foreground-muted">Uses project colors, icons, and patterns</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="smartphone" class="w-4 h-4 text-amber"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-foreground text-sm">Mobile-First</p>
+                            <p class="text-xs text-foreground-muted">Optimized for touch and small screens</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-border/50 py-6 mt-10">
+            <div class="max-w-4xl mx-auto px-6 text-center text-sm text-foreground-muted">
+                <p>Mounjaro Tracker Onboarding Redesign Concepts</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
