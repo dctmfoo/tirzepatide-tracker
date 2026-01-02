@@ -53,8 +53,10 @@ jobs:
             2. Read the repository's CLAUDE.md for style and conventions guidance
             3. Analyze for code quality, bugs, performance, security, and test coverage
 
-            ### Output
-            Update PR description using `gh pr edit ${{ github.event.pull_request.number }} --body "$(cat <<'EOF'
+            ### Output Format
+            Update PR description using `gh pr edit ${{ github.event.pull_request.number }} --body "..."` with this structure:
+
+            ```markdown
             ## Summary
             [1-2 sentence description of what this PR accomplishes]
 
@@ -64,9 +66,12 @@ jobs:
             - [Major change 3]
 
             **Issues Found:**
-            - [ ] [Issue 1 with file reference] <!-- ISSUE-1 -->
-            - [ ] [Issue 2] <!-- ISSUE-2 -->
-            (If none: "No significant issues found.")
+            | # | Issue | File | Status |
+            |---|-------|------|--------|
+            | 1 | [Issue description] | `path/file.ts:line` | ⏳ Open |
+            | 2 | [Issue description] | `path/file.ts:line` | ⏳ Open |
+
+            (If no issues: display "No issues found ✅" instead of the table)
 
             **Confidence Score: X/5**
             [1-2 sentence justification]
@@ -77,45 +82,49 @@ jobs:
             | `path/to/file.ts` | Brief description |
 
             ---
-            *🤖 Last reviewed: CURRENT_SHA_SHORT at TIMESTAMP*
-            EOF
-            )"`
+            *🤖 Last reviewed: `SHORT_SHA` at TIMESTAMP*
+            ```
 
             ---
             ## IF EVENT TYPE is "synchronize" (New commits pushed):
 
             ### Review Process
             1. Get current PR description: `gh pr view ${{ github.event.pull_request.number }} --json body -q .body`
-            2. Get ONLY the new changes using: `gh api repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.pull_request.head.sha }} --jq '.files[] | "File: \(.filename)\n\(.patch // "binary")\n---"'`
-            3. Review ONLY these new commits - don't re-review old code
-            4. Check if any previously flagged issues (marked with <!-- ISSUE-X -->) are now fixed
+            2. Get ONLY the new changes: `gh api repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.pull_request.head.sha }} --jq '.files[] | "File: \(.filename)\n\(.patch // "binary")\n---"'`
+            3. Review ONLY these new commits - do NOT re-review old code
+            4. Check if any issues in the **Issues Found** table are now fixed
 
-            ### Output
-            Update the PR description:
-            - Keep Summary and Key Changes unless they need updating
-            - Update **Issues Found**:
-              - Change `- [ ]` to `- [x]` for fixed issues
-              - Add new issues found in the new commits
-              - Remove the HTML comments (<!-- ISSUE-X -->) from fixed issues
-            - Update **Confidence Score** based on current state
-            - Update the "Last reviewed" timestamp and SHA
-            - Add a **Review History** section if not present:
-              ```
-              **Review History:**
-              - `SHA_SHORT`: [What changed - e.g., "Fixed issue #1, added new endpoint"]
-              ```
+            ### Output - MINIMAL UPDATES ONLY
+            You must ONLY update these sections (preserve everything else exactly):
+
+            1. **Issues Found** table:
+               - For fixed issues: Change `⏳ Open` to `✅ Fixed (\`SHORT_SHA\`)`
+               - For new issues in the new commits: Add new rows with `⏳ Open`
+               - Do NOT remove or renumber existing rows
+
+            2. **Confidence Score**: Update only if issues were fixed or new issues found
+
+            3. **Review History** (add if not present, append if exists):
+               ```
+               **Review History:**
+               - `SHORT_SHA`: [Brief description of what changed]
+               ```
+
+            4. **Last reviewed** timestamp: Update SHA and timestamp
+
+            DO NOT modify: Summary, Key Changes, or Important Files Changed (unless fundamentally incorrect)
 
             ---
             ## Scoring Guidelines
-            - **5/5**: No issues, ready to merge
-            - **4/5**: Minor issues, safe to merge with notes
+            - **5/5**: No open issues, ready to merge
+            - **4/5**: Minor open issues, safe to merge with notes
             - **3/5**: Some concerns that should be addressed
             - **2/5**: Significant issues requiring changes
             - **1/5**: Critical problems, do not merge
 
             ## Review Guidelines
             - Be concise but thorough
-            - Reference specific files when noting issues
+            - Reference specific files and line numbers when noting issues
             - Focus on substantive issues, not style nitpicks
             - For synchronize: Only flag NEW issues in the new commits
             - Be constructive and actionable
