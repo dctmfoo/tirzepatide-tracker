@@ -46,14 +46,20 @@ jobs:
             Review this pull request. The PR DESCRIPTION is the SINGLE SOURCE OF TRUTH.
             Your approach depends on the EVENT TYPE: "${{ github.event.action }}"
 
+            IMPORTANT: PRESERVE the original PR description written by the author.
+            APPEND your review under a "## 🤖 Claude Code Review" heading.
+
             ========================================
             ## EVENT TYPE: "opened" (New PR)
             ========================================
 
             ### Step 1: Gather Information
-            1. Run `gh pr diff ${{ github.event.pull_request.number }}` to see all changes
-            2. Read the repository's CLAUDE.md for style and conventions guidance
-            3. Analyze for: code quality, bugs, performance, security, test coverage
+            1. Get the ORIGINAL PR description first:
+               `gh pr view ${{ github.event.pull_request.number }} --json body -q .body`
+               Store this — you MUST preserve it.
+            2. Run `gh pr diff ${{ github.event.pull_request.number }}` to see all changes
+            3. Read the repository's CLAUDE.md for style and conventions guidance
+            4. Analyze for: code quality, bugs, performance, security, test coverage
 
             ### Step 2: Update PR Description
             Use `gh pr edit ${{ github.event.pull_request.number }} --body "$(cat <<'EOF'
@@ -62,15 +68,21 @@ jobs:
             )"` with this EXACT structure:
 
             ```
-            ## Summary
+            [ORIGINAL PR DESCRIPTION — preserve exactly as written by author]
+
+            ---
+
+            ## 🤖 Claude Code Review
+
+            ### Summary
             [1-2 sentence description of what this PR accomplishes]
 
-            **Key Changes:**
+            ### Key Changes
             - [Major change 1]
             - [Major change 2]
             - [Major change 3]
 
-            **Issues Found:**
+            ### Issues Found
             | # | Topic | Issue | File | Status |
             |---|-------|-------|------|--------|
             | 1 | 🔒 Security | [Brief description] | `path/file.ts:42` | ⏳ Open |
@@ -79,10 +91,10 @@ jobs:
 
             (If NO issues found, display: "**Issues Found:** None ✅")
 
-            **Confidence Score: X/5**
+            ### Confidence Score: X/5
             [1-2 sentence justification based on open issues]
 
-            **Important Files Changed:**
+            ### Important Files Changed
             | File | Changes |
             |------|---------|
             | `path/to/file.ts` | Brief description |
@@ -90,7 +102,7 @@ jobs:
             <details>
             <summary>📋 Fix Prompts (for AI-assisted fixes)</summary>
 
-            ### Issue #1 — 🔒 Security: [Title]
+            #### Issue #1 — 🔒 Security: [Title]
             ```
             File: path/file.ts:42
             Problem: [Detailed explanation of the issue]
@@ -98,7 +110,7 @@ jobs:
             Suggested fix: [Concrete suggestion]
             ```
 
-            ### Issue #2 — 🐛 Logic: [Title]
+            #### Issue #2 — 🐛 Logic: [Title]
             ```
             File: path/file.ts:67
             Problem: [Detailed explanation]
@@ -140,7 +152,11 @@ jobs:
             4. Check if any open issues (⏳) in the Issues Found table are now fixed
 
             ### Step 2: Update PR Description — MINIMAL CHANGES ONLY
-            Parse the existing PR description and update ONLY these sections:
+            The PR description has TWO parts separated by `## 🤖 Claude Code Review`:
+            1. **ORIGINAL DESCRIPTION** (above the heading) — NEVER modify this
+            2. **CLAUDE CODE REVIEW** (below the heading) — only update specific sections
+
+            Within the Claude Code Review section, update ONLY:
 
             **A. Issues Found table:**
             - Fixed issues: Change `⏳ Open` → `✅ Fixed (\`SHORT_SHA\`)`
@@ -156,7 +172,7 @@ jobs:
 
             **D. Review History (add after Important Files Changed, before Fix Prompts):**
             ```
-            **Review History:**
+            ### Review History
             - `SHORT_SHA`: [What changed — e.g., "Fixed #1, #3; Added new endpoint"]
             ```
             If Review History exists, append new entry. If not, create it.
@@ -164,7 +180,7 @@ jobs:
             **E. Last reviewed timestamp:**
             - Update SHA and timestamp
 
-            **DO NOT MODIFY:** Summary, Key Changes, Important Files Changed (unless fundamentally wrong)
+            **DO NOT MODIFY:** Original description, Summary, Key Changes, Important Files Changed
 
             ### Step 3: Inline Comments for NEW Issues Only
             Create inline comments ONLY for newly discovered issues (not for status updates on existing issues).
