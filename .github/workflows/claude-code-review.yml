@@ -43,20 +43,25 @@ jobs:
             BEFORE SHA: ${{ github.event.before }}
             CURRENT SHA: ${{ github.event.pull_request.head.sha }}
 
-            Review this pull request. Your approach depends on the EVENT TYPE.
+            Review this pull request. The PR DESCRIPTION is the SINGLE SOURCE OF TRUTH.
+            Your approach depends on the EVENT TYPE: "${{ github.event.action }}"
 
-            ---
-            ## IF EVENT TYPE is "opened" (New PR):
+            ========================================
+            ## EVENT TYPE: "opened" (New PR)
+            ========================================
 
-            ### Review Process
+            ### Step 1: Gather Information
             1. Run `gh pr diff ${{ github.event.pull_request.number }}` to see all changes
             2. Read the repository's CLAUDE.md for style and conventions guidance
-            3. Analyze for code quality, bugs, performance, security, and test coverage
+            3. Analyze for: code quality, bugs, performance, security, test coverage
 
-            ### Output Format
-            Update PR description using `gh pr edit ${{ github.event.pull_request.number }} --body "..."` with this structure:
+            ### Step 2: Update PR Description
+            Use `gh pr edit ${{ github.event.pull_request.number }} --body "$(cat <<'EOF'
+            ...content...
+            EOF
+            )"` with this EXACT structure:
 
-            ```markdown
+            ```
             ## Summary
             [1-2 sentence description of what this PR accomplishes]
 
@@ -66,67 +71,132 @@ jobs:
             - [Major change 3]
 
             **Issues Found:**
-            | # | Issue | File | Status |
-            |---|-------|------|--------|
-            | 1 | [Issue description] | `path/file.ts:line` | ⏳ Open |
-            | 2 | [Issue description] | `path/file.ts:line` | ⏳ Open |
+            | # | Topic | Issue | File | Status |
+            |---|-------|-------|------|--------|
+            | 1 | 🔒 Security | [Brief description] | `path/file.ts:42` | ⏳ Open |
+            | 2 | 🐛 Logic | [Brief description] | `path/file.ts:67` | ⏳ Open |
+            | 3 | ⚡ Perf | [Brief description] | `path/file.ts:89` | ⏳ Open |
 
-            (If no issues: display "No issues found ✅" instead of the table)
+            (If NO issues found, display: "**Issues Found:** None ✅")
 
             **Confidence Score: X/5**
-            [1-2 sentence justification]
+            [1-2 sentence justification based on open issues]
 
             **Important Files Changed:**
             | File | Changes |
             |------|---------|
             | `path/to/file.ts` | Brief description |
 
+            <details>
+            <summary>📋 Fix Prompts (for AI-assisted fixes)</summary>
+
+            ### Issue #1 — 🔒 Security: [Title]
+            ```
+            File: path/file.ts:42
+            Problem: [Detailed explanation of the issue]
+            Impact: [Why this matters]
+            Suggested fix: [Concrete suggestion]
+            ```
+
+            ### Issue #2 — 🐛 Logic: [Title]
+            ```
+            File: path/file.ts:67
+            Problem: [Detailed explanation]
+            Impact: [Why this matters]
+            Suggested fix: [Concrete suggestion]
+            ```
+
+            (Repeat for each issue. If no issues, omit this entire section.)
+
+            </details>
+
             ---
             *🤖 Last reviewed: `SHORT_SHA` at TIMESTAMP*
             ```
 
-            ---
-            ## IF EVENT TYPE is "synchronize" (New commits pushed):
+            ### Step 3: Create Inline Comments (for each issue)
+            For EACH issue in the table, create an inline comment on the specific file/line using:
+            `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments -f body="..." -f commit_id="FULL_SHA" -f path="file/path.ts" -f line=LINE_NUMBER`
 
-            ### Review Process
-            1. Get current PR description: `gh pr view ${{ github.event.pull_request.number }} --json body -q .body`
-            2. Get ONLY the new changes: `gh api repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.pull_request.head.sha }} --jq '.files[] | "File: \(.filename)\n\(.patch // "binary")\n---"'`
-            3. Review ONLY these new commits - do NOT re-review old code
-            4. Check if any issues in the **Issues Found** table are now fixed
+            Inline comment format:
+            ```
+            **Issue #[N] — [TOPIC_EMOJI] [Topic]: [Title]**
 
-            ### Output - MINIMAL UPDATES ONLY
-            You must ONLY update these sections (preserve everything else exactly):
+            [Brief explanation of the problem]
 
-            1. **Issues Found** table:
-               - For fixed issues: Change `⏳ Open` to `✅ Fixed (\`SHORT_SHA\`)`
-               - For new issues in the new commits: Add new rows with `⏳ Open`
-               - Do NOT remove or renumber existing rows
+            📋 See **Fix Prompts** section in PR description for detailed fix guidance.
+            ```
 
-            2. **Confidence Score**: Update only if issues were fixed or new issues found
+            ========================================
+            ## EVENT TYPE: "synchronize" (New Commits)
+            ========================================
 
-            3. **Review History** (add if not present, append if exists):
-               ```
-               **Review History:**
-               - `SHORT_SHA`: [Brief description of what changed]
-               ```
+            ### Step 1: Gather Information
+            1. Get current PR description:
+               `gh pr view ${{ github.event.pull_request.number }} --json body -q .body`
+            2. Get ONLY the new changes since last review:
+               `gh api repos/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.event.pull_request.head.sha }} --jq '.files[] | "File: \(.filename)\n\(.patch // \"binary\")\n---"'`
+            3. Review ONLY these new commits — do NOT re-review previously reviewed code
+            4. Check if any open issues (⏳) in the Issues Found table are now fixed
 
-            4. **Last reviewed** timestamp: Update SHA and timestamp
+            ### Step 2: Update PR Description — MINIMAL CHANGES ONLY
+            Parse the existing PR description and update ONLY these sections:
 
-            DO NOT modify: Summary, Key Changes, or Important Files Changed (unless fundamentally incorrect)
+            **A. Issues Found table:**
+            - Fixed issues: Change `⏳ Open` → `✅ Fixed (\`SHORT_SHA\`)`
+            - New issues in new commits: Add new rows with next number, `⏳ Open`
+            - NEVER remove rows, NEVER renumber existing issues
 
-            ---
+            **B. Fix Prompts section:**
+            - For fixed issues: Keep the prompt but add "✅ RESOLVED in \`SHORT_SHA\`" at the top
+            - For new issues: Add new prompt entries matching the new table rows
+
+            **C. Confidence Score:**
+            - Update score and justification based on current open issue count
+
+            **D. Review History (add after Important Files Changed, before Fix Prompts):**
+            ```
+            **Review History:**
+            - `SHORT_SHA`: [What changed — e.g., "Fixed #1, #3; Added new endpoint"]
+            ```
+            If Review History exists, append new entry. If not, create it.
+
+            **E. Last reviewed timestamp:**
+            - Update SHA and timestamp
+
+            **DO NOT MODIFY:** Summary, Key Changes, Important Files Changed (unless fundamentally wrong)
+
+            ### Step 3: Inline Comments for NEW Issues Only
+            Create inline comments ONLY for newly discovered issues (not for status updates on existing issues).
+
+            ========================================
+            ## Topic Categories
+            ========================================
+            | Emoji | Topic | Use for |
+            |-------|-------|---------|
+            | 🔒 | Security | Vulnerabilities, secrets, auth, injection |
+            | 🐛 | Logic | Bugs, race conditions, incorrect behavior |
+            | ⚡ | Perf | N+1 queries, memory leaks, slow operations |
+            | 🧹 | Quality | Missing error handling, unclear code |
+            | 🧪 | Testing | Missing tests, uncovered edge cases |
+            | 📝 | Types | Type errors, missing types, any abuse |
+
+            ========================================
             ## Scoring Guidelines
+            ========================================
             - **5/5**: No open issues, ready to merge
-            - **4/5**: Minor open issues, safe to merge with notes
-            - **3/5**: Some concerns that should be addressed
-            - **2/5**: Significant issues requiring changes
-            - **1/5**: Critical problems, do not merge
+            - **4/5**: Minor open issues (Quality/Types), safe to merge
+            - **3/5**: Some concerns that should be addressed (Perf/Testing)
+            - **2/5**: Significant issues requiring changes (Logic bugs)
+            - **1/5**: Critical problems, do not merge (Security)
 
+            ========================================
             ## Review Guidelines
+            ========================================
             - Be concise but thorough
-            - Reference specific files and line numbers when noting issues
+            - Always include file path AND line number
             - Focus on substantive issues, not style nitpicks
-            - For synchronize: Only flag NEW issues in the new commits
+            - For synchronize: ONLY flag NEW issues in new commits
             - Be constructive and actionable
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
