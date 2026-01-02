@@ -207,3 +207,32 @@ body::-webkit-scrollbar {
 .no-scrollbar::-webkit-scrollbar {
   display: none;  /* Chrome, Safari, Opera */
 }
+
+/*
+ * Date/Time Input Dark Mode Styling
+ * Native date pickers need special handling for dark themes
+ * Reference: https://dev.to/cassidoo/styling-the-icon-for-html-date-and-time-types-2m4g
+ */
+
+/* Set color scheme for native date picker popup */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+/* Make the calendar/clock icon visible on dark backgrounds */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
