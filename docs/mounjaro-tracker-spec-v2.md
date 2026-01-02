@@ -812,6 +812,25 @@ function getSuggestedSite(lastSite: string): string {
 | Dose escalation reminder | OFF | After 4 weeks on same dose |
 | Side effect check-in | ON | 3 days after dose increase |
 
+#### Appearance
+| Setting | Options | Default |
+|---------|---------|---------|
+| Theme | Light / System / Dark | System |
+
+> **Implementation Note (2026-01-03) - Theme Switching [x]:**
+> Implemented light/system/dark mode support using `next-themes` package.
+> - Files:
+>   - `src/components/providers/ThemeProvider.tsx` - Wraps next-themes with proper configuration
+>   - `src/components/settings/ThemeToggle.tsx` - 3-button toggle (Light/System/Dark) with icons
+>   - `src/app/globals.css` - Complete light theme CSS variables in `@layer base`
+>   - `src/app/layout.tsx` - ThemeProvider wrapper with `suppressHydrationWarning`
+> - Key technical details:
+>   - Uses `attribute="class"` for Tailwind CSS v4 compatibility
+>   - CSS variables must be in `@layer base` for proper Tailwind v4 specificity
+>   - Hydration-safe pattern with mounted state check
+>   - Theme-aware date input styling for native pickers
+> - Accessed via Settings → Appearance modal
+
 #### Export Data
 | Format | Output |
 |--------|--------|

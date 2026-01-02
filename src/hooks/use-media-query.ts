@@ -6,7 +6,8 @@ export function useMediaQuery(query: string): boolean {
   useEffect(() => {
     const media = window.matchMedia(query)
 
-    // Set initial value
+    // Set initial value - this is intentional for hydration-safe initialization
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMatches(media.matches)
 
     // Define listener
