@@ -1,4 +1,5 @@
-import { Section, StatCard, ProgressBar } from '@/components/ui';
+import { Target, Calendar, Flag, Flame, Pill } from 'lucide-react';
+import { Section, ProgressRing, StatCard } from '@/components/ui';
 
 type JourneyProgressSectionProps = {
   startWeight: number | null;
@@ -18,9 +19,18 @@ type JourneyProgressSectionProps = {
 function formatWeight(kg: number | null, unit: string = 'kg'): string {
   if (kg === null) return '—';
   if (unit === 'lbs') {
-    return `${(kg * 2.20462).toFixed(1)} lbs`;
+    return `${(kg * 2.20462).toFixed(0)}`;
   }
-  return `${kg.toFixed(1)}kg`;
+  return `${kg.toFixed(1)}`;
+}
+
+function formatWeightWithUnit(kg: number | null, unit: string = 'kg'): string {
+  if (kg === null) return '—';
+  const unitLabel = unit === 'lbs' ? 'lbs' : 'kg';
+  if (unit === 'lbs') {
+    return `${(kg * 2.20462).toFixed(1)} ${unitLabel}`;
+  }
+  return `${kg.toFixed(1)}${unitLabel}`;
 }
 
 function formatDate(dateString: string | null): string {
@@ -61,67 +71,62 @@ export function JourneyProgressSection({
 }: JourneyProgressSectionProps) {
   const weightLost = startWeight && currentWeight ? startWeight - currentWeight : null;
   const estimatedDate = estimateGoalDate(remainingToGoal, treatmentWeeks, weightLost);
+  const unitLabel = weightUnit === 'lbs' ? 'lbs' : 'kg';
 
   return (
     <Section title="Journey Progress">
-      {/* Goal Progress Card */}
-      <div className="rounded-lg bg-card p-4">
-        <h3 className="mb-3 font-medium text-foreground">Goal Progress</h3>
-
-        <div className="mb-2 flex justify-between text-sm text-muted-foreground">
-          <span>{formatWeight(startWeight, weightUnit)}</span>
-          <span className="font-medium text-foreground">{formatWeight(currentWeight, weightUnit)}</span>
-          <span>{formatWeight(goalWeight, weightUnit)}</span>
-        </div>
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Start</span>
-          <span>Current</span>
-          <span>Goal</span>
-        </div>
-
-        <div className="mt-3">
-          <ProgressBar
-            value={progressPercent || 0}
-            max={100}
-            color={progressPercent && progressPercent > 50 ? 'success' : 'primary'}
-          />
-        </div>
-
-        <p className="mt-3 text-sm text-muted-foreground">
-          {progressPercent !== null ? (
-            <>
-              <span className="text-foreground">{progressPercent.toFixed(1)}%</span> complete ·{' '}
-              {formatWeight(remainingToGoal, weightUnit)} to go
-              {estimatedDate && (
-                <>
-                  <br />
-                  <span className="text-muted-foreground">At current pace: ~{estimatedDate}</span>
-                </>
-              )}
-            </>
-          ) : (
-            'Log weights to track progress'
+      {/* Goal Progress Hero Card */}
+      <div className="overflow-hidden rounded-xl border border-success/20 bg-gradient-to-br from-success/15 to-success/5 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Target className="h-4 w-4 text-success" />
+              <span>Goal Progress</span>
+            </p>
+            <div className="mt-1 flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-success">
+                {progressPercent !== null ? `${progressPercent.toFixed(0)}%` : '—'}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {remainingToGoal !== null ? `${formatWeightWithUnit(remainingToGoal, weightUnit)} to go` : ''}
+              </span>
+            </div>
+            {/* Weight range display */}
+            <div className="mt-2 flex justify-between text-xs text-muted-foreground">
+              <span>{formatWeight(startWeight, weightUnit)}{unitLabel} start</span>
+              <span>{formatWeight(goalWeight, weightUnit)}{unitLabel} goal</span>
+            </div>
+            {estimatedDate && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                At current pace: ~{estimatedDate}
+              </p>
+            )}
+          </div>
+          {progressPercent !== null && (
+            <ProgressRing value={progressPercent} size={64} strokeWidth={6} />
           )}
-        </p>
+        </div>
       </div>
 
       {/* Treatment Timeline Card */}
       {treatmentStartDate && (
-        <div className="mt-3 rounded-lg bg-card p-4">
-          <h3 className="mb-3 font-medium text-foreground">Treatment Timeline</h3>
-          <p className="text-foreground">
-            Week {treatmentWeeks || 0} · Day {treatmentDays || 0}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Started {formatDate(treatmentStartDate)}
-          </p>
-
+        <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-500/15">
+              <Calendar className="h-4 w-4 text-violet-500" />
+            </div>
+            <div>
+              <p className="font-semibold text-foreground">Week {treatmentWeeks || 0}</p>
+              <p className="text-sm text-muted-foreground">
+                Started {formatDate(treatmentStartDate)}
+              </p>
+            </div>
+          </div>
           {currentDose !== null && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              {treatmentWeeks !== null && Math.floor(treatmentWeeks / 4) >= 1
-                ? `${Math.floor((treatmentWeeks % 4) || 4)} weeks on current dose (${currentDose}mg)`
-                : `Current dose: ${currentDose}mg`}
-            </p>
+            <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <Pill className="h-3.5 w-3.5" />
+              <span>{currentDose}mg dose</span>
+            </div>
           )}
         </div>
       )}
@@ -129,18 +134,24 @@ export function JourneyProgressSection({
       {/* Milestone and Streak Cards */}
       <div className="mt-3 grid grid-cols-2 gap-3">
         <StatCard
+          icon={Flag}
+          iconColor="amber"
           label="Next Milestone"
-          value={nextMilestone ? formatWeight(nextMilestone.weight, weightUnit) : '—'}
-          sublabel={
+          value={nextMilestone ? formatWeight(nextMilestone.weight, weightUnit) : null}
+          unit={nextMilestone ? unitLabel : undefined}
+          subtext={
             nextMilestone
-              ? `${formatWeight(nextMilestone.remaining, weightUnit)} away`
-              : 'Set a goal to track'
+              ? `${formatWeightWithUnit(nextMilestone.remaining, weightUnit)} away`
+              : 'Set a goal'
           }
         />
         <StatCard
-          label="Logging Streak"
-          value={loggingStreak > 0 ? `${loggingStreak} days` : '—'}
-          sublabel={loggingStreak > 0 ? 'Keep it up!' : 'Log daily to start'}
+          icon={Flame}
+          iconColor="orange"
+          label="Streak"
+          value={loggingStreak > 0 ? loggingStreak : null}
+          unit={loggingStreak > 0 ? 'days' : undefined}
+          subtext={loggingStreak > 0 ? 'Keep it up!' : 'Log daily'}
         />
       </div>
     </Section>

@@ -10,8 +10,8 @@ export default async function AppLayout({
   await verifySessionWithProfile();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <main className="mx-auto w-full max-w-2xl flex-1 px-safe pt-safe pb-20">{children}</main>
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background pt-safe">
+      <main className="mx-auto w-full max-w-2xl flex-1 overflow-x-hidden pb-24">{children}</main>
       <BottomNav />
     </div>
   );

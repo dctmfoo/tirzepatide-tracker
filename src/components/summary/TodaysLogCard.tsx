@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { ClipboardList, CheckCircle2, Circle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type TodaysLogCardProps = {
   hasLog: boolean;
@@ -18,51 +20,67 @@ export function TodaysLogCard({
   sideEffectsCount = 0,
 }: TodaysLogCardProps) {
   const completedItems = [hasDiet, hasActivity, hasMental].filter(Boolean).length;
+  const items = [
+    { done: hasDiet, label: 'Diet' },
+    { done: hasActivity, label: 'Activity' },
+    { done: hasMental, label: 'Mental' },
+  ];
 
   return (
-    <div className="rounded-lg bg-card p-4">
+    <div className="overflow-hidden rounded-xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">📝</span>
-          <h3 className="font-medium text-foreground">Today&apos;s Log</h3>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/15">
+            <ClipboardList className="h-5 w-5 text-blue-500" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-foreground">Today&apos;s Log</h3>
+            <p className="text-sm text-muted-foreground">
+              {hasLog ? (
+                <>
+                  {completedItems}/3 complete
+                  {sideEffectsCount > 0 && ` · ${sideEffectsCount} side effect${sideEffectsCount > 1 ? 's' : ''}`}
+                </>
+              ) : (
+                'Not started'
+              )}
+            </p>
+          </div>
         </div>
-        <span
-          className={`text-sm ${hasLog ? 'text-success' : 'text-muted-foreground'}`}
-        >
-          {hasLog ? (
-            <>
-              {completedItems}/3 complete
-              {sideEffectsCount > 0 && ` · ${sideEffectsCount} side effect${sideEffectsCount > 1 ? 's' : ''}`}
-            </>
-          ) : (
-            'Not started'
-          )}
-        </span>
+
+        {/* Progress dots */}
+        <div className="flex gap-1">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className={`h-2 w-2 rounded-full ${item.done ? 'bg-success' : 'bg-muted'}`}
+            />
+          ))}
+        </div>
       </div>
 
-      {!hasLog && (
-        <div className="mt-3">
-          <Link
-            href="/log"
-            className="inline-block rounded-lg border border-primary px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            Log Now
-          </Link>
+      {hasLog && (
+        <div className="mt-3 flex gap-4 text-sm">
+          {items.map((item) => (
+            <span
+              key={item.label}
+              className={`flex items-center gap-1 ${item.done ? 'text-success' : 'text-muted-foreground'}`}
+            >
+              {item.done ? (
+                <CheckCircle2 className="h-3.5 w-3.5" />
+              ) : (
+                <Circle className="h-3.5 w-3.5" />
+              )}
+              {item.label}
+            </span>
+          ))}
         </div>
       )}
 
-      {hasLog && (
-        <div className="mt-3 flex gap-2 text-xs text-muted-foreground">
-          <span className={hasDiet ? 'text-success' : ''}>
-            {hasDiet ? '✓' : '○'} Diet
-          </span>
-          <span className={hasActivity ? 'text-success' : ''}>
-            {hasActivity ? '✓' : '○'} Activity
-          </span>
-          <span className={hasMental ? 'text-success' : ''}>
-            {hasMental ? '✓' : '○'} Mental
-          </span>
-        </div>
+      {!hasLog && (
+        <Button variant="outline" className="mt-4 w-full" asChild>
+          <Link href="/log">Log Now</Link>
+        </Button>
       )}
     </div>
   );

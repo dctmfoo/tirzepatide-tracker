@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ProgressBar } from '@/components/ui';
+import { Syringe, Clock, AlertTriangle, CheckCircle2, Pill, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ProgressRing } from '@/components/ui';
 
 type NextInjectionCardProps = {
   nextDue: string | null;
@@ -17,18 +19,44 @@ function formatDate(dateString: string | null): string {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-function getStatusText(status: string, daysUntil: number | null): string {
+function getStatusText(status: string, daysUntil: number | null, nextDue: string | null): string {
   if (status === 'not_started') return 'No injections recorded';
   if (status === 'overdue') return `Overdue by ${Math.abs(daysUntil || 0)} days`;
   if (status === 'due_today') return 'Due today';
-  if (status === 'due_soon') return `Due in ${daysUntil} day${daysUntil === 1 ? '' : 's'}`;
-  return `Due in ${daysUntil} days`;
+  if (status === 'due_soon') {
+    const dateStr = nextDue ? ` (${formatDate(nextDue)})` : '';
+    return `Due in ${daysUntil} day${daysUntil === 1 ? '' : 's'}${dateStr}`;
+  }
+  const dateStr = nextDue ? ` (${formatDate(nextDue)})` : '';
+  return `Due in ${daysUntil} days${dateStr}`;
 }
 
-function getStatusColor(status: string): 'success' | 'warning' | 'primary' {
-  if (status === 'overdue') return 'warning';
-  if (status === 'due_today' || status === 'due_soon') return 'warning';
-  return 'primary';
+function getStatusConfig(status: string) {
+  if (status === 'overdue') {
+    return {
+      icon: AlertTriangle,
+      iconColor: 'text-destructive',
+      iconBg: 'bg-destructive/15',
+      cardBg: 'bg-gradient-to-br from-destructive/15 to-destructive/5',
+      border: 'border-destructive/20',
+    };
+  }
+  if (status === 'due_today' || status === 'due_soon') {
+    return {
+      icon: Clock,
+      iconColor: 'text-warning',
+      iconBg: 'bg-warning/15',
+      cardBg: 'bg-gradient-to-br from-warning/15 to-warning/5',
+      border: 'border-warning/20',
+    };
+  }
+  return {
+    icon: CheckCircle2,
+    iconColor: 'text-success',
+    iconBg: 'bg-success/15',
+    cardBg: 'bg-card',
+    border: 'border-border',
+  };
 }
 
 export function NextInjectionCard({
@@ -38,55 +66,52 @@ export function NextInjectionCard({
   status,
   suggestedSite = 'Thigh - Right',
 }: NextInjectionCardProps) {
-  const dayInCycle = daysUntil !== null ? 7 - daysUntil : 0;
-  const progressValue = Math.max(0, Math.min(dayInCycle, 7));
+  const dayInCycle = daysUntil !== null ? Math.max(0, 7 - daysUntil) : 0;
+  const progressValue = (dayInCycle / 7) * 100;
+  const config = getStatusConfig(status);
+  const StatusIcon = config.icon;
+  const showButton = status === 'not_started' || status === 'due_today' || status === 'overdue';
 
   return (
-    <div className="rounded-lg bg-card p-4">
-      <div className="flex items-center gap-3">
-        <span className="text-2xl">💉</span>
-        <h3 className="font-medium text-foreground">Next Injection</h3>
-      </div>
-
-      <div className="mt-3 space-y-3">
-        <p className="text-foreground">
-          {status === 'not_started' ? (
-            'Log your first injection to get started'
-          ) : (
-            <>
-              {getStatusText(status, daysUntil)}
-              {nextDue && status !== 'overdue' && (
-                <span className="text-muted-foreground"> ({formatDate(nextDue)})</span>
-              )}
-            </>
-          )}
-        </p>
+    <div className={`overflow-hidden rounded-xl border p-4 ${config.cardBg} ${config.border}`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className={`flex h-10 w-10 items-center justify-center rounded-full ${config.iconBg}`}>
+            <Syringe className={`h-5 w-5 ${config.iconColor}`} />
+          </div>
+          <div>
+            <h3 className="font-semibold text-foreground">Next Injection</h3>
+            <p className="text-sm text-muted-foreground">
+              {getStatusText(status, daysUntil, nextDue)}
+            </p>
+          </div>
+        </div>
 
         {status !== 'not_started' && (
-          <>
-            <ProgressBar
-              value={progressValue}
-              max={7}
-              label={`Day ${dayInCycle} of 7`}
-              color={getStatusColor(status)}
-            />
-
-            <div className="flex flex-col gap-1 text-sm text-muted-foreground">
-              {currentDose && <span>Current dose: {currentDose}mg</span>}
-              <span>Suggested site: {suggestedSite}</span>
-            </div>
-          </>
-        )}
-
-        {(status === 'not_started' || status === 'due_today' || status === 'overdue') && (
-          <Link
-            href="/jabs/new"
-            className="mt-2 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Log Injection
-          </Link>
+          <ProgressRing value={progressValue} size={48} strokeWidth={4} />
         )}
       </div>
+
+      {status !== 'not_started' && (
+        <div className="mt-3 flex gap-4 text-sm">
+          {currentDose && (
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <Pill className="h-3.5 w-3.5" />
+              {currentDose}mg
+            </span>
+          )}
+          <span className="flex items-center gap-1.5 text-muted-foreground">
+            <MapPin className="h-3.5 w-3.5" />
+            {suggestedSite}
+          </span>
+        </div>
+      )}
+
+      {showButton && (
+        <Button className="mt-4 w-full" asChild>
+          <Link href="/jabs/new">Log Injection</Link>
+        </Button>
+      )}
     </div>
   );
 }

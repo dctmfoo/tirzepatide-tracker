@@ -1,24 +1,38 @@
+import { Skeleton } from '@/components/ui/skeleton';
+
 export function ResultsSkeleton() {
   return (
-    <div className="animate-pulse space-y-4 p-4">
-      {/* Period tabs skeleton */}
-      <div className="h-10 w-full rounded bg-background-card" />
-
+    <div className="space-y-6 overflow-x-hidden p-4">
       {/* Header skeleton */}
-      <div className="flex items-center justify-between">
-        <div className="h-6 w-32 rounded bg-background-card" />
-        <div className="h-4 w-24 rounded bg-background-card" />
-      </div>
+      <Skeleton className="h-8 w-24" />
 
-      {/* Stat cards grid skeleton */}
-      <div className="grid grid-cols-3 gap-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-20 rounded-xl bg-background-card" />
+      {/* Period tabs skeleton */}
+      <Skeleton className="h-10 w-full rounded-lg p-1">
+        <div className="grid h-full w-full grid-cols-4 gap-1">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="rounded-md bg-muted" />
+          ))}
+        </div>
+      </Skeleton>
+
+      {/* Hero stat skeleton */}
+      <Skeleton className="h-28 rounded-2xl" />
+
+      {/* Stat cards grid skeleton - 2x2 */}
+      <div className="grid grid-cols-2 gap-3">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-24 rounded-xl" />
         ))}
       </div>
 
       {/* Chart skeleton */}
-      <div className="h-72 rounded-lg bg-background-card" />
+      <Skeleton className="h-72 rounded-xl" />
+
+      {/* Insights skeleton */}
+      <div className="space-y-3">
+        <Skeleton className="h-5 w-20" />
+        <Skeleton className="h-20 rounded-xl" />
+      </div>
     </div>
   );
 }

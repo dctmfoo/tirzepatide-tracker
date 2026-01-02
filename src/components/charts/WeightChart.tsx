@@ -1,16 +1,9 @@
 'use client';
 
 import { useMemo } from 'react';
-import {
-  ComposedChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-  CartesianGrid,
-} from 'recharts';
+import { Area, ComposedChart, Line, XAxis, YAxis, ReferenceLine, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type WeightDataPoint = {
   date: string;
@@ -29,40 +22,30 @@ type WeightChartProps = {
 };
 
 const DOSE_COLORS: Record<number, string> = {
-  2.5: '#9ca3af', // gray
-  5: '#a855f7', // purple
-  7.5: '#14b8a6', // teal
-  10: '#3b82f6', // blue
-  12.5: '#6366f1', // indigo
-  15: '#ec4899', // pink
+  2.5: 'hsl(220, 9%, 60%)', // gray
+  5: 'hsl(270, 91%, 65%)', // purple
+  7.5: 'hsl(168, 76%, 42%)', // teal
+  10: 'hsl(217, 91%, 60%)', // blue
+  12.5: 'hsl(239, 84%, 67%)', // indigo
+  15: 'hsl(330, 81%, 60%)', // pink
 };
 
-function formatMonth(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
 
-function formatDate(dateStr: string): string {
+const chartConfig = {
+  weight: {
+    label: 'Weight',
+    color: 'hsl(var(--chart-1))',
+  },
+} satisfies ChartConfig;
+
+function formatXAxis(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function CustomTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: Array<{ value: number; payload: { date: string; weight: number } }>;
-}) {
-  if (!active || !payload?.length) return null;
-
-  const data = payload[0];
-  return (
-    <div className="rounded-lg bg-card px-3 py-2 shadow-lg border border-border">
-      <p className="text-xs text-muted-foreground">{formatDate(data.payload.date)}</p>
-      <p className="font-bold text-foreground">{data.value.toFixed(2)}kg</p>
-    </div>
-  );
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartProps) {
@@ -91,7 +74,7 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
       return {
         ...point,
         dose: currentDose,
-        color: DOSE_COLORS[currentDose] || '#9ca3af',
+        color: DOSE_COLORS[currentDose] || DOSE_COLORS[2.5],
       };
     });
   }, [data, doseHistory]);
@@ -104,14 +87,12 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
       dose: number;
       color: string;
       points: typeof chartData;
-      labelPosition?: { x: number; y: number };
     }> = [];
 
     let currentSegment: (typeof result)[0] | null = null;
 
     chartData.forEach((point, index) => {
       if (!currentSegment || currentSegment.dose !== point.dose) {
-        // Start new segment, but include last point of previous segment for continuity
         const newSegment = {
           dose: point.dose,
           color: point.color,
@@ -127,11 +108,20 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
     return result;
   }, [chartData]);
 
+  // Get unique doses for legend
+  const uniqueDoses = useMemo(() => {
+    const doses = new Set<number>();
+    segments.forEach((s) => doses.add(s.dose));
+    return Array.from(doses).sort((a, b) => a - b);
+  }, [segments]);
+
   if (data.length === 0) {
     return (
-      <div className="flex h-72 items-center justify-center rounded-lg bg-card">
-        <p className="text-muted-foreground">Log your first weight to see your progress chart</p>
-      </div>
+      <Card className="overflow-hidden border-border">
+        <CardContent className="flex h-48 items-center justify-center">
+          <p className="text-muted-foreground">Log your first weight to see your progress chart</p>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -150,72 +140,94 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
   }
 
   return (
-    <div className="relative">
-      {/* Dose labels */}
-      <div className="absolute left-4 top-0 z-10 flex flex-wrap gap-2">
-        {segments.map((segment, index) => {
-          // Only show label for first occurrence of each dose
-          const isFirstOccurrence = segments.findIndex((s) => s.dose === segment.dose) === index;
-          if (!isFirstOccurrence) return null;
-
-          return (
-            <span
-              key={`label-${segment.dose}`}
-              className="rounded px-2 py-1 text-xs font-medium text-white"
-              style={{ backgroundColor: segment.color }}
-            >
-              {segment.dose}mg
+    <Card className="flex h-full flex-col overflow-hidden border-border py-3">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-3 pb-1">
+        <CardTitle className="text-sm font-semibold">Progress</CardTitle>
+        <div className="flex flex-wrap gap-1.5">
+          {uniqueDoses.map((dose) => (
+            <span key={dose} className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: DOSE_COLORS[dose] }}
+              />
+              {dose}mg
             </span>
-          );
-        })}
-      </div>
-
-      <div className="h-72 w-full overflow-hidden pt-8">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 10, right: 5, left: 10, bottom: 20 }}>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#374151"
-              vertical={true}
-              horizontal={true}
-            />
+          ))}
+        </div>
+      </CardHeader>
+      <CardContent className="min-h-0 flex-1 overflow-hidden px-0 pb-0">
+        <ChartContainer config={chartConfig} className="h-full w-full">
+          <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" vertical={false} />
             <XAxis
               dataKey="date"
-              tickFormatter={formatMonth}
-              stroke="#9ca3af"
-              tick={{ fill: '#9ca3af', fontSize: 12 }}
-              axisLine={{ stroke: '#374151' }}
+              tickFormatter={formatXAxis}
               tickLine={false}
-              interval="preserveStartEnd"
+              axisLine={false}
+              tickMargin={8}
+              className="text-xs"
+              minTickGap={40}
             />
             <YAxis
               orientation="right"
               domain={[yMin, yMax]}
               ticks={yTicks}
-              tickFormatter={(value) => `${value} kg`}
-              stroke="#9ca3af"
-              tick={{ fill: '#9ca3af', fontSize: 12 }}
-              axisLine={false}
+              tickFormatter={(value) => `${value}`}
               tickLine={false}
-              width={55}
+              axisLine={false}
+              tickMargin={8}
+              width={35}
+              className="text-xs"
             />
-            <Tooltip content={<CustomTooltip />} />
+            <ChartTooltip
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const data = payload[0];
+                return (
+                  <div className="rounded-lg border border-border bg-background px-3 py-2 shadow-lg">
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(data.payload?.date)}
+                    </p>
+                    <p className="font-bold tabular-nums">
+                      {Number(data.value).toFixed(1)} kg
+                    </p>
+                  </div>
+                );
+              }}
+            />
 
             {/* Goal weight reference line */}
             {goalWeight && goalWeight >= yMin && goalWeight <= yMax && (
               <ReferenceLine
                 y={goalWeight}
-                stroke="#22c55e"
+                stroke="hsl(var(--success))"
                 strokeDasharray="5 5"
-                strokeWidth={1}
+                strokeWidth={1.5}
                 label={{
                   value: 'Goal',
                   position: 'left',
-                  fill: '#22c55e',
-                  fontSize: 10,
+                  fill: 'hsl(var(--success))',
+                  fontSize: 11,
+                  fontWeight: 500,
                 }}
               />
             )}
+
+            {/* Gradient area fill - hidden from tooltip */}
+            <Area
+              type="monotone"
+              dataKey="weight"
+              fill="url(#weightGradient)"
+              stroke="none"
+              isAnimationActive={false}
+              tooltipType="none"
+            />
 
             {/* Render line segments with different colors based on dose */}
             {segments.map((segment, index) => (
@@ -225,15 +237,15 @@ export function WeightChart({ data, doseHistory = [], goalWeight }: WeightChartP
                 type="monotone"
                 dataKey="weight"
                 stroke={segment.color}
-                strokeWidth={2}
-                dot={{ fill: segment.color, strokeWidth: 0, r: 4 }}
-                activeDot={{ fill: segment.color, strokeWidth: 0, r: 6 }}
+                strokeWidth={2.5}
+                dot={{ fill: segment.color, strokeWidth: 0, r: 3 }}
+                activeDot={{ fill: segment.color, strokeWidth: 2, stroke: 'hsl(var(--background))', r: 5 }}
                 isAnimationActive={false}
               />
             ))}
           </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
