@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Design A - Wizard Stepper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: #0a0a0a;
+            --background-card: #171717;
+            --background-secondary: #262626;
+            --foreground: #fafafa;
+            --foreground-muted: #737373;
+            --primary: #00d4ff;
+            --success: #22c55e;
+            --warning: #eab308;
+            --destructive: #ef4444;
+            --violet: #a855f7;
+            --blue: #3b82f6;
+            --amber: #eab308;
+            --border: #404040;
+            --ring: #00d4ff;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            min-height: 100svh;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--background); }
+        ::-webkit-scrollbar-thumb { background: var(--background-secondary); border-radius: 3px; }
+
+        /* Input styling */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        /* Date picker styling */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        /* Step indicator animation */
+        .step-indicator { transition: all 0.3s ease; }
+        .step-indicator.active { transform: scale(1.1); }
+        .step-indicator.completed { background: var(--success); }
+
+        /* Slide animation */
+        .slide-enter { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: { DEFAULT: '#0a0a0a', card: '#171717', secondary: '#262626' },
+                        foreground: { DEFAULT: '#fafafa', muted: '#737373' },
+                        primary: '#00d4ff',
+                        success: '#22c55e',
+                        warning: '#eab308',
+                        destructive: '#ef4444',
+                        violet: '#a855f7',
+                        blue: '#3b82f6',
+                        amber: '#eab308',
+                        border: '#404040',
+                        ring: '#00d4ff',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="min-h-[100svh] flex flex-col">
+        <!-- Header with Progress -->
+        <header class="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border/50 px-4 py-4">
+            <div class="max-w-lg mx-auto">
+                <!-- Step Labels -->
+                <div class="flex justify-between mb-3">
+                    <span class="text-xs font-medium text-primary" id="step-label">Step 1 of 4</span>
+                    <span class="text-xs text-foreground-muted" id="section-label">About You</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="h-1.5 bg-background-secondary rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-primary to-blue transition-all duration-300 ease-out" style="width: 25%"></div>
+                </div>
+
+                <!-- Step Indicators -->
+                <div class="flex justify-between mt-4 px-2">
+                    <div class="step-indicator active flex flex-col items-center gap-1.5" data-step="1">
+                        <div class="w-10 h-10 rounded-full bg-primary/15 border-2 border-primary flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+                        </div>
+                        <span class="text-[10px] text-primary font-medium">You</span>
+                    </div>
+                    <div class="step-indicator flex flex-col items-center gap-1.5" data-step="2">
+                        <div class="w-10 h-10 rounded-full bg-background-secondary border-2 border-border flex items-center justify-center">
+                            <i data-lucide="target" class="w-5 h-5 text-foreground-muted"></i>
+                        </div>
+                        <span class="text-[10px] text-foreground-muted font-medium">Goals</span>
+                    </div>
+                    <div class="step-indicator flex flex-col items-center gap-1.5" data-step="3">
+                        <div class="w-10 h-10 rounded-full bg-background-secondary border-2 border-border flex items-center justify-center">
+                            <i data-lucide="syringe" class="w-5 h-5 text-foreground-muted"></i>
+                        </div>
+                        <span class="text-[10px] text-foreground-muted font-medium">Injection</span>
+                    </div>
+                    <div class="step-indicator flex flex-col items-center gap-1.5" data-step="4">
+                        <div class="w-10 h-10 rounded-full bg-background-secondary border-2 border-border flex items-center justify-center">
+                            <i data-lucide="check" class="w-5 h-5 text-foreground-muted"></i>
+                        </div>
+                        <span class="text-[10px] text-foreground-muted font-medium">Review</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 px-4 py-6">
+            <div class="max-w-lg mx-auto">
+                <!-- Step 1: About You -->
+                <div id="step-1" class="step-content slide-enter">
+                    <!-- Hero Card -->
+                    <div class="mb-6 p-5 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                                <i data-lucide="user" class="w-7 h-7 text-primary"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-foreground">Tell us about you</h1>
+                                <p class="text-sm text-foreground-muted mt-0.5">This helps personalize your experience</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Age Input -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="block text-sm font-medium text-foreground mb-3">
+                                <i data-lucide="cake" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Age
+                            </label>
+                            <div class="relative">
+                                <input type="number" placeholder="Enter your age" min="18" max="120"
+                                    class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">years</span>
+                            </div>
+                        </div>
+
+                        <!-- Gender Selection -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="block text-sm font-medium text-foreground mb-3">
+                                <i data-lucide="users" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Gender
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="gender-btn px-4 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-primary/50 hover:text-foreground transition-all" data-value="male">
+                                    <i data-lucide="user" class="w-4 h-4 mx-auto mb-1"></i>
+                                    <span class="text-sm">Male</span>
+                                </button>
+                                <button class="gender-btn px-4 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-primary/50 hover:text-foreground transition-all" data-value="female">
+                                    <i data-lucide="user" class="w-4 h-4 mx-auto mb-1"></i>
+                                    <span class="text-sm">Female</span>
+                                </button>
+                                <button class="gender-btn px-4 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-primary/50 hover:text-foreground transition-all" data-value="non-binary">
+                                    <span class="text-sm">Non-binary</span>
+                                </button>
+                                <button class="gender-btn px-4 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-primary/50 hover:text-foreground transition-all" data-value="other">
+                                    <span class="text-sm">Other</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Height Input -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-sm font-medium text-foreground">
+                                    <i data-lucide="ruler" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                    Height
+                                </label>
+                                <!-- Unit Toggle -->
+                                <div class="flex bg-background rounded-lg p-0.5 border border-border">
+                                    <button class="unit-toggle px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-background" data-unit="cm">cm</button>
+                                    <button class="unit-toggle px-3 py-1.5 text-xs font-medium rounded-md text-foreground-muted" data-unit="ft">ft-in</button>
+                                </div>
+                            </div>
+                            <div id="height-cm" class="relative">
+                                <input type="number" placeholder="170" min="100" max="250"
+                                    class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">cm</span>
+                            </div>
+                            <div id="height-ft" class="hidden grid grid-cols-2 gap-3">
+                                <div class="relative">
+                                    <input type="number" placeholder="5" min="3" max="8"
+                                        class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">ft</span>
+                                </div>
+                                <div class="relative">
+                                    <input type="number" placeholder="8" min="0" max="11"
+                                        class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted">in</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Goals (hidden by default) -->
+                <div id="step-2" class="step-content hidden">
+                    <!-- Hero Card -->
+                    <div class="mb-6 p-5 rounded-xl bg-gradient-to-br from-success/15 to-success/5 border border-success/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-success/20 flex items-center justify-center">
+                                <i data-lucide="target" class="w-7 h-7 text-success"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-foreground">Set your goals</h1>
+                                <p class="text-sm text-foreground-muted mt-0.5">We'll help you track your progress</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Starting Weight -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="text-sm font-medium text-foreground">
+                                    <i data-lucide="scale" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                    Starting Weight
+                                </label>
+                                <div class="flex bg-background rounded-lg p-0.5 border border-border">
+                                    <button class="weight-toggle px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-background" data-unit="kg">kg</button>
+                                    <button class="weight-toggle px-3 py-1.5 text-xs font-medium rounded-md text-foreground-muted" data-unit="lbs">lbs</button>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <input type="number" placeholder="85" step="0.1"
+                                    class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted" id="starting-unit">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Goal Weight -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="text-sm font-medium text-foreground mb-3 block">
+                                <i data-lucide="flag" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Goal Weight
+                            </label>
+                            <div class="relative">
+                                <input type="number" placeholder="70" step="0.1"
+                                    class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground placeholder-foreground-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-foreground-muted" id="goal-unit">kg</span>
+                            </div>
+                            <!-- Weight to lose indicator -->
+                            <div class="mt-3 flex items-center gap-2 text-sm text-foreground-muted">
+                                <i data-lucide="trending-down" class="w-4 h-4 text-success"></i>
+                                <span>You'll aim to lose <span class="text-success font-medium">15 kg</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Treatment Start Date -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="text-sm font-medium text-foreground mb-3 block">
+                                <i data-lucide="calendar" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Treatment Start Date
+                            </label>
+                            <input type="date"
+                                class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                            <p class="mt-2 text-xs text-foreground-muted">When did you start Mounjaro treatment?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: First Injection (hidden by default) -->
+                <div id="step-3" class="step-content hidden">
+                    <!-- Hero Card -->
+                    <div class="mb-6 p-5 rounded-xl bg-gradient-to-br from-violet/15 to-violet/5 border border-violet/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-violet/20 flex items-center justify-center">
+                                <i data-lucide="syringe" class="w-7 h-7 text-violet"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-foreground">First injection</h1>
+                                <p class="text-sm text-foreground-muted mt-0.5">Let's log your first dose</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Injection Date -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="text-sm font-medium text-foreground mb-3 block">
+                                <i data-lucide="calendar-check" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Injection Date
+                            </label>
+                            <input type="date"
+                                class="w-full px-4 py-3.5 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-lg">
+                        </div>
+
+                        <!-- Dose Selection -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="text-sm font-medium text-foreground mb-3 block">
+                                <i data-lucide="pill" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Dose
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="2.5">
+                                    <span class="text-lg font-semibold block">2.5</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="5.0">
+                                    <span class="text-lg font-semibold block">5.0</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="7.5">
+                                    <span class="text-lg font-semibold block">7.5</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="10.0">
+                                    <span class="text-lg font-semibold block">10.0</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="12.5">
+                                    <span class="text-lg font-semibold block">12.5</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                                <button class="dose-btn px-3 py-3 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-center" data-dose="15.0">
+                                    <span class="text-lg font-semibold block">15.0</span>
+                                    <span class="text-xs">mg</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Injection Site -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <label class="text-sm font-medium text-foreground mb-3 block">
+                                <i data-lucide="map-pin" class="w-4 h-4 inline mr-2 text-foreground-muted"></i>
+                                Injection Site
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="abdomen_left">
+                                    Abdomen (Left)
+                                </button>
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="abdomen_right">
+                                    Abdomen (Right)
+                                </button>
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="thigh_left">
+                                    Thigh (Left)
+                                </button>
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="thigh_right">
+                                    Thigh (Right)
+                                </button>
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="arm_left">
+                                    Arm (Left)
+                                </button>
+                                <button class="site-btn px-3 py-2.5 rounded-lg border border-border bg-background text-foreground-muted hover:border-violet/50 hover:text-foreground transition-all text-sm" data-site="arm_right">
+                                    Arm (Right)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review (hidden by default) -->
+                <div id="step-4" class="step-content hidden">
+                    <!-- Hero Card -->
+                    <div class="mb-6 p-5 rounded-xl bg-gradient-to-br from-amber/15 to-amber/5 border border-amber/20">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-amber/20 flex items-center justify-center">
+                                <i data-lucide="check-circle-2" class="w-7 h-7 text-amber"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-foreground">Review & confirm</h1>
+                                <p class="text-sm text-foreground-muted mt-0.5">Make sure everything looks correct</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Profile Summary -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-foreground-muted uppercase tracking-wide">About You</h3>
+                                <button class="text-xs text-primary hover:underline">Edit</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center p-3 bg-background rounded-lg">
+                                    <p class="text-2xl font-bold text-foreground">42</p>
+                                    <p class="text-xs text-foreground-muted">years old</p>
+                                </div>
+                                <div class="text-center p-3 bg-background rounded-lg">
+                                    <p class="text-2xl font-bold text-foreground">Male</p>
+                                    <p class="text-xs text-foreground-muted">gender</p>
+                                </div>
+                                <div class="text-center p-3 bg-background rounded-lg">
+                                    <p class="text-2xl font-bold text-foreground">175</p>
+                                    <p class="text-xs text-foreground-muted">cm tall</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Goals Summary -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-foreground-muted uppercase tracking-wide">Your Goals</h3>
+                                <button class="text-xs text-primary hover:underline">Edit</button>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="text-center flex-1 p-3 bg-background rounded-lg">
+                                    <p class="text-2xl font-bold text-foreground">92.5</p>
+                                    <p class="text-xs text-foreground-muted">starting kg</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-success"></i>
+                                </div>
+                                <div class="text-center flex-1 p-3 bg-success/10 rounded-lg border border-success/20">
+                                    <p class="text-2xl font-bold text-success">78.0</p>
+                                    <p class="text-xs text-foreground-muted">goal kg</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-center justify-center gap-2 text-sm">
+                                <i data-lucide="trending-down" class="w-4 h-4 text-success"></i>
+                                <span class="text-foreground-muted">Target: <span class="text-success font-medium">-14.5 kg</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Injection Summary -->
+                        <div class="bg-background-card rounded-xl p-4 border border-border/50">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-medium text-foreground-muted uppercase tracking-wide">First Injection</h3>
+                                <button class="text-xs text-primary hover:underline">Edit</button>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-violet/15 flex items-center justify-center">
+                                    <i data-lucide="syringe" class="w-6 h-6 text-violet"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-foreground">2.5 mg</p>
+                                    <p class="text-sm text-foreground-muted">Abdomen (Left) &bull; Jan 2, 2026</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Navigation -->
+        <footer class="sticky bottom-0 bg-background/95 backdrop-blur border-t border-border/50 px-4 py-4">
+            <div class="max-w-lg mx-auto flex gap-3">
+                <button id="back-btn" class="hidden flex-1 px-6 py-3.5 rounded-xl border border-border text-foreground font-medium hover:bg-background-secondary transition-all">
+                    Back
+                </button>
+                <button id="next-btn" class="flex-1 px-6 py-3.5 rounded-xl bg-primary text-background font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                    Continue
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Elements
+        const steps = {
+            1: document.getElementById('step-1'),
+            2: document.getElementById('step-2'),
+            3: document.getElementById('step-3'),
+            4: document.getElementById('step-4')
+        };
+        const progressBar = document.getElementById('progress-bar');
+        const stepLabel = document.getElementById('step-label');
+        const sectionLabel = document.getElementById('section-label');
+        const backBtn = document.getElementById('back-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        const sectionLabels = {
+            1: 'About You',
+            2: 'Your Goals',
+            3: 'First Injection',
+            4: 'Review'
+        };
+
+        function updateUI() {
+            // Update progress bar
+            progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+            // Update labels
+            stepLabel.textContent = `Step ${currentStep} of ${totalSteps}`;
+            sectionLabel.textContent = sectionLabels[currentStep];
+
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const step = index + 1;
+                indicator.classList.remove('active');
+                const circle = indicator.querySelector('div');
+                const icon = indicator.querySelector('i');
+                const label = indicator.querySelector('span');
+
+                if (step < currentStep) {
+                    // Completed
+                    circle.className = 'w-10 h-10 rounded-full bg-success flex items-center justify-center';
+                    icon.className = 'w-5 h-5 text-background';
+                    label.className = 'text-[10px] text-success font-medium';
+                } else if (step === currentStep) {
+                    // Active
+                    indicator.classList.add('active');
+                    const colors = { 1: 'primary', 2: 'success', 3: 'violet', 4: 'amber' };
+                    circle.className = `w-10 h-10 rounded-full bg-${colors[step]}/15 border-2 border-${colors[step]} flex items-center justify-center`;
+                    icon.className = `w-5 h-5 text-${colors[step]}`;
+                    label.className = `text-[10px] text-${colors[step]} font-medium`;
+                } else {
+                    // Future
+                    circle.className = 'w-10 h-10 rounded-full bg-background-secondary border-2 border-border flex items-center justify-center';
+                    icon.className = 'w-5 h-5 text-foreground-muted';
+                    label.className = 'text-[10px] text-foreground-muted font-medium';
+                }
+            });
+
+            // Show/hide steps
+            Object.keys(steps).forEach(step => {
+                steps[step].classList.toggle('hidden', parseInt(step) !== currentStep);
+                if (parseInt(step) === currentStep) {
+                    steps[step].classList.add('slide-enter');
+                }
+            });
+
+            // Update buttons
+            backBtn.classList.toggle('hidden', currentStep === 1);
+            nextBtn.innerHTML = currentStep === totalSteps
+                ? 'Get Started <i data-lucide="check" class="w-4 h-4"></i>'
+                : 'Continue <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+            lucide.createIcons();
+        }
+
+        // Navigation
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+            } else {
+                alert('Onboarding complete! Redirecting to dashboard...');
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        });
+
+        // Button selection handlers
+        document.querySelectorAll('.gender-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.gender-btn').forEach(b => {
+                    b.classList.remove('border-primary', 'bg-primary/10', 'text-foreground');
+                    b.classList.add('border-border', 'text-foreground-muted');
+                });
+                btn.classList.remove('border-border', 'text-foreground-muted');
+                btn.classList.add('border-primary', 'bg-primary/10', 'text-foreground');
+            });
+        });
+
+        document.querySelectorAll('.dose-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.dose-btn').forEach(b => {
+                    b.classList.remove('border-violet', 'bg-violet/10', 'text-foreground');
+                    b.classList.add('border-border', 'text-foreground-muted');
+                });
+                btn.classList.remove('border-border', 'text-foreground-muted');
+                btn.classList.add('border-violet', 'bg-violet/10', 'text-foreground');
+            });
+        });
+
+        document.querySelectorAll('.site-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.site-btn').forEach(b => {
+                    b.classList.remove('border-violet', 'bg-violet/10', 'text-foreground');
+                    b.classList.add('border-border', 'text-foreground-muted');
+                });
+                btn.classList.remove('border-border', 'text-foreground-muted');
+                btn.classList.add('border-violet', 'bg-violet/10', 'text-foreground');
+            });
+        });
+
+        // Unit toggle handlers
+        document.querySelectorAll('.unit-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const parent = btn.parentElement;
+                parent.querySelectorAll('.unit-toggle').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-background');
+                    b.classList.add('text-foreground-muted');
+                });
+                btn.classList.remove('text-foreground-muted');
+                btn.classList.add('bg-primary', 'text-background');
+
+                // Toggle height inputs
+                if (btn.dataset.unit === 'cm' || btn.dataset.unit === 'ft') {
+                    document.getElementById('height-cm').classList.toggle('hidden', btn.dataset.unit === 'ft');
+                    document.getElementById('height-ft').classList.toggle('hidden', btn.dataset.unit === 'cm');
+                    document.getElementById('height-ft').classList.toggle('grid', btn.dataset.unit === 'ft');
+                }
+            });
+        });
+
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>
