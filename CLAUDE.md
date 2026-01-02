@@ -10,6 +10,70 @@ Progressive Web App for monitoring Mounjaro (Tirzepatide) treatment. Tracks weig
 
 ---
 
+## UI Modernization Patterns (Applied to Summary, Results, Jabs)
+
+When updating other pages, follow these patterns:
+
+### 1. Responsive Viewport Sizing (CRITICAL)
+```tsx
+// Use svh (Small Viewport Height) for stable mobile sizing
+<div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
+```
+- `100svh` prevents layout shifts when mobile browser UI hides/shows
+- `140px` accounts for header (~56px) + bottom nav (~84px)
+- Always add `overflow-x-hidden` to prevent horizontal scroll
+
+### 2. Lucide Icons (No Emojis)
+```tsx
+import { Syringe, Scale, Calendar, TrendingUp } from 'lucide-react';
+
+// Icon in colored container
+<div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/15">
+  <Syringe className="h-5 w-5 text-violet-500" />
+</div>
+```
+
+### 3. Stat Cards with Icons
+Reference: `src/components/summary/SummaryStatCard.tsx`
+- Icon + iconColor prop
+- Decorative circle in corner
+- Value with optional unit
+- Subtext for context
+
+### 4. Hero Cards with Gradients
+```tsx
+// Status-based gradient backgrounds
+<div className="overflow-hidden rounded-xl border border-success/20 bg-gradient-to-br from-success/15 to-success/5 p-4">
+```
+
+### 5. shadcn Components
+- Use `Button` for all CTAs (not custom styled links)
+- Use `Section` wrapper for content groupings
+- Use `ProgressRing` from `@/components/ui` for circular progress
+
+### 6. Color Coding by Status
+```tsx
+const colors = {
+  success: 'bg-success/15 text-success',    // On track, completed
+  warning: 'bg-warning/15 text-warning',    // Due soon, caution
+  destructive: 'bg-destructive/15 text-destructive', // Overdue, error
+  primary: 'bg-primary/15 text-primary',    // Default accent
+  violet: 'bg-violet-500/15 text-violet-500', // Injections
+  blue: 'bg-blue-500/15 text-blue-500',     // Logs
+  amber: 'bg-amber-500/15 text-amber-500',  // Dose/medication
+};
+```
+
+### 7. Skeleton Loaders
+Match the same `min-h-[calc(100svh-140px)]` and structure as content.
+
+**Reference Files:**
+- `src/components/summary/` - SummaryStatCard, NextInjectionCard patterns
+- `src/components/results/` - HeroStat, ResultsStatCard patterns
+- `src/components/jabs/` - JabsStatCard, InjectionHistoryItem patterns
+
+---
+
 ## Quick Reference
 
 | Resource | Location |
