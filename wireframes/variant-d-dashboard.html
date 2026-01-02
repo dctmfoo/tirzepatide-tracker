@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Variant D: Dashboard Focus</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      padding-bottom: 100px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #888;
+      text-decoration: none;
+      padding: 16px;
+      font-size: 14px;
+    }
+    .back:hover { color: #fff; }
+
+    .container { padding: 0 16px 16px; }
+
+    /* Header with greeting */
+    .header {
+      margin-bottom: 20px;
+    }
+    .greeting {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .date-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* Giant Medication Chart - Hero */
+    .hero-chart {
+      background: linear-gradient(180deg, #0f1419 0%, #000 100%);
+      border-radius: 28px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-chart::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: radial-gradient(ellipse at 50% 0%, rgba(45, 212, 191, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .chart-title {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .chart-value {
+      font-size: 42px;
+      font-weight: 800;
+      color: #2dd4bf;
+      line-height: 1;
+    }
+    .chart-value span {
+      font-size: 18px;
+      color: #666;
+      font-weight: 500;
+    }
+    .chart-badge {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Chart visualization */
+    .chart-viz {
+      height: 140px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .chart-gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(45, 212, 191, 0.2) 0%, rgba(45, 212, 191, 0) 100%);
+      clip-path: polygon(0 60%, 15% 30%, 30% 45%, 45% 25%, 60% 40%, 75% 55%, 90% 70%, 100% 85%, 100% 100%, 0 100%);
+    }
+    .chart-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+    }
+    .chart-line::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #2dd4bf 0%, #2dd4bf 70%, rgba(45, 212, 191, 0.3) 100%);
+      top: 40%;
+      border-radius: 2px;
+      filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.5));
+    }
+    .chart-line::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: calc(40% - 6px);
+      width: 14px;
+      height: 14px;
+      background: #2dd4bf;
+      border-radius: 50%;
+      box-shadow: 0 0 16px #2dd4bf, 0 0 32px rgba(45, 212, 191, 0.5);
+    }
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #555;
+    }
+
+    /* Quick Actions Row */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .action-card {
+      background: #111;
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .action-card.highlight {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.03) 100%);
+      border-color: rgba(249, 115, 22, 0.2);
+    }
+    .action-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .action-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .action-icon.orange { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+    .action-icon.purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+    .action-badge {
+      font-size: 20px;
+      font-weight: 800;
+      color: #f97316;
+    }
+    .action-title {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .action-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .action-btn {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .action-btn.outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .stats-strip::-webkit-scrollbar { display: none; }
+    .strip-item {
+      flex-shrink: 0;
+      background: #111;
+      border-radius: 16px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.05);
+      min-width: 100px;
+      text-align: center;
+    }
+    .strip-label {
+      font-size: 10px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .strip-value {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .strip-value span { font-size: 11px; color: #666; }
+    .strip-value.green { color: #22c55e; }
+    .strip-value.cyan { color: #00d4ff; }
+
+    /* Progress Section */
+    .progress-section {
+      background: #111;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 16px;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .progress-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .progress-percent {
+      font-size: 24px;
+      font-weight: 800;
+      color: #22c55e;
+    }
+    .progress-bar-container {
+      margin-bottom: 12px;
+    }
+    .progress-bar-bg {
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 42%;
+      background: linear-gradient(90deg, #22c55e, #4ade80);
+      border-radius: 5px;
+      position: relative;
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    .progress-range {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #666;
+    }
+    .progress-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .meta-item {
+      text-align: center;
+    }
+    .meta-label {
+      font-size: 10px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* Today Grid */
+    .today-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .today-item {
+      background: #111;
+      border-radius: 16px;
+      padding: 14px 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+    }
+    .today-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .today-label {
+      font-size: 10px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .today-value {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .today-value.green { color: #22c55e; }
+    .today-value.purple { color: #a855f7; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 24px 28px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #666;
+      font-size: 10px;
+      text-decoration: none;
+    }
+    .nav-item.active { color: #2dd4bf; }
+    .nav-icon { font-size: 20px; }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back">&larr; Back to variants</a>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="greeting">Good morning</div>
+      <div class="date-title">Thursday, 2 January</div>
+    </div>
+
+    <!-- Hero Medication Chart -->
+    <div class="hero-chart">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Medication Level</div>
+          <div class="chart-value">4.12<span>mg</span></div>
+        </div>
+        <div class="chart-badge">&#10003; Therapeutic</div>
+      </div>
+      <div class="chart-viz">
+        <div class="chart-gradient"></div>
+        <div class="chart-line"></div>
+      </div>
+      <div class="chart-labels">
+        <span>Sun</span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="action-card highlight">
+        <div class="action-header">
+          <div class="action-icon orange">&#128137;</div>
+          <div class="action-badge">4</div>
+        </div>
+        <div>
+          <div class="action-title">Next Jab</div>
+          <div class="action-value">Saturday, 4 Jan</div>
+        </div>
+        <button class="action-btn">Log Jab</button>
+      </div>
+      <div class="action-card">
+        <div class="action-header">
+          <div class="action-icon purple">&#9878;</div>
+        </div>
+        <div>
+          <div class="action-title">Current Weight</div>
+          <div class="action-value">87.2 kg</div>
+        </div>
+        <button class="action-btn outline">Log Weight</button>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="strip-item">
+        <div class="strip-label">Change</div>
+        <div class="strip-value green">-4.2<span>kg</span></div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-label">BMI</div>
+        <div class="strip-value">28.4</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-label">Jabs</div>
+        <div class="strip-value cyan">12</div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-label">Dose</div>
+        <div class="strip-value">7.5<span>mg</span></div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-label">Week</div>
+        <div class="strip-value">12</div>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <div class="progress-title">Goal Progress</div>
+        <div class="progress-percent">42%</div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill"></div>
+        </div>
+      </div>
+      <div class="progress-range">
+        <span>91.4 kg start</span>
+        <span>80 kg goal</span>
+      </div>
+      <div class="progress-meta">
+        <div class="meta-item">
+          <div class="meta-label">Remaining</div>
+          <div class="meta-value">7.2 kg</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Weekly Avg</div>
+          <div class="meta-value">-0.35 kg</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Est. Date</div>
+          <div class="meta-value">Mar '25</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today Grid -->
+    <div class="today-grid">
+      <div class="today-item">
+        <div class="today-icon">&#128522;</div>
+        <div class="today-label">Mood</div>
+        <div class="today-value green">Great</div>
+      </div>
+      <div class="today-item">
+        <div class="today-icon">&#127860;</div>
+        <div class="today-label">Diet</div>
+        <div class="today-value green">Good</div>
+      </div>
+      <div class="today-item">
+        <div class="today-icon">&#127939;</div>
+        <div class="today-label">Steps</div>
+        <div class="today-value">8.2k</div>
+      </div>
+      <div class="today-item">
+        <div class="today-icon">&#9888;</div>
+        <div class="today-label">Effects</div>
+        <div class="today-value purple">1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <span class="nav-icon">&#9776;</span>
+      Summary
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">&#128137;</span>
+      Jabs
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">&#128200;</span>
+      Results
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">&#128197;</span>
+      Calendar
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">&#9881;</span>
+      Settings
+    </a>
+  </nav>
+</body>
+</html>

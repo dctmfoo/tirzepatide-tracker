@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary Page Wireframes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #888;
+      margin-bottom: 32px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+    }
+    .card {
+      background: #18181b;
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .card h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card p {
+      color: #888;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .card a {
+      display: inline-block;
+      background: #2dd4bf;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .card a:hover {
+      background: #14b8a6;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(45, 212, 191, 0.15);
+      color: #2dd4bf;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .tag.orange { background: rgba(249, 115, 22, 0.15); color: #f97316; }
+    .tag.purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+    .tag.blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+  </style>
+</head>
+<body>
+  <h1>Summary Page Wireframes</h1>
+  <p class="subtitle">Compare different design approaches for the Summary page refactor</p>
+
+  <div class="grid">
+    <div class="card">
+      <span class="tag">Recommended</span>
+      <h2>Variant A: Pure Shotsy</h2>
+      <p>100% Shotsy-inspired design with bento grid, horseshoe progress, medication level chart, and vibrant gradients. Maximum visual impact.</p>
+      <a href="variant-a-shotsy.html">View Design</a>
+    </div>
+
+    <div class="card">
+      <span class="tag orange">Hybrid</span>
+      <h2>Variant B: Best of Both</h2>
+      <p>Combines your current clean data hierarchy with Shotsy's visual flair. Keeps section organization but adds gradients and larger visualizations.</p>
+      <a href="variant-b-hybrid.html">View Design</a>
+    </div>
+
+    <div class="card">
+      <span class="tag purple">Minimal</span>
+      <h2>Variant C: Refined Current</h2>
+      <p>Evolutionary update to your current design. Adds Shotsy styling (colors, radius, glass) without major layout changes.</p>
+      <a href="variant-c-refined.html">View Design</a>
+    </div>
+
+    <div class="card">
+      <span class="tag blue">Experimental</span>
+      <h2>Variant D: Dashboard Focus</h2>
+      <p>Single-screen dashboard optimized for at-a-glance info. Large medication chart dominates, minimal scrolling needed.</p>
+      <a href="variant-d-dashboard.html">View Design</a>
+    </div>
+  </div>
+</body>
+</html>

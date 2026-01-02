@@ -1,0 +1,1271 @@
+{
+  "meta": {
+    "description": "12-week Mounjaro treatment journey for E2E testing",
+    "generatedAt": "2025-12-31",
+    "targetUrl": "https://mj-tracker-xi.vercel.app"
+  },
+  "testUser": {
+    "email": "testuser-e2e-20251231@example.com",
+    "password": "TestMounjaro2025!",
+    "profile": {
+      "age": 32,
+      "gender": "Female",
+      "heightCm": 165,
+      "startingWeightKg": 95.0,
+      "goalWeightKg": 70.0
+    }
+  },
+  "treatmentStartDate": "2025-10-06",
+  "doseSchedule": [
+    { "weekStart": 1, "weekEnd": 4, "doseMg": 2.5 },
+    { "weekStart": 5, "weekEnd": 8, "doseMg": 5.0 },
+    { "weekStart": 9, "weekEnd": 12, "doseMg": 7.5 }
+  ],
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "dateRange": "Oct 6-12, 2025",
+      "doseMg": 2.5,
+      "injection": {
+        "date": "2025-10-06",
+        "time": "08:00",
+        "doseMg": 2.5,
+        "site": "Abdomen - Left",
+        "notes": "First injection"
+      },
+      "days": [
+        {
+          "date": "2025-10-06",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 95.0, "time": "07:30", "notes": "Starting weight" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-07",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Rest day", "steps": 4200 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": [{ "effectType": "Nausea", "severity": "Mild" }]
+          }
+        },
+        {
+          "date": "2025-10-08",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 94.6, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 45, "steps": 5800 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": [{ "effectType": "Fatigue", "severity": "Mild" }]
+          }
+        },
+        {
+          "date": "2025-10-09",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 40, "steps": 7200 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-10",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 94.3, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 30, "steps": 8500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-11",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 80, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 60, "steps": 10200 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-12",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 94.0, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 95.0,
+        "endWeight": 94.0,
+        "weeklyChange": -1.0,
+        "avgHunger": "Low to Moderate",
+        "avgMood": "Good to Great",
+        "mainSideEffects": ["Mild nausea (day 2)", "Mild fatigue (day 3)"]
+      }
+    },
+    {
+      "weekNumber": 2,
+      "dateRange": "Oct 13-19, 2025",
+      "doseMg": 2.5,
+      "injection": {
+        "date": "2025-10-13",
+        "time": "08:00",
+        "doseMg": 2.5,
+        "site": "Abdomen - Right",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-10-13",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 93.8, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-14",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-15",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 93.5, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-16",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 35, "steps": 7500 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": [{ "effectType": "Constipation", "severity": "Mild" }]
+          }
+        },
+        {
+          "date": "2025-10-17",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 93.2, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Rest day", "steps": 4000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-18",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 90, "steps": 12000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Medium", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-19",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 93.0, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Rest day", "steps": 3000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 93.8,
+        "endWeight": 93.0,
+        "weeklyChange": -0.8,
+        "avgHunger": "Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": ["Mild constipation (day 4)"]
+      }
+    },
+    {
+      "weekNumber": 3,
+      "dateRange": "Oct 20-26, 2025",
+      "doseMg": 2.5,
+      "injection": {
+        "date": "2025-10-20",
+        "time": "08:00",
+        "doseMg": 2.5,
+        "site": "Thigh - Left",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-10-20",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 92.8, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6200 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-21",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 45, "steps": 5200 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-22",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 92.5, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 40, "steps": 7500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-23",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 4500 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-24",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 92.3, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 40, "steps": 9000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-25",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 75, "steps": 11000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-26",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 92.0, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3200 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 92.8,
+        "endWeight": 92.0,
+        "weeklyChange": -0.8,
+        "avgHunger": "Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": []
+      }
+    },
+    {
+      "weekNumber": 4,
+      "dateRange": "Oct 27 - Nov 2, 2025",
+      "doseMg": 2.5,
+      "injection": {
+        "date": "2025-10-27",
+        "time": "08:00",
+        "doseMg": 2.5,
+        "site": "Thigh - Right",
+        "notes": "Last dose at 2.5mg"
+      },
+      "days": [
+        {
+          "date": "2025-10-27",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 91.8, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-28",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-29",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 91.5, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-30",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 35, "steps": 7000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-10-31",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 91.2, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 80, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 4000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "High", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-01",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 60, "steps": 9500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-02",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 91.0, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 91.8,
+        "endWeight": 91.0,
+        "weeklyChange": -0.8,
+        "avgHunger": "Low to Moderate",
+        "avgMood": "Good to Great",
+        "mainSideEffects": [],
+        "notes": "End of 2.5mg phase. Total lost: 4kg in 4 weeks"
+      }
+    },
+    {
+      "weekNumber": 5,
+      "dateRange": "Nov 3-9, 2025",
+      "doseMg": 5.0,
+      "injection": {
+        "date": "2025-11-03",
+        "time": "08:00",
+        "doseMg": 5.0,
+        "site": "Arm - Left",
+        "notes": "First 5.0mg dose - escalation"
+      },
+      "days": [
+        {
+          "date": "2025-11-03",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 90.8, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 25, "steps": 5000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-04",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 1, "proteinGrams": 70, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "None", "moodLevel": "Fair" },
+            "sideEffects": [
+              { "effectType": "Nausea", "severity": "Moderate" },
+              { "effectType": "Fatigue", "severity": "Moderate" }
+            ]
+          }
+        },
+        {
+          "date": "2025-11-05",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 90.3, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 2, "proteinGrams": 80, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 20, "steps": 4000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "None", "moodLevel": "Good" },
+            "sideEffects": [
+              { "effectType": "Nausea", "severity": "Mild" }
+            ]
+          }
+        },
+        {
+          "date": "2025-11-06",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 40, "steps": 5000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-07",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 89.8, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 30, "steps": 7500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-08",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 60, "steps": 10000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-09",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 89.5, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 90.8,
+        "endWeight": 89.5,
+        "weeklyChange": -1.3,
+        "avgHunger": "Low to None",
+        "avgMood": "Fair to Great",
+        "mainSideEffects": ["Moderate nausea (days 2-3)", "Moderate fatigue (day 2)"],
+        "notes": "Dose escalation week - typical side effects, good weight loss"
+      }
+    },
+    {
+      "weekNumber": 6,
+      "dateRange": "Nov 10-16, 2025",
+      "doseMg": 5.0,
+      "injection": {
+        "date": "2025-11-10",
+        "time": "08:00",
+        "doseMg": 5.0,
+        "site": "Arm - Right",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-11-10",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 89.3, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-11",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-12",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 88.9, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 8500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-13",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 40, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-14",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 88.6, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 45, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-15",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 90, "steps": 13000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-16",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 88.3, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 89.3,
+        "endWeight": 88.3,
+        "weeklyChange": -1.0,
+        "avgHunger": "Low to None",
+        "avgMood": "Good to Great",
+        "mainSideEffects": [],
+        "notes": "Body adjusting well to 5.0mg"
+      }
+    },
+    {
+      "weekNumber": 7,
+      "dateRange": "Nov 17-23, 2025",
+      "doseMg": 5.0,
+      "injection": {
+        "date": "2025-11-17",
+        "time": "08:00",
+        "doseMg": 5.0,
+        "site": "Abdomen - Left",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-11-17",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 88.1, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-18",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 55, "steps": 5800 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-19",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 87.8, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 35, "steps": 7500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-20",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 40, "steps": 7000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-21",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 87.5, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-22",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 80, "steps": 11500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-23",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 87.2, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3200 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 88.1,
+        "endWeight": 87.2,
+        "weeklyChange": -0.9,
+        "avgHunger": "Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": []
+      }
+    },
+    {
+      "weekNumber": 8,
+      "dateRange": "Nov 24-30, 2025",
+      "doseMg": 5.0,
+      "injection": {
+        "date": "2025-11-24",
+        "time": "08:00",
+        "doseMg": 5.0,
+        "site": "Abdomen - Right",
+        "notes": "Last dose at 5.0mg"
+      },
+      "days": [
+        {
+          "date": "2025-11-24",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 87.0, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-25",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-26",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 86.7, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-27",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 4500 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-28",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 86.5, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 35, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-29",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 75, "steps": 11000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-11-30",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 86.2, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 87.0,
+        "endWeight": 86.2,
+        "weeklyChange": -0.8,
+        "avgHunger": "Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": [],
+        "notes": "End of 5.0mg phase. Total lost: 8.8kg in 8 weeks"
+      }
+    },
+    {
+      "weekNumber": 9,
+      "dateRange": "Dec 1-7, 2025",
+      "doseMg": 7.5,
+      "injection": {
+        "date": "2025-12-01",
+        "time": "08:00",
+        "doseMg": 7.5,
+        "site": "Thigh - Left",
+        "notes": "First 7.5mg dose - escalation"
+      },
+      "days": [
+        {
+          "date": "2025-12-01",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 86.0, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 25, "steps": 5000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-02",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 1, "proteinGrams": 65, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "None", "moodLevel": "Fair" },
+            "sideEffects": [
+              { "effectType": "Nausea", "severity": "Moderate" },
+              { "effectType": "Diarrhea", "severity": "Mild" }
+            ]
+          }
+        },
+        {
+          "date": "2025-12-03",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 85.4, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 2, "proteinGrams": 75, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 20, "steps": 4000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "None", "moodLevel": "Good" },
+            "sideEffects": [
+              { "effectType": "Nausea", "severity": "Mild" }
+            ]
+          }
+        },
+        {
+          "date": "2025-12-04",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 40, "steps": 5000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-05",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 85.0, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 30, "steps": 7500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-06",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 60, "steps": 10000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-07",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 84.6, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 85, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 86.0,
+        "endWeight": 84.6,
+        "weeklyChange": -1.4,
+        "avgHunger": "Low to None",
+        "avgMood": "Fair to Great",
+        "mainSideEffects": ["Moderate nausea (days 2-3)", "Mild diarrhea (day 2)"],
+        "notes": "Dose escalation week - side effects resolving by day 4"
+      }
+    },
+    {
+      "weekNumber": 10,
+      "dateRange": "Dec 8-14, 2025",
+      "doseMg": 7.5,
+      "injection": {
+        "date": "2025-12-08",
+        "time": "08:00",
+        "doseMg": 7.5,
+        "site": "Thigh - Right",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-12-08",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 84.4, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-09",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "None", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 55, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-10",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 84.0, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 40, "steps": 8500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-11",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-12",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 83.6, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-13",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 90, "steps": 13000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-14",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 83.3, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 84.4,
+        "endWeight": 83.3,
+        "weeklyChange": -1.1,
+        "avgHunger": "None to Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": [],
+        "notes": "Excellent week - body adjusted to 7.5mg"
+      }
+    },
+    {
+      "weekNumber": 11,
+      "dateRange": "Dec 15-21, 2025",
+      "doseMg": 7.5,
+      "injection": {
+        "date": "2025-12-15",
+        "time": "08:00",
+        "doseMg": 7.5,
+        "site": "Arm - Left",
+        "notes": null
+      },
+      "days": [
+        {
+          "date": "2025-12-15",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 83.1, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-16",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 55, "steps": 5800 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-17",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 82.8, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 110, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 40, "steps": 9000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-18",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 40, "steps": 7000 },
+            "mental": { "motivationLevel": "Medium", "cravingsLevel": "Medium", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-19",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 82.5, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-20",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 75, "steps": 11000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-21",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 82.2, "time": "08:00" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 90, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Good" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 83.1,
+        "endWeight": 82.2,
+        "weeklyChange": -0.9,
+        "avgHunger": "Low",
+        "avgMood": "Good to Great",
+        "mainSideEffects": []
+      }
+    },
+    {
+      "weekNumber": 12,
+      "dateRange": "Dec 22-28, 2025",
+      "doseMg": 7.5,
+      "injection": {
+        "date": "2025-12-22",
+        "time": "08:00",
+        "doseMg": 7.5,
+        "site": "Arm - Right",
+        "notes": "End of 12-week test period"
+      },
+      "days": [
+        {
+          "date": "2025-12-22",
+          "dayOfWeek": "Monday",
+          "weight": { "kg": 82.0, "time": "07:30" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 30, "steps": 6000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-23",
+          "dayOfWeek": "Tuesday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Strength training", "durationMinutes": 50, "steps": 5500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-24",
+          "dayOfWeek": "Wednesday",
+          "weight": { "kg": 81.7, "time": "07:45" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 80, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Rest day", "steps": 4000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Medium", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-25",
+          "dayOfWeek": "Thursday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Moderate", "mealsCount": 3, "proteinGrams": 75, "waterLiters": 2.0 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 45, "steps": 6500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Medium", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-26",
+          "dayOfWeek": "Friday",
+          "weight": { "kg": 81.8, "time": "07:30", "notes": "Small uptick after holiday eating" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 100, "waterLiters": 3.0 },
+            "activity": { "workoutType": "Cardio", "durationMinutes": 40, "steps": 8000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-27",
+          "dayOfWeek": "Saturday",
+          "weight": null,
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 105, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Walking", "durationMinutes": 90, "steps": 12000 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "None", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        },
+        {
+          "date": "2025-12-28",
+          "dayOfWeek": "Sunday",
+          "weight": { "kg": 81.5, "time": "08:00", "notes": "Final weigh-in" },
+          "dailyLog": {
+            "diet": { "hungerLevel": "Low", "mealsCount": 2, "proteinGrams": 95, "waterLiters": 2.5 },
+            "activity": { "workoutType": "Rest day", "steps": 3500 },
+            "mental": { "motivationLevel": "High", "cravingsLevel": "Low", "moodLevel": "Great" },
+            "sideEffects": []
+          }
+        }
+      ],
+      "weekSummary": {
+        "startWeight": 82.0,
+        "endWeight": 81.5,
+        "weeklyChange": -0.5,
+        "avgHunger": "Low to Moderate",
+        "avgMood": "Great",
+        "mainSideEffects": [],
+        "notes": "Holiday week - maintained well despite festivities. Small uptick after Christmas, quickly recovered."
+      }
+    }
+  ],
+  "overallSummary": {
+    "startWeight": 95.0,
+    "endWeight": 81.5,
+    "totalWeightLoss": 13.5,
+    "percentLoss": 14.2,
+    "avgWeeklyLoss": 1.125,
+    "startBMI": 34.9,
+    "endBMI": 29.9,
+    "totalInjections": 12,
+    "doseProgression": "2.5mg (4 weeks) → 5.0mg (4 weeks) → 7.5mg (4 weeks)",
+    "keyMilestones": [
+      { "week": 4, "event": "Completed 2.5mg phase, lost 4kg" },
+      { "week": 5, "event": "Escalated to 5.0mg" },
+      { "week": 8, "event": "Completed 5.0mg phase, total lost 8.8kg" },
+      { "week": 9, "event": "Escalated to 7.5mg" },
+      { "week": 10, "event": "Crossed into 'Overweight' BMI category (under 30)" },
+      { "week": 12, "event": "Completed 12-week journey, total lost 13.5kg" }
+    ]
+  },
+  "executionInstructions": {
+    "weeklyProcess": [
+      "1. Login to app (or remain logged in)",
+      "2. For each day in the week:",
+      "   a. If injection day: Navigate to /jabs/new and enter injection data",
+      "   b. If weight day (weight !== null): Navigate to /weight/new and enter weight",
+      "   c. Navigate to /log and enter daily log data",
+      "3. After completing the week, navigate to /summary and /results",
+      "4. Take screenshots for review",
+      "5. STOP and wait for user review"
+    ],
+    "pausePoints": [
+      "After completing each week",
+      "After any error or unexpected behavior",
+      "When hitting a page that doesn't load properly"
+    ],
+    "expectedFlows": {
+      "newUser": "Register → Onboard → Week 1",
+      "returningUser": "Login → Continue from last week"
+    }
+  }
+}
