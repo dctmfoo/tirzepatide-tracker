@@ -211,7 +211,14 @@ body::-webkit-scrollbar {
 /*
  * Date/Time Input Dark Mode Styling
  * Native date pickers need special handling for dark themes
- * Reference: https://dev.to/cassidoo/styling-the-icon-for-html-date-and-time-types-2m4g
+ * The date text is rendered in shadow DOM pseudo-elements that need explicit styling
+ *
+ * Structure: input > ::-webkit-datetime-edit > ::-webkit-datetime-edit-fields-wrapper
+ *            > ::-webkit-datetime-edit-day-field, month-field, year-field, etc.
+ *
+ * References:
+ * - https://dev.to/cassidoo/styling-the-icon-for-html-date-and-time-types-2m4g
+ * - https://www.tjvantoll.com/2013/04/15/list-of-pseudo-elements-to-style-form-controls/
  */
 
 /* Set color scheme for native date picker popup */
@@ -219,6 +226,45 @@ input[type="date"],
 input[type="time"],
 input[type="datetime-local"] {
   color-scheme: dark;
+}
+
+/* Style the datetime edit container (holds the date text) */
+input[type="date"]::-webkit-datetime-edit,
+input[type="time"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-datetime-edit {
+  color: #fafafa;
+  background: transparent;
+}
+
+/* Style the fields wrapper */
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="time"]::-webkit-datetime-edit-fields-wrapper,
+input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
+  color: #fafafa;
+  background: transparent;
+}
+
+/* Style individual date/time fields (day, month, year, hour, minute) */
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field,
+input[type="time"]::-webkit-datetime-edit-second-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field,
+input[type="datetime-local"]::-webkit-datetime-edit-day-field,
+input[type="datetime-local"]::-webkit-datetime-edit-month-field,
+input[type="datetime-local"]::-webkit-datetime-edit-year-field,
+input[type="datetime-local"]::-webkit-datetime-edit-hour-field,
+input[type="datetime-local"]::-webkit-datetime-edit-minute-field {
+  color: #fafafa;
+}
+
+/* Style the separator text (/, :, etc.) */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="time"]::-webkit-datetime-edit-text,
+input[type="datetime-local"]::-webkit-datetime-edit-text {
+  color: #737373;
 }
 
 /* Make the calendar/clock icon visible on dark backgrounds */
@@ -235,4 +281,11 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="time"]::-webkit-calendar-picker-indicator:hover,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
+}
+
+/* Hide the inner spin button */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-inner-spin-button,
+input[type="datetime-local"]::-webkit-inner-spin-button {
+  display: none;
 }
