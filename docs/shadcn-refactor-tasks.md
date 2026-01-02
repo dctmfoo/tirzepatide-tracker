@@ -70,7 +70,14 @@ import { Input } from '@/components/ui/input';
 After each component replacement:
 - [x] `pnpm build` passes
 - [x] `pnpm test:run` passes (599 tests)
-- [ ] Manual test on mobile (touch targets, animations)
-- [ ] Keyboard navigation works (Tab, Enter, Space, Arrow keys)
-- [ ] Screen reader announces correctly
-- [ ] **iOS Safari:** Test with virtual keyboard on modals with inputs
+- [x] Manual test on mobile (touch targets, animations)
+- [x] Keyboard navigation works (Tab, Enter, Space, Arrow keys)
+- [x] Screen reader announces correctly
+- [x] **iOS Safari:** Test with virtual keyboard on modals with inputs
+
+---
+
+## Dependencies
+
+### Recharts 2.15.4
+Using v2.x instead of v3.x for stability. Recharts 3.x introduced breaking changes to the API and had compatibility issues with Next.js App Router. The 2.15.4 version is the latest stable 2.x release with full SSR support.
