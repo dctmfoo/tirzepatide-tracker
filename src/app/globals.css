@@ -10,84 +10,175 @@
  *
  * Usage: Use these tokens via Tailwind classes (e.g., bg-card, text-primary)
  * Do NOT hardcode hex values in components.
+ *
+ * Theme Structure (Tailwind CSS v4 compatible):
+ * - :root defines dark theme as default
+ * - .light class overrides with light theme
+ * - .dark class explicitly sets dark theme
+ * All wrapped in @layer base for proper CSS cascade specificity.
  */
 
-:root {
-  /* Dark theme by default for this app */
-  --background: oklch(0.145 0 0);              /* ~#0a0a0a - main bg */
-  --foreground: oklch(0.985 0 0);              /* ~#fafafa - primary text */
+@layer base {
+  :root {
+    /* Dark theme by default for this app */
+    color-scheme: dark;
 
-  /* Card/elevated surfaces - NEUTRAL GRAY */
-  --card: oklch(0.205 0 0);                    /* ~#171717 - card backgrounds */
-  --card-foreground: oklch(0.985 0 0);         /* ~#fafafa - card text */
+    --background: oklch(0.145 0 0);              /* ~#0a0a0a - main bg */
+    --foreground: oklch(0.985 0 0);              /* ~#fafafa - primary text */
 
-  /* Popovers/dropdowns */
-  --popover: oklch(0.205 0 0);                 /* Same as card */
-  --popover-foreground: oklch(0.985 0 0);
+    /* Card/elevated surfaces - NEUTRAL GRAY */
+    --card: oklch(0.205 0 0);                    /* ~#171717 - card backgrounds */
+    --card-foreground: oklch(0.985 0 0);         /* ~#fafafa - card text */
 
-  /* Primary action - CYAN ACCENT */
-  --primary: oklch(0.82 0.17 195);             /* #00d4ff in OKLCH */
-  --primary-foreground: oklch(0.145 0 0);      /* Dark text on cyan */
+    /* Popovers/dropdowns */
+    --popover: oklch(0.205 0 0);                 /* Same as card */
+    --popover-foreground: oklch(0.985 0 0);
 
-  /* Secondary surfaces */
-  --secondary: oklch(0.269 0 0);               /* ~#262626 */
-  --secondary-foreground: oklch(0.985 0 0);
+    /* Primary action - CYAN ACCENT */
+    --primary: oklch(0.82 0.17 195);             /* #00d4ff in OKLCH */
+    --primary-foreground: oklch(0.145 0 0);      /* Dark text on cyan */
 
-  /* Muted text/backgrounds */
-  --muted: oklch(0.269 0 0);                   /* ~#262626 */
-  --muted-foreground: oklch(0.556 0 0);        /* ~#737373 - secondary text */
+    /* Secondary surfaces */
+    --secondary: oklch(0.269 0 0);               /* ~#262626 */
+    --secondary-foreground: oklch(0.985 0 0);
 
-  /* Accent (for hover states, highlights) */
-  --accent: oklch(0.269 0 0);                  /* Neutral for hover bg */
-  --accent-foreground: oklch(0.985 0 0);
+    /* Muted text/backgrounds */
+    --muted: oklch(0.269 0 0);                   /* ~#262626 */
+    --muted-foreground: oklch(0.556 0 0);        /* ~#737373 - secondary text */
 
-  /* Destructive/error states */
-  --destructive: oklch(0.577 0.245 27.325);    /* #ef4444 */
-  --destructive-foreground: oklch(0.985 0 0);
+    /* Accent (for hover states, highlights) */
+    --accent: oklch(0.269 0 0);                  /* Neutral for hover bg */
+    --accent-foreground: oklch(0.985 0 0);
 
-  /* Borders and inputs */
-  --border: oklch(0.269 0 0);                  /* ~#262626 subtle border */
-  --input: oklch(0.269 0 0);                   /* Form input backgrounds */
-  --ring: oklch(0.82 0.17 195);                /* Cyan for focus rings */
+    /* Destructive/error states */
+    --destructive: oklch(0.577 0.245 27.325);    /* #ef4444 */
+    --destructive-foreground: oklch(0.985 0 0);
 
-  /* Extended semantic colors (app-specific) */
-  --success: oklch(0.648 0.196 142);           /* #22c55e */
-  --success-foreground: oklch(0.145 0 0);
+    /* Borders and inputs */
+    --border: oklch(0.269 0 0);                  /* ~#262626 subtle border */
+    --input: oklch(0.269 0 0);                   /* Form input backgrounds */
+    --ring: oklch(0.82 0.17 195);                /* Cyan for focus rings */
 
-  --warning: oklch(0.795 0.184 86.047);        /* #eab308 */
-  --warning-foreground: oklch(0.145 0 0);
+    /* Extended semantic colors (app-specific) */
+    --success: oklch(0.648 0.196 142);           /* #22c55e */
+    --success-foreground: oklch(0.145 0 0);
 
-  /* Secondary accent (purple) - for dose badges, special highlights */
-  --accent-secondary: oklch(0.627 0.265 303.9); /* #a855f7 */
-  --accent-secondary-foreground: oklch(0.985 0 0);
+    --warning: oklch(0.795 0.184 86.047);        /* #eab308 */
+    --warning-foreground: oklch(0.145 0 0);
 
-  /* Dose colors for charts (hex for Recharts compatibility) */
-  --dose-2-5: #9ca3af;
-  --dose-5-0: #a855f7;
-  --dose-7-5: #14b8a6;
-  --dose-10-0: #3b82f6;
-  --dose-12-5: #6366f1;
-  --dose-15-0: #ec4899;
+    /* Secondary accent (purple) - for dose badges, special highlights */
+    --accent-secondary: oklch(0.627 0.265 303.9); /* #a855f7 */
+    --accent-secondary-foreground: oklch(0.985 0 0);
 
-  /* Radius from shadcn */
-  --radius: 0.625rem;
+    /* Dose colors for charts (hex for Recharts compatibility) */
+    --dose-2-5: #9ca3af;
+    --dose-5-0: #a855f7;
+    --dose-7-5: #14b8a6;
+    --dose-10-0: #3b82f6;
+    --dose-12-5: #6366f1;
+    --dose-15-0: #ec4899;
 
-  /* Chart colors */
-  --chart-1: oklch(0.82 0.17 195);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+    /* Radius from shadcn */
+    --radius: 0.625rem;
 
-  /* Sidebar (same as main for dark theme) */
-  --sidebar: oklch(0.145 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.82 0.17 195);
-  --sidebar-primary-foreground: oklch(0.145 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.82 0.17 195);
+    /* Chart colors */
+    --chart-1: oklch(0.82 0.17 195);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+
+    /* Sidebar (same as main for dark theme) */
+    --sidebar: oklch(0.145 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.82 0.17 195);
+    --sidebar-primary-foreground: oklch(0.145 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.82 0.17 195);
+  }
+
+  /*
+   * Light Theme
+   * Applied when .light class is on html element
+   */
+  .light {
+    color-scheme: light;
+
+    /* Light backgrounds */
+    --background: oklch(0.985 0 0);              /* ~#fafafa - main bg */
+    --foreground: oklch(0.145 0 0);              /* ~#0a0a0a - primary text */
+
+    /* Card/elevated surfaces - slightly off-white */
+    --card: oklch(1 0 0);                        /* #ffffff - card backgrounds */
+    --card-foreground: oklch(0.145 0 0);         /* ~#0a0a0a - card text */
+
+    /* Popovers/dropdowns */
+    --popover: oklch(1 0 0);                     /* #ffffff */
+    --popover-foreground: oklch(0.145 0 0);
+
+    /* Primary action - CYAN ACCENT (slightly deeper for light mode contrast) */
+    --primary: oklch(0.65 0.19 195);             /* Deeper cyan for light bg */
+    --primary-foreground: oklch(0.985 0 0);      /* Light text on cyan */
+
+    /* Secondary surfaces */
+    --secondary: oklch(0.95 0 0);                /* ~#f2f2f2 */
+    --secondary-foreground: oklch(0.145 0 0);
+
+    /* Muted text/backgrounds */
+    --muted: oklch(0.95 0 0);                    /* ~#f2f2f2 */
+    --muted-foreground: oklch(0.45 0 0);         /* ~#6b6b6b - secondary text */
+
+    /* Accent (for hover states, highlights) */
+    --accent: oklch(0.95 0 0);                   /* Light neutral for hover bg */
+    --accent-foreground: oklch(0.145 0 0);
+
+    /* Destructive/error states - slightly deeper for light mode */
+    --destructive: oklch(0.55 0.25 27);          /* Deeper red for light bg */
+    --destructive-foreground: oklch(0.985 0 0);
+
+    /* Borders and inputs */
+    --border: oklch(0.88 0 0);                   /* ~#e0e0e0 subtle border */
+    --input: oklch(0.88 0 0);                    /* Form input borders */
+    --ring: oklch(0.65 0.19 195);                /* Deeper cyan for focus rings */
+
+    /* Extended semantic colors (app-specific) - adjusted for light mode */
+    --success: oklch(0.55 0.2 142);              /* Deeper green */
+    --success-foreground: oklch(0.985 0 0);
+
+    --warning: oklch(0.7 0.18 86);               /* Slightly deeper yellow-orange */
+    --warning-foreground: oklch(0.145 0 0);
+
+    /* Secondary accent (purple) - adjusted for light mode */
+    --accent-secondary: oklch(0.55 0.27 303.9);  /* Deeper purple */
+    --accent-secondary-foreground: oklch(0.985 0 0);
+
+    /* Chart colors - adjusted for light mode visibility */
+    --chart-1: oklch(0.65 0.19 195);
+    --chart-2: oklch(0.5 0.12 184.704);
+    --chart-3: oklch(0.35 0.08 227.392);
+    --chart-4: oklch(0.7 0.2 84.429);
+    --chart-5: oklch(0.65 0.2 70.08);
+
+    /* Sidebar - light theme */
+    --sidebar: oklch(0.97 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.65 0.19 195);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.93 0 0);
+    --sidebar-accent-foreground: oklch(0.145 0 0);
+    --sidebar-border: oklch(0.88 0 0);
+    --sidebar-ring: oklch(0.65 0.19 195);
+  }
+
+  /*
+   * Dark Theme (explicit)
+   * Applied when .dark class is on html element
+   */
+  .dark {
+    color-scheme: dark;
+  }
 }
 
 @theme inline {
@@ -209,8 +300,8 @@ body::-webkit-scrollbar {
 }
 
 /*
- * Date/Time Input Dark Mode Styling
- * Native date pickers need special handling for dark themes
+ * Date/Time Input Theme-Aware Styling
+ * Native date pickers need special handling for themes
  * The date text is rendered in shadow DOM pseudo-elements that need explicit styling
  *
  * Structure: input > ::-webkit-datetime-edit > ::-webkit-datetime-edit-fields-wrapper
@@ -221,18 +312,11 @@ body::-webkit-scrollbar {
  * - https://www.tjvantoll.com/2013/04/15/list-of-pseudo-elements-to-style-form-controls/
  */
 
-/* Set color scheme for native date picker popup */
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"] {
-  color-scheme: dark;
-}
-
 /* Style the datetime edit container (holds the date text) */
 input[type="date"]::-webkit-datetime-edit,
 input[type="time"]::-webkit-datetime-edit,
 input[type="datetime-local"]::-webkit-datetime-edit {
-  color: #fafafa;
+  color: var(--foreground);
   background: transparent;
 }
 
@@ -240,7 +324,7 @@ input[type="datetime-local"]::-webkit-datetime-edit {
 input[type="date"]::-webkit-datetime-edit-fields-wrapper,
 input[type="time"]::-webkit-datetime-edit-fields-wrapper,
 input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
-  color: #fafafa;
+  color: var(--foreground);
   background: transparent;
 }
 
@@ -257,21 +341,34 @@ input[type="datetime-local"]::-webkit-datetime-edit-month-field,
 input[type="datetime-local"]::-webkit-datetime-edit-year-field,
 input[type="datetime-local"]::-webkit-datetime-edit-hour-field,
 input[type="datetime-local"]::-webkit-datetime-edit-minute-field {
-  color: #fafafa;
+  color: var(--foreground);
 }
 
 /* Style the separator text (/, :, etc.) */
 input[type="date"]::-webkit-datetime-edit-text,
 input[type="time"]::-webkit-datetime-edit-text,
 input[type="datetime-local"]::-webkit-datetime-edit-text {
-  color: #737373;
+  color: var(--muted-foreground);
 }
 
-/* Make the calendar/clock icon visible on dark backgrounds */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+/* Calendar/clock icon - dark mode needs invert filter */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+:root input[type="date"]::-webkit-calendar-picker-indicator,
+:root input[type="time"]::-webkit-calendar-picker-indicator,
+:root input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+/* Calendar/clock icon - light mode uses default (no invert) */
+.light input[type="date"]::-webkit-calendar-picker-indicator,
+.light input[type="time"]::-webkit-calendar-picker-indicator,
+.light input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: none;
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s ease;

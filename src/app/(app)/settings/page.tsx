@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { signOut } from 'next-auth/react';
-import { SettingsSection, SettingsItem } from '@/components/settings';
+import { useTheme } from 'next-themes';
+import { SettingsSection, SettingsItem, ThemeToggle } from '@/components/settings';
 import { usePushNotifications } from '@/lib/push';
 import {
   ResponsiveModal,
@@ -69,6 +70,14 @@ export default function SettingsPage() {
 
   // Get push notification status for display
   const { isSubscribed: isPushSubscribed, isLoading: isPushLoading } = usePushNotifications();
+
+  // Get theme state
+  const { theme, resolvedTheme } = useTheme();
+  const [themeMounted, setThemeMounted] = useState(false);
+
+  useEffect(() => {
+    setThemeMounted(true);
+  }, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -222,7 +231,7 @@ export default function SettingsPage() {
         />
         <SettingsItem
           label="Appearance"
-          sublabel={`Theme: ${preferences?.theme || 'dark'}`}
+          sublabel={`Theme: ${themeMounted ? (theme === 'system' ? `System (${resolvedTheme})` : theme) : 'Loading...'}`}
           onClick={() => setActiveModal('appearance')}
         />
       </SettingsSection>
@@ -306,6 +315,11 @@ export default function SettingsPage() {
         open={activeModal === 'notifications'}
         onOpenChange={(open) => !open && handleModalClose()}
         onSave={handleSave}
+      />
+
+      <AppearanceModal
+        open={activeModal === 'appearance'}
+        onOpenChange={(open) => !open && handleModalClose()}
       />
 
       <ExportModal
@@ -800,6 +814,29 @@ function NotificationsModal({
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
       </form>
+    </Modal>
+  );
+}
+
+// Appearance Modal
+function AppearanceModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <Modal title="Appearance" open={open} onOpenChange={onOpenChange}>
+      <div className="space-y-4">
+        <div>
+          <p className="mb-3 text-sm font-medium text-foreground">Theme</p>
+          <ThemeToggle />
+        </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Choose how Mounjaro Tracker looks on your device
+        </p>
+      </div>
     </Modal>
   );
 }
