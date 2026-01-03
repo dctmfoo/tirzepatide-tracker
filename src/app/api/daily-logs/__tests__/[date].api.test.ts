@@ -126,8 +126,8 @@ describe('GET /api/daily-logs/[date]', () => {
       userId: 'test-user-id',
       logDate: '2025-01-15',
       sideEffects: [
-        { id: 'se-1', effectType: 'Nausea', severity: 'Mild', notes: 'Morning only' },
-        { id: 'se-2', effectType: 'Fatigue', severity: 'Moderate', notes: null },
+        { id: 'se-1', effectType: 'Nausea', severity: 2, notes: 'Morning only' },
+        { id: 'se-2', effectType: 'Fatigue', severity: 3, notes: null },
       ],
       activityLog: {
         id: 'al-1',
@@ -330,7 +330,7 @@ describe('PUT /api/daily-logs/[date]', () => {
         id: 'log-id',
         userId: 'test-user-id',
         logDate: '2025-01-15',
-        sideEffects: [{ id: 'se-1', effectType: 'Headache', severity: 'Moderate', notes: null }],
+        sideEffects: [{ id: 'se-1', effectType: 'Headache', severity: 3, notes: null }],
         activityLog: null,
         mentalLog: null,
         dietLog: null,
@@ -342,7 +342,7 @@ describe('PUT /api/daily-logs/[date]', () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        sideEffects: [{ effectType: 'Headache', severity: 'Moderate' }],
+        sideEffects: [{ effectType: 'Headache', severity: 3 }],
       }),
     });
     const response = await PUT(request, createContext('2025-01-15'));
@@ -388,7 +388,7 @@ describe('PUT /api/daily-logs/[date]', () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        sideEffects: [{ effectType: 'Nausea', severity: 'VeryBad' }],
+        sideEffects: [{ effectType: 'Nausea', severity: 10 }], // Invalid: must be 0-5
       }),
     });
     const response = await PUT(request, createContext('2025-01-15'));
@@ -479,7 +479,7 @@ describe('PUT /api/daily-logs/[date]', () => {
         id: 'log-id',
         userId: 'test-user-id',
         logDate: '2025-01-15',
-        sideEffects: [{ id: 'se-1', effectType: 'Nausea', severity: 'Mild', notes: null }],
+        sideEffects: [{ id: 'se-1', effectType: 'Nausea', severity: 2, notes: null }],
         activityLog: { workoutType: 'Walking', durationMinutes: 30, steps: 5000, notes: null },
         mentalLog: { moodLevel: 'Good', motivationLevel: 'High', cravingsLevel: 'Low', notes: null },
         dietLog: { hungerLevel: 'Low', mealsCount: 3, proteinGrams: 80, waterLiters: '2.5', notes: null },
@@ -491,7 +491,7 @@ describe('PUT /api/daily-logs/[date]', () => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        sideEffects: [{ effectType: 'Nausea', severity: 'Mild' }],
+        sideEffects: [{ effectType: 'Nausea', severity: 2 }],
         activity: { workoutType: 'Walking', durationMinutes: 30, steps: 5000 },
         mental: { moodLevel: 'Good', motivationLevel: 'High', cravingsLevel: 'Low' },
         diet: { hungerLevel: 'Low', mealsCount: 3, proteinGrams: 80, waterLiters: 2.5 },

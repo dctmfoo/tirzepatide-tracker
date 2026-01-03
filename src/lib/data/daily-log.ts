@@ -8,7 +8,7 @@ import { eq, and } from 'drizzle-orm';
 export type SideEffectData = {
   id?: string;
   effectType: string;
-  severity: 'None' | 'Mild' | 'Moderate' | 'Severe';
+  severity: number; // 0-5 scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
   notes?: string;
 };
 
@@ -105,7 +105,7 @@ export const getDailyLogData = cache(async (
     sideEffects: sideEffectsData.map((se) => ({
       id: se.id,
       effectType: se.effectType,
-      severity: se.severity as 'None' | 'Mild' | 'Moderate' | 'Severe',
+      severity: se.severity,
       notes: se.notes || undefined,
     })),
   };

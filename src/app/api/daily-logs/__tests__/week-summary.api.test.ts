@@ -138,8 +138,8 @@ describe('GET /api/daily-logs/week-summary', () => {
         id: 'log-1',
         logDate: '2025-01-13',
         sideEffects: [
-          { effectType: 'Nausea', severity: 'Mild' },
-          { effectType: 'Fatigue', severity: 'Moderate' },
+          { effectType: 'Nausea', severity: 2 },
+          { effectType: 'Fatigue', severity: 3 },
         ],
         activityLog: null,
         mentalLog: null,
@@ -149,7 +149,7 @@ describe('GET /api/daily-logs/week-summary', () => {
         id: 'log-2',
         logDate: '2025-01-14',
         sideEffects: [
-          { effectType: 'Nausea', severity: 'Severe' },
+          { effectType: 'Nausea', severity: 5 },
         ],
         activityLog: null,
         mentalLog: null,
@@ -167,8 +167,8 @@ describe('GET /api/daily-logs/week-summary', () => {
 
     const nausea = data.sideEffects.find((se: { type: string }) => se.type === 'Nausea');
     expect(nausea.occurrences).toBe(2);
-    expect(nausea.severities).toContain('Mild');
-    expect(nausea.severities).toContain('Severe');
+    expect(nausea.severities).toContain(2);
+    expect(nausea.severities).toContain(5);
 
     const fatigue = data.sideEffects.find((se: { type: string }) => se.type === 'Fatigue');
     expect(fatigue.occurrences).toBe(1);
