@@ -448,17 +448,19 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 0: Schema Updates (PREREQUISITE)
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Backend Changes Required:**
-- [ ] Update `sideEffects` table: change `severity` from varchar to integer (0-5 scale)
-- [ ] Verify `dailyLogs` has `notes` field (for general notes)
-- [ ] Create data function `getLogHubData(userId)` for today's progress, streak, week data
+- [x] Update `sideEffects` table: change `severity` from varchar to integer (0-5 scale)
+- [ ] Verify `dailyLogs` has `notes` field (for general notes) - Not needed, notes are per sub-table
+- [ ] Create data function `getLogHubData(userId)` for today's progress, streak, week data - Phase 2
 
-**Files to modify:**
-- `src/lib/db/schema.ts` - Update sideEffects severity type
-- `src/lib/data/daily-log.ts` - Add hub data function
-- `src/app/api/daily-logs/[date]/route.ts` - Update validation for integer severity
+**Files modified:**
+- `src/lib/db/schema.ts` - Updated sideEffects severity to integer
+- `src/lib/data/daily-log.ts` - Updated SideEffectData type
+- `src/app/api/daily-logs/[date]/route.ts` - Updated validation for integer severity
+- `src/app/api/daily-logs/route.ts` - Updated validation for integer severity
+- All related test files updated
 
 ---
 
@@ -601,8 +603,8 @@ Bottom Nav "Log" tap
 
 ## Implementation Checklist (Quick Reference)
 
-### Phase 0: Schema
-- [ ] Update sideEffects severity to integer
+### Phase 0: Schema ✅
+- [x] Update sideEffects severity to integer
 
 ### Phase 1: Routes
 - [ ] Create /log route
