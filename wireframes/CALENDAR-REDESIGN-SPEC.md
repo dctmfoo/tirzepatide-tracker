@@ -612,24 +612,32 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 6: Cleanup & Polish
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Remove old `/calendar` route (after redirect confirmed working)
-- [ ] Remove old wizard components if no longer needed
-- [ ] Add loading skeletons for all new pages
-- [ ] Ensure dark mode works on all components
-- [ ] Test on mobile viewport (Chrome DevTools)
-- [ ] Add streak calculation logic
-- [ ] Add progress ring animation
-- [ ] Run `pnpm lint` and fix issues
-- [ ] Run `pnpm build` to verify no errors
+- [x] Remove old `/calendar` route (after redirect confirmed working) - kept redirect for backwards compat
+- [x] Remove old wizard components if no longer needed
+- [x] Add loading skeletons for all new pages
+- [x] Ensure dark mode works on all components
+- [x] Test on mobile viewport (Chrome DevTools)
+- [x] Add streak calculation logic - already implemented in Phase 2
+- [x] Add progress ring animation - already implemented in Phase 2
+- [x] Run `pnpm lint` and fix issues
+- [x] Run `pnpm build` to verify no errors
 
-**Cleanup candidates:**
-- `src/components/log/LogWizard.tsx` (replaced by check-in)
-- `src/components/log/steps/` (replaced by accordion sections)
-- `src/components/log/WizardProgress.tsx`
-- `src/components/log/WizardFooter.tsx`
+**Cleanup completed:**
+- Removed `src/components/log/` folder containing:
+  - `LogWizard.tsx`
+  - `steps/` (StepMental, StepDiet, StepActivity, StepSideEffects)
+  - `WizardProgress.tsx`
+  - `WizardFooter.tsx`
+  - `useLogWizard.ts`
+  - `LogSkeleton.tsx`
+  - `index.ts`
+- Updated `src/app/(app)/log/[date]/loading.tsx` to use new skeleton
+- Added loading skeletons for `/log/checkin` and `/log/checkin/[date]`
+- Created new E2E tests at `e2e/log.spec.ts`
+- Simplified `e2e/calendar.spec.ts` to test redirect only
 
 ---
 
@@ -667,9 +675,9 @@ Bottom Nav "Log" tap
 - [x] LogCalendarClient component
 - [x] 25 unit tests
 
-### Phase 6: Cleanup
-- [ ] Remove old code
-- [ ] Polish & test
+### Phase 6: Cleanup ✅
+- [x] Remove old code
+- [x] Polish & test
 
 ---
 
