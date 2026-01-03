@@ -83,6 +83,11 @@ describe('LogCalendarClient', () => {
   });
 
   it('fetches new data when navigating to previous month', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(createCalendarData(2024, 12)),
+    });
+
     render(<LogCalendarClient initialData={initialData} />);
 
     const prevButton = screen.getByRole('button', { name: /previous month/i });
@@ -90,6 +95,10 @@ describe('LogCalendarClient', () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('/api/calendar/2024/12');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('December 2024')).toBeInTheDocument();
     });
   });
 
@@ -108,9 +117,18 @@ describe('LogCalendarClient', () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('/api/calendar/2026/1');
     });
+
+    await waitFor(() => {
+      expect(screen.getByText('January 2026')).toBeInTheDocument();
+    });
   });
 
   it('handles year rollover when navigating backward from January', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(createCalendarData(2024, 12)),
+    });
+
     render(<LogCalendarClient initialData={initialData} />);
 
     const prevButton = screen.getByRole('button', { name: /previous month/i });
@@ -118,6 +136,10 @@ describe('LogCalendarClient', () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('/api/calendar/2024/12');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('December 2024')).toBeInTheDocument();
     });
   });
 
@@ -154,7 +176,7 @@ describe('LogCalendarClient', () => {
     });
   });
 
-  it('handles fetch errors gracefully', async () => {
+  it('shows error message on fetch failure and keeps current data', async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 500,
@@ -165,17 +187,70 @@ describe('LogCalendarClient', () => {
     const nextButton = screen.getByRole('button', { name: /next month/i });
     fireEvent.click(nextButton);
 
-    // Should still show the calendar (month updates optimistically)
+    // Should show error message
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled();
+      expect(
+        screen.getByText('Failed to load calendar data')
+      ).toBeInTheDocument();
     });
 
-    // Month header updates optimistically to February, but data stays the same
-    expect(screen.getByText('February 2025')).toBeInTheDocument();
-    // Loading state should be cleared
+    // Should keep showing January (current data preserved)
+    expect(screen.getByText('January 2025')).toBeInTheDocument();
+  });
+
+  it('shows error message on network error and keeps current data', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    render(<LogCalendarClient initialData={initialData} />);
+
+    const nextButton = screen.getByRole('button', { name: /next month/i });
+    fireEvent.click(nextButton);
+
+    // Should show error message
     await waitFor(() => {
-      const calendar = screen.getByText('February 2025').closest('div');
-      expect(calendar?.parentElement).not.toHaveClass('opacity-50');
+      expect(
+        screen.getByText('Failed to load calendar data')
+      ).toBeInTheDocument();
     });
+
+    // Should keep showing January (current data preserved)
+    expect(screen.getByText('January 2025')).toBeInTheDocument();
+  });
+
+  it('clears error on successful navigation', async () => {
+    // First request fails
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+    });
+
+    render(<LogCalendarClient initialData={initialData} />);
+
+    const nextButton = screen.getByRole('button', { name: /next month/i });
+    fireEvent.click(nextButton);
+
+    // Wait for error to show
+    await waitFor(() => {
+      expect(
+        screen.getByText('Failed to load calendar data')
+      ).toBeInTheDocument();
+    });
+
+    // Second request succeeds
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(createCalendarData(2025, 2)),
+    });
+
+    fireEvent.click(nextButton);
+
+    // Error should be cleared and new data shown
+    await waitFor(() => {
+      expect(screen.getByText('February 2025')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText('Failed to load calendar data')
+    ).not.toBeInTheDocument();
   });
 });

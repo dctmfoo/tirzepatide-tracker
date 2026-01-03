@@ -9,21 +9,26 @@ type Props = {
 };
 
 export function LogCalendarClient({ initialData }: Props) {
-  const [year, setYear] = useState(initialData.year);
-  const [month, setMonth] = useState(initialData.month);
   const [calendarData, setCalendarData] = useState<CalendarData>(initialData);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch calendar data for a different month
+  // Only updates state on success to avoid mismatched header/data
   const fetchCalendarData = useCallback(
     async (newYear: number, newMonth: number) => {
       setLoading(true);
+      setError(null);
       try {
         const response = await fetch(`/api/calendar/${newYear}/${newMonth}`);
         if (response.ok) {
           const data = await response.json();
           setCalendarData(data);
+        } else {
+          setError('Failed to load calendar data');
         }
+      } catch {
+        setError('Failed to load calendar data');
       } finally {
         setLoading(false);
       }
@@ -32,29 +37,32 @@ export function LogCalendarClient({ initialData }: Props) {
   );
 
   const handlePrevMonth = () => {
-    const newMonth = month === 1 ? 12 : month - 1;
-    const newYear = month === 1 ? year - 1 : year;
-    setYear(newYear);
-    setMonth(newMonth);
+    const newMonth = calendarData.month === 1 ? 12 : calendarData.month - 1;
+    const newYear = calendarData.month === 1 ? calendarData.year - 1 : calendarData.year;
     fetchCalendarData(newYear, newMonth);
   };
 
   const handleNextMonth = () => {
-    const newMonth = month === 12 ? 1 : month + 1;
-    const newYear = month === 12 ? year + 1 : year;
-    setYear(newYear);
-    setMonth(newMonth);
+    const newMonth = calendarData.month === 12 ? 1 : calendarData.month + 1;
+    const newYear = calendarData.month === 12 ? calendarData.year + 1 : calendarData.year;
     fetchCalendarData(newYear, newMonth);
   };
 
   return (
-    <LogCalendarGrid
-      year={year}
-      month={month}
-      days={calendarData.days}
-      onPrevMonth={handlePrevMonth}
-      onNextMonth={handleNextMonth}
-      loading={loading}
-    />
+    <div className="space-y-2">
+      <LogCalendarGrid
+        year={calendarData.year}
+        month={calendarData.month}
+        days={calendarData.days}
+        onPrevMonth={handlePrevMonth}
+        onNextMonth={handleNextMonth}
+        loading={loading}
+      />
+      {error && (
+        <div className="rounded-lg bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
+          {error}
+        </div>
+      )}
+    </div>
   );
 }

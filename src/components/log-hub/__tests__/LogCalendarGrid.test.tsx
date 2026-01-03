@@ -24,6 +24,7 @@ function createDays(year: number, month: number) {
       hasWeight: false,
       hasInjection: false,
       hasLog: false,
+      sideEffectsCount: 0,
     };
   });
 }

@@ -2,13 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-type CalendarDay = {
-  date: string;
-  hasWeight: boolean;
-  hasInjection: boolean;
-  hasLog: boolean;
-};
+import type { CalendarDay } from '@/lib/data/calendar';
 
 type LogCalendarGridProps = {
   year: number;
@@ -79,6 +73,7 @@ export function LogCalendarGrid({
         hasWeight: false,
         hasInjection: false,
         hasLog: false,
+        sideEffectsCount: 0,
       }
     );
   }
