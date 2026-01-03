@@ -1,7 +1,6 @@
 'use client';
 
-import { Syringe, TrendingUp, TrendingDown, MapPin, Calendar } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Syringe, TrendingUp, TrendingDown, MapPin } from 'lucide-react';
 
 type InjectionHistoryItemProps = {
   id: string;
@@ -11,7 +10,7 @@ type InjectionHistoryItemProps = {
   weekNumber: number;
   isDoseChange?: boolean;
   previousDose?: number;
-  onEdit?: (id: string) => void;
+  isFirstInjection?: boolean;
 };
 
 // Map API site names to display names
@@ -37,33 +36,36 @@ function formatDate(date: Date): string {
 }
 
 export function InjectionHistoryItem({
-  id,
   date,
   doseMg,
   site,
   weekNumber,
   isDoseChange,
   previousDose,
-  onEdit,
+  isFirstInjection,
 }: InjectionHistoryItemProps) {
   const isIncrease = isDoseChange && previousDose !== undefined && doseMg > previousDose;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card p-4">
+    <div className="rounded-[1.25rem] bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between">
         <div className="flex gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500/15">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-violet-500/15">
             <Syringe className="h-5 w-5 text-violet-500" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold text-foreground">{formatDate(date)}</span>
+              <span className="font-semibold text-card-foreground">
+                {formatDate(date)}
+              </span>
               {isDoseChange && (
-                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                  isIncrease
-                    ? 'bg-success/15 text-success'
-                    : 'bg-warning/15 text-warning'
-                }`}>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-medium ${
+                    isIncrease
+                      ? 'bg-success/15 text-success'
+                      : 'bg-warning/15 text-warning'
+                  }`}
+                >
                   {isIncrease ? (
                     <TrendingUp className="h-3 w-3" />
                   ) : (
@@ -72,31 +74,24 @@ export function InjectionHistoryItem({
                   {isIncrease ? 'Dose Up' : 'Dose Down'}
                 </span>
               )}
+              {isFirstInjection && !isDoseChange && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-violet-500/15 px-2 py-0.5 text-[0.6875rem] font-medium text-violet-500">
+                  First Jab
+                </span>
+              )}
             </div>
-            <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
+            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[0.875rem] text-muted-foreground">
               <span className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
+                <MapPin className="h-3.5 w-3.5" />
                 {formatSite(site)}
               </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                Week {weekNumber}
-              </span>
+              <span>Week {weekNumber}</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold tabular-nums text-foreground">{doseMg}mg</span>
-          {onEdit && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(id)}
-            >
-              Edit
-            </Button>
-          )}
-        </div>
+        <span className="font-display text-lg font-bold text-card-foreground">
+          {doseMg}mg
+        </span>
       </div>
     </div>
   );

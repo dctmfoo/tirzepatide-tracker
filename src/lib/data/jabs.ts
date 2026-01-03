@@ -15,6 +15,14 @@ export type InjectionEntry = {
 
 export type JabsData = {
   injections: InjectionEntry[];
+  lastInjection: {
+    date: Date;
+    daysAgo: number;
+    weekNumber: number;
+    doseMg: number;
+    phase: number;
+    site: string;
+  } | null;
   nextDue: {
     date: Date;
     daysUntil: number;
@@ -24,6 +32,7 @@ export type JabsData = {
   weeksOnCurrentDose: number;
   totalInjections: number;
   suggestedSite: string;
+  treatmentStartDate: Date | null;
 };
 
 /**
@@ -94,12 +103,59 @@ export const getJabsData = cache(async (userId: string): Promise<JabsData> => {
   const lastIndex = sites.indexOf(lastSite);
   const suggestedSite = lastIndex === -1 ? sites[0] : sites[(lastIndex + 1) % sites.length];
 
+  // Calculate treatment start date (first injection)
+  const treatmentStartDate =
+    formattedInjections.length > 0
+      ? new Date(formattedInjections[formattedInjections.length - 1].injectionDate)
+      : null;
+
+  // Calculate last injection details
+  let lastInjection: JabsData['lastInjection'] = null;
+  if (formattedInjections.length > 0) {
+    const latest = formattedInjections[0];
+    const now = new Date();
+    const daysAgo = Math.floor(
+      (now.getTime() - new Date(latest.injectionDate).getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    // Calculate week number from treatment start
+    const weekNumber = treatmentStartDate
+      ? Math.floor(
+          (new Date(latest.injectionDate).getTime() - treatmentStartDate.getTime()) /
+            (1000 * 60 * 60 * 24 * 7)
+        ) + 1
+      : 1;
+
+    // Calculate phase based on dose (Mounjaro dosing schedule)
+    // 2.5mg = Phase 1, 5mg = Phase 2, 7.5mg = Phase 3, 10mg = Phase 4, 12.5mg = Phase 5, 15mg = Phase 6
+    const doseToPhase: Record<number, number> = {
+      2.5: 1,
+      5: 2,
+      7.5: 3,
+      10: 4,
+      12.5: 5,
+      15: 6,
+    };
+    const phase = doseToPhase[latest.doseMg] ?? 1;
+
+    lastInjection = {
+      date: new Date(latest.injectionDate),
+      daysAgo,
+      weekNumber,
+      doseMg: latest.doseMg,
+      phase,
+      site: latest.injectionSite,
+    };
+  }
+
   return {
     injections: formattedInjections,
+    lastInjection,
     nextDue,
     currentDose,
     weeksOnCurrentDose,
     totalInjections: formattedInjections.length,
     suggestedSite,
+    treatmentStartDate,
   };
 });

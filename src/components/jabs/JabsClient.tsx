@@ -1,103 +1,100 @@
 'use client';
 
 import { useState } from 'react';
-import { Syringe, Pill, Calendar, Clock, Plus } from 'lucide-react';
+import { Syringe, Pill, Calendar, Plus, Bell } from 'lucide-react';
 import { InjectionHistoryItem } from './InjectionHistoryItem';
 import { LogInjectionModal } from './LogInjectionModal';
+import { LastInjectionHeroCard } from './LastInjectionHeroCard';
+import { JabsStatCard } from './JabsStatCard';
 import { Button } from '@/components/ui/button';
-import { Section, StatCard } from '@/components/ui';
 import type { JabsData } from '@/lib/data/jabs';
 
 type Props = {
   data: JabsData;
 };
 
-function formatNextDueDate(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function calculateWeekNumber(injectionDate: Date, treatmentStartDate?: Date): number {
-  const startDate = treatmentStartDate || injectionDate;
-  const diffTime = injectionDate.getTime() - startDate.getTime();
+function calculateWeekNumber(
+  injectionDate: Date,
+  treatmentStartDate: Date | null
+): number {
+  if (!treatmentStartDate) return 1;
+  const diffTime = injectionDate.getTime() - treatmentStartDate.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   return Math.max(1, Math.floor(diffDays / 7) + 1);
-}
-
-function getNextDueColor(status: string | undefined): 'destructive' | 'warning' | 'success' {
-  if (status === 'overdue') return 'destructive';
-  if (status === 'due_today' || status === 'due_soon') return 'warning';
-  return 'success';
 }
 
 export function JabsClient({ data }: Props) {
   const [showModal, setShowModal] = useState(false);
 
-  const handleEditInjection = (id: string) => {
-    // TODO: Open edit modal with injection data
-    console.log('Edit injection:', id);
-  };
-
-  // Get treatment start date from first injection
-  const treatmentStartDate =
-    data.injections.length > 0
-      ? new Date(data.injections[data.injections.length - 1].injectionDate)
-      : undefined;
-
-  // Identify dose changes
-  const injectionsWithDoseChange = data.injections.map((inj, index) => {
+  // Identify dose changes and first injection
+  const injectionsWithMeta = data.injections.map((inj, index) => {
     const prevInjection = data.injections[index + 1];
     const isDoseChange = prevInjection && prevInjection.doseMg !== inj.doseMg;
+    const isFirstInjection = index === data.injections.length - 1;
     return {
       ...inj,
       isDoseChange,
       previousDose: prevInjection?.doseMg,
+      isFirstInjection,
     };
   });
 
   return (
     <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4 pb-32">
       {/* Page Header */}
-      <h1 className="text-xl font-bold text-foreground">Jabs</h1>
+      <header className="flex items-center justify-between">
+        <h1 className="text-[1.625rem] font-bold tracking-tight text-card-foreground">
+          Jabs
+        </h1>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Bell className="h-6 w-6 text-muted-foreground" />
+        </Button>
+      </header>
 
-      {/* Stat Cards Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        <StatCard
+      {/* Last Injection Hero Card */}
+      {data.lastInjection && (
+        <LastInjectionHeroCard
+          date={data.lastInjection.date}
+          daysAgo={data.lastInjection.daysAgo}
+          weekNumber={data.lastInjection.weekNumber}
+          doseMg={data.lastInjection.doseMg}
+          phase={data.lastInjection.phase}
+          site={data.lastInjection.site}
+          suggestedSite={data.suggestedSite}
+        />
+      )}
+
+      {/* Stats Grid - 3 columns */}
+      <section className="grid grid-cols-3 gap-3">
+        <JabsStatCard
           icon={Syringe}
           iconColor="violet"
-          label="Total Injections"
           value={data.totalInjections}
-          className="rounded-xl"
+          label="Total"
         />
-        <StatCard
+        <JabsStatCard
           icon={Pill}
           iconColor="amber"
-          label="Current Dose"
-          value={data.currentDose}
+          value={data.currentDose ?? 0}
           unit="mg"
-          className="rounded-xl"
+          label="Dose"
         />
-        <StatCard
+        <JabsStatCard
           icon={Calendar}
           iconColor="blue"
-          label="On Current Dose"
-          value={data.weeksOnCurrentDose > 0 ? data.weeksOnCurrentDose : '< 1'}
-          unit={data.weeksOnCurrentDose > 0 ? 'weeks' : 'week'}
-          className="rounded-xl"
+          value={data.weeksOnCurrentDose > 0 ? data.weeksOnCurrentDose : '<1'}
+          unit={data.weeksOnCurrentDose > 0 ? 'wks' : 'wk'}
+          label="On dose"
         />
-        <StatCard
-          icon={Clock}
-          iconColor={getNextDueColor(data.nextDue?.status)}
-          label="Next Due"
-          value={data.nextDue ? formatNextDueDate(data.nextDue.date) : null}
-          subtext={data.nextDue ? `${data.nextDue.daysUntil} days` : undefined}
-          className="rounded-xl"
-        />
-      </div>
+      </section>
 
       {/* Injection History Section */}
-      <Section title="Injection History">
+      <section className="mb-4">
+        <h3 className="mb-3 text-[1.0625rem] font-semibold text-card-foreground">
+          History
+        </h3>
         <div className="space-y-3">
-          {injectionsWithDoseChange.map((injection) => (
+          {injectionsWithMeta.map((injection) => (
             <InjectionHistoryItem
               key={injection.id}
               id={injection.id}
@@ -106,23 +103,23 @@ export function JabsClient({ data }: Props) {
               site={injection.injectionSite}
               weekNumber={calculateWeekNumber(
                 new Date(injection.injectionDate),
-                treatmentStartDate
+                data.treatmentStartDate
               )}
               isDoseChange={injection.isDoseChange}
               previousDose={injection.previousDose}
-              onEdit={handleEditInjection}
+              isFirstInjection={injection.isFirstInjection}
             />
           ))}
         </div>
-      </Section>
+      </section>
 
-      {/* Log Injection Button */}
+      {/* Floating Action Button */}
       <div className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 flex justify-center px-4">
         <Button
           onClick={() => setShowModal(true)}
-          className="rounded-xl px-8 py-3 shadow-lg"
+          className="flex items-center gap-2 rounded-xl bg-card-foreground px-8 py-3 font-semibold text-card shadow-lg hover:opacity-90"
         >
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="h-5 w-5" />
           Log Injection
         </Button>
       </div>

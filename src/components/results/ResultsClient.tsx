@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Scale, User, BarChart3, Target } from 'lucide-react';
+import { Scale, User, BarChart3, Flag } from 'lucide-react';
 import { PeriodTabs } from './PeriodTabs';
 import { HeroStat } from './HeroStat';
 import { Insights } from './Insights';
@@ -153,12 +153,6 @@ export function ResultsClient({ data }: Props) {
     }));
   }, [filteredData]);
 
-  // Calculate period start date
-  const periodStartDate = useMemo(() => {
-    if (filteredData.weightEntries.length === 0) return null;
-    return new Date(filteredData.weightEntries[0].recordedAt);
-  }, [filteredData]);
-
   // To goal calculation
   const toGoal = stats?.current && data.profile?.goalWeightKg
     ? stats.current - data.profile.goalWeightKg
@@ -190,24 +184,28 @@ export function ResultsClient({ data }: Props) {
   return (
     <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
       {/* Header + Period Tabs */}
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-bold text-foreground">Results</h1>
+      <header className="flex items-center justify-between">
+        <h1 className="text-[1.625rem] font-bold tracking-tight text-foreground">
+          Results
+        </h1>
         <PeriodTabs selected={period} onChange={setPeriod} />
-      </div>
+      </header>
 
       {/* Hero Stat Section */}
       <HeroStat
         totalChange={stats.change}
         percentChange={stats.percentChange}
-        startDate={periodStartDate}
+        currentWeight={stats.current}
+        goalWeight={data.profile?.goalWeightKg ?? null}
         goalProgress={goalProgress}
+        toGoal={toGoal}
       />
 
       {/* Secondary Stats Grid - 2x2 */}
       <div className="grid grid-cols-2 gap-3">
         <StatCard
           icon={Scale}
-          iconColor="primary"
+          iconColor="blue"
           label="Current"
           value={stats.current.toFixed(1)}
           unit="kg"
@@ -227,23 +225,32 @@ export function ResultsClient({ data }: Props) {
           unit="kg/wk"
         />
         <StatCard
-          icon={Target}
+          icon={Flag}
           iconColor="violet"
-          label="To Goal"
-          value={toGoal !== null ? toGoal.toFixed(1) : null}
+          label="Starting"
+          value={data.profile?.startingWeightKg?.toFixed(0) ?? null}
           unit="kg"
-          subtext={data.profile?.goalWeightKg ? `Target: ${data.profile.goalWeightKg}kg` : undefined}
         />
       </div>
 
-      {/* Weight Chart - flex-1 to fill remaining space */}
-      <div className="min-h-0 flex-1">
-        <WeightChart
-          data={chartData}
-          doseHistory={doseHistory}
-          goalWeight={data.profile?.goalWeightKg ?? null}
-        />
-      </div>
+      {/* Weight Chart Card */}
+      <section className="rounded-[1.25rem] bg-card p-4 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-[1.0625rem] font-semibold text-card-foreground">
+            Weight Trend
+          </h3>
+          <span className="text-[0.75rem] text-muted-foreground">
+            {chartData.length} entries
+          </span>
+        </div>
+        <div className="h-56">
+          <WeightChart
+            data={chartData}
+            doseHistory={doseHistory}
+            goalWeight={data.profile?.goalWeightKg ?? null}
+          />
+        </div>
+      </section>
 
       {/* Insights Section */}
       <Insights

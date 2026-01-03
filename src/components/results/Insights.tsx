@@ -118,15 +118,17 @@ export function Insights({
   }
 
   return (
-    <div className="shrink-0 space-y-3">
-      <h2 className="text-sm font-semibold text-foreground">Insights</h2>
+    <section className="shrink-0">
+      <h3 className="mb-3 text-[1.0625rem] font-semibold text-card-foreground">
+        Insights
+      </h3>
       <div className="space-y-2">
         {insights.slice(0, 2).map((insight) => {
           const Icon = insight.icon;
           return (
             <div
               key={insight.id}
-              className="flex items-start gap-3 rounded-lg border border-border bg-card p-3"
+              className="flex items-start gap-3 rounded-[1.25rem] bg-card p-3 shadow-sm"
             >
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${insight.iconBg}`}
@@ -134,13 +136,17 @@ export function Insights({
                 <Icon className={`h-4 w-4 ${insight.iconColor}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-foreground">{insight.title}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{insight.description}</p>
+                <p className="text-[0.9375rem] font-medium text-card-foreground">
+                  {insight.title}
+                </p>
+                <p className="mt-0.5 text-[0.875rem] text-muted-foreground">
+                  {insight.description}
+                </p>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

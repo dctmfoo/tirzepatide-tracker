@@ -22,12 +22,12 @@ export function PeriodTabs({ selected, onChange }: PeriodTabsProps) {
       value={selected}
       onValueChange={(value) => onChange(value as Period)}
     >
-      <TabsList className="h-8 gap-0.5 rounded-lg bg-card p-0.5">
+      <TabsList className="h-9 gap-1 rounded-xl bg-secondary p-1">
         {periods.map((period) => (
           <TabsTrigger
             key={period.value}
             value={period.value}
-            className="h-7 rounded-md px-2.5 text-xs font-medium text-muted-foreground transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="h-7 rounded-lg px-3 text-[0.75rem] font-medium text-muted-foreground transition-all data-[state=active]:bg-card data-[state=active]:text-card-foreground data-[state=active]:shadow-sm"
           >
             {period.label}
           </TabsTrigger>
