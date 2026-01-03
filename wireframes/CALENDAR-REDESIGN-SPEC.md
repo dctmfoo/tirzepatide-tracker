@@ -584,17 +584,30 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 5: Full Calendar View
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Create `/log/calendar` route for full month view
-- [ ] Reuse existing CalendarGrid component (or adapt)
-- [ ] Navigate from day tap to `/log/[date]`
-- [ ] Add back button to Log Hub
+- [x] Create `/log/calendar` route for full month view
+- [x] Reuse existing CalendarGrid component (or adapt)
+- [x] Navigate from day tap to `/log/[date]`
+- [x] Add back button to Log Hub
 
-**Files to modify/create:**
-- `src/app/(app)/log/calendar/page.tsx`
-- May reuse `src/components/calendar/CalendarGrid.tsx`
+**Files created:**
+- `src/app/(app)/log/calendar/page.tsx` - Full calendar page with month summary
+- `src/app/(app)/log/calendar/loading.tsx` - Loading skeleton
+- `src/components/log-hub/LogCalendarGrid.tsx` - Adapted calendar grid with Log design patterns
+- `src/components/log-hub/LogCalendarClient.tsx` - Client component for month navigation
+- `src/components/log-hub/__tests__/LogCalendarGrid.test.tsx` - 18 unit tests
+- `src/components/log-hub/__tests__/LogCalendarClient.test.tsx` - 7 unit tests
+
+**Features:**
+- Month navigation (previous/next) with optimistic UI updates
+- Day cells link to `/log/[date]` for past/today, disabled for future
+- Colored dots: blue (weight), green (check-in), violet (injection)
+- Today highlighted with gradient background
+- Monthly summary stats (weight logs, check-ins, injections)
+- Loading skeleton for better UX
+- Back button to return to Log Hub
 
 ---
 
@@ -648,8 +661,11 @@ Bottom Nav "Log" tap
 - [x] getDayDetailsData
 - [x] Unit tests
 
-### Phase 5: Full Calendar
-- [ ] Month view page
+### Phase 5: Full Calendar ✅
+- [x] Month view page
+- [x] LogCalendarGrid component
+- [x] LogCalendarClient component
+- [x] 25 unit tests
 
 ### Phase 6: Cleanup
 - [ ] Remove old code
