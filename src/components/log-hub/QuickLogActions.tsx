@@ -39,9 +39,9 @@ export function QuickLogActions({
             </p>
           </button>
 
-          {/* Check-in Action */}
+          {/* Check-in Action - Links to today's log wizard until Phase 3 adds /log/checkin */}
           <Link
-            href="/log/checkin"
+            href={`/log/${todayDate}`}
             className={`rounded-[1.25rem] p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98] ${
               hasCheckinToday
                 ? 'bg-card'
