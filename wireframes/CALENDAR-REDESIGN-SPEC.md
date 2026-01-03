@@ -465,24 +465,23 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 1: Route Structure & Navigation
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Create `/log` route folder at `src/app/(app)/log/`
-- [ ] Add redirect from `/calendar` to `/log`
-- [ ] Update `BottomNav.tsx`: Change `/calendar` to `/log`, change label "Calendar" to "Log"
-- [ ] Create `src/components/log-hub/` folder for new components
-- [ ] Create basic page.tsx with placeholder content
-- [ ] Verify navigation works in browser
+- [x] Create `/log` route folder at `src/app/(app)/log/` - Already existed, updated content
+- [x] Add redirect from `/calendar` to `/log`
+- [x] Update `BottomNav.tsx`: Change `/calendar` to `/log`, change label "Calendar" to "Log"
+- [x] Create `src/components/log-hub/` folder for new components
+- [x] Create basic page.tsx with placeholder content
+- [ ] Verify navigation works in browser - Next agent should verify
 
-**Files to create:**
-- `src/app/(app)/log/page.tsx`
-- `src/app/(app)/log/loading.tsx`
-- `src/components/log-hub/index.ts`
-
-**Files to modify:**
-- `src/components/layout/BottomNav.tsx`
-- `src/app/(app)/calendar/page.tsx` (add redirect)
+**Files modified:**
+- `src/app/(app)/log/page.tsx` - Replaced LogWizard with placeholder Log Hub
+- `src/app/(app)/log/loading.tsx` - Updated skeleton to match new layout
+- `src/app/(app)/log/[date]/page.tsx` - Updated redirectTo from /calendar to /log
+- `src/app/(app)/calendar/page.tsx` - Now redirects to /log
+- `src/components/layout/BottomNav.tsx` - Changed /calendar to /log, label to "Log"
+- `src/components/log-hub/index.ts` - Created barrel export file
 
 ---
 

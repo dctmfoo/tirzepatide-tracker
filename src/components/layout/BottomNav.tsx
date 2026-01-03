@@ -7,7 +7,7 @@ const navItems = [
   { href: '/summary', label: 'Summary', icon: 'ClipboardIcon' },
   { href: '/jabs', label: 'Jabs', icon: 'SyringeIcon' },
   { href: '/results', label: 'Results', icon: 'ChartIcon' },
-  { href: '/calendar', label: 'Calendar', icon: 'CalendarIcon' },
+  { href: '/log', label: 'Log', icon: 'CalendarIcon' },
   { href: '/settings', label: 'Settings', icon: 'SettingsIcon' },
 ];
 

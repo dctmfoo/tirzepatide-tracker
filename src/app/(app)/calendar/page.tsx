@@ -1,26 +1,7 @@
-import { Suspense } from 'react';
-import { verifySession } from '@/lib/dal';
-import { getCalendarData } from '@/lib/data/calendar';
-import { CalendarClient, CalendarSkeleton } from '@/components/calendar';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-
-async function CalendarContent() {
-  const session = await verifySession();
-  const today = new Date();
-  const data = await getCalendarData(
-    session.userId,
-    today.getFullYear(),
-    today.getMonth() + 1
-  );
-
-  return <CalendarClient initialData={data} />;
-}
-
+// Redirect old /calendar route to new /log route
+// Full calendar view will be available at /log/calendar in Phase 5
 export default function CalendarPage() {
-  return (
-    <Suspense fallback={<CalendarSkeleton />}>
-      <CalendarContent />
-    </Suspense>
-  );
+  redirect('/log');
 }
