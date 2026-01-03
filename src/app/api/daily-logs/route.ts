@@ -126,121 +126,138 @@ export async function POST(request: Request) {
 
     const data = validationResult.data;
 
-    // Check if log exists for this date
-    let dailyLog = await db.query.dailyLogs.findFirst({
-      where: and(
-        eq(schema.dailyLogs.userId, session.user.id),
-        eq(schema.dailyLogs.logDate, data.logDate)
-      ),
-    });
+    // Use transaction to batch all operations
+    const result = await db.transaction(async (tx) => {
+      // Check if log exists for this date
+      let dailyLog = await tx.query.dailyLogs.findFirst({
+        where: and(
+          eq(schema.dailyLogs.userId, session.user.id),
+          eq(schema.dailyLogs.logDate, data.logDate)
+        ),
+      });
 
-    // Create or get existing log
-    if (!dailyLog) {
-      const [newLog] = await db
-        .insert(schema.dailyLogs)
-        .values({
-          userId: session.user.id,
-          logDate: data.logDate,
-        })
-        .returning();
-      dailyLog = newLog;
-    } else {
-      // Update the timestamp
-      await db
-        .update(schema.dailyLogs)
-        .set({ updatedAt: new Date() })
-        .where(eq(schema.dailyLogs.id, dailyLog.id));
-    }
+      // Create or get existing log
+      if (!dailyLog) {
+        const [newLog] = await tx
+          .insert(schema.dailyLogs)
+          .values({
+            userId: session.user.id,
+            logDate: data.logDate,
+          })
+          .returning();
+        dailyLog = newLog;
+      } else {
+        // Update the timestamp
+        await tx
+          .update(schema.dailyLogs)
+          .set({ updatedAt: new Date() })
+          .where(eq(schema.dailyLogs.id, dailyLog.id));
+      }
 
-    // Handle side effects
-    if (data.sideEffects) {
-      // Delete existing side effects for this log
-      await db
-        .delete(schema.sideEffects)
-        .where(eq(schema.sideEffects.dailyLogId, dailyLog.id));
+      const logId = dailyLog.id;
 
-      // Insert new side effects
-      if (data.sideEffects.length > 0) {
-        await db.insert(schema.sideEffects).values(
-          data.sideEffects.map((se) => ({
-            dailyLogId: dailyLog.id,
-            effectType: se.effectType,
-            severity: se.severity,
-            notes: se.notes || null,
-          }))
+      // Run all delete operations in parallel
+      const deleteOps: Promise<unknown>[] = [];
+      if (data.sideEffects) {
+        deleteOps.push(
+          tx.delete(schema.sideEffects).where(eq(schema.sideEffects.dailyLogId, logId))
         );
       }
-    }
+      if (data.activity) {
+        deleteOps.push(
+          tx.delete(schema.activityLogs).where(eq(schema.activityLogs.dailyLogId, logId))
+        );
+      }
+      if (data.mental) {
+        deleteOps.push(
+          tx.delete(schema.mentalLogs).where(eq(schema.mentalLogs.dailyLogId, logId))
+        );
+      }
+      if (data.diet) {
+        deleteOps.push(
+          tx.delete(schema.dietLogs).where(eq(schema.dietLogs.dailyLogId, logId))
+        );
+      }
+      await Promise.all(deleteOps);
 
-    // Handle activity log
-    if (data.activity) {
-      await db
-        .delete(schema.activityLogs)
-        .where(eq(schema.activityLogs.dailyLogId, dailyLog.id));
+      // Run all insert operations in parallel
+      const insertOps: Promise<unknown>[] = [];
 
-      await db.insert(schema.activityLogs).values({
-        dailyLogId: dailyLog.id,
-        workoutType: data.activity.workoutType || null,
-        durationMinutes: data.activity.durationMinutes || null,
-        steps: data.activity.steps || null,
-        notes: data.activity.notes || null,
+      if (data.sideEffects && data.sideEffects.length > 0) {
+        insertOps.push(
+          tx.insert(schema.sideEffects).values(
+            data.sideEffects.map((se) => ({
+              dailyLogId: logId,
+              effectType: se.effectType,
+              severity: se.severity,
+              notes: se.notes || null,
+            }))
+          )
+        );
+      }
+
+      if (data.activity) {
+        insertOps.push(
+          tx.insert(schema.activityLogs).values({
+            dailyLogId: logId,
+            workoutType: data.activity.workoutType || null,
+            durationMinutes: data.activity.durationMinutes || null,
+            steps: data.activity.steps || null,
+            notes: data.activity.notes || null,
+          })
+        );
+      }
+
+      if (data.mental) {
+        insertOps.push(
+          tx.insert(schema.mentalLogs).values({
+            dailyLogId: logId,
+            motivationLevel: data.mental.motivationLevel || null,
+            cravingsLevel: data.mental.cravingsLevel || null,
+            moodLevel: data.mental.moodLevel || null,
+            notes: data.mental.notes || null,
+          })
+        );
+      }
+
+      if (data.diet) {
+        insertOps.push(
+          tx.insert(schema.dietLogs).values({
+            dailyLogId: logId,
+            hungerLevel: data.diet.hungerLevel || null,
+            mealsCount: data.diet.mealsCount || null,
+            proteinGrams: data.diet.proteinGrams || null,
+            waterLiters: data.diet.waterLiters?.toString() || null,
+            notes: data.diet.notes || null,
+          })
+        );
+      }
+      await Promise.all(insertOps);
+
+      // Fetch the complete log
+      return tx.query.dailyLogs.findFirst({
+        where: eq(schema.dailyLogs.id, logId),
+        with: {
+          sideEffects: true,
+          activityLog: true,
+          mentalLog: true,
+          dietLog: true,
+        },
       });
-    }
-
-    // Handle mental log
-    if (data.mental) {
-      await db
-        .delete(schema.mentalLogs)
-        .where(eq(schema.mentalLogs.dailyLogId, dailyLog.id));
-
-      await db.insert(schema.mentalLogs).values({
-        dailyLogId: dailyLog.id,
-        motivationLevel: data.mental.motivationLevel || null,
-        cravingsLevel: data.mental.cravingsLevel || null,
-        moodLevel: data.mental.moodLevel || null,
-        notes: data.mental.notes || null,
-      });
-    }
-
-    // Handle diet log
-    if (data.diet) {
-      await db
-        .delete(schema.dietLogs)
-        .where(eq(schema.dietLogs.dailyLogId, dailyLog.id));
-
-      await db.insert(schema.dietLogs).values({
-        dailyLogId: dailyLog.id,
-        hungerLevel: data.diet.hungerLevel || null,
-        mealsCount: data.diet.mealsCount || null,
-        proteinGrams: data.diet.proteinGrams || null,
-        waterLiters: data.diet.waterLiters?.toString() || null,
-        notes: data.diet.notes || null,
-      });
-    }
-
-    // Fetch the complete log
-    const completeLog = await db.query.dailyLogs.findFirst({
-      where: eq(schema.dailyLogs.id, dailyLog.id),
-      with: {
-        sideEffects: true,
-        activityLog: true,
-        mentalLog: true,
-        dietLog: true,
-      },
     });
 
     return NextResponse.json({
-      id: completeLog!.id,
-      logDate: completeLog!.logDate,
-      sideEffects: completeLog!.sideEffects,
-      activity: completeLog!.activityLog,
-      mental: completeLog!.mentalLog,
-      diet: completeLog!.dietLog ? {
-        ...completeLog!.dietLog,
-        waterLiters: completeLog!.dietLog.waterLiters ? Number(completeLog!.dietLog.waterLiters) : null,
+      id: result!.id,
+      logDate: result!.logDate,
+      sideEffects: result!.sideEffects,
+      activity: result!.activityLog,
+      mental: result!.mentalLog,
+      diet: result!.dietLog ? {
+        ...result!.dietLog,
+        waterLiters: result!.dietLog.waterLiters ? Number(result!.dietLog.waterLiters) : null,
       } : null,
-      createdAt: completeLog!.createdAt,
-      updatedAt: completeLog!.updatedAt,
+      createdAt: result!.createdAt,
+      updatedAt: result!.updatedAt,
     }, { status: 201 });
   } catch (error) {
     console.error('POST /api/daily-logs error:', error);

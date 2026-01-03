@@ -19,6 +19,19 @@ const mockSet = vi.fn().mockReturnThis();
 const mockWhere = vi.fn().mockReturnThis();
 const mockDelete = vi.fn().mockReturnThis();
 
+// Create transaction context mock that mirrors db structure
+const createTxMock = () => ({
+  query: {
+    dailyLogs: {
+      findMany: (...args: unknown[]) => mockFindMany(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
+    },
+  },
+  insert: () => mockInsert(),
+  update: () => mockUpdate(),
+  delete: () => mockDelete(),
+});
+
 vi.mock('@/lib/db', () => ({
   db: {
     query: {
@@ -30,6 +43,9 @@ vi.mock('@/lib/db', () => ({
     insert: () => mockInsert(),
     update: () => mockUpdate(),
     delete: () => mockDelete(),
+    transaction: async <T>(callback: (tx: ReturnType<typeof createTxMock>) => Promise<T>): Promise<T> => {
+      return callback(createTxMock());
+    },
   },
   schema: {
     dailyLogs: {
