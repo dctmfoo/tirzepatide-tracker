@@ -55,9 +55,40 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       }));
 
       if (supported) {
-        // Check existing subscription
+        // Check existing subscription, but with timeout to handle missing service worker
         try {
-          const registration = await navigator.serviceWorker.ready;
+          // First check if there's actually a service worker registered
+          // navigator.serviceWorker.ready never resolves if no SW is registered
+          const registrations = await navigator.serviceWorker.getRegistrations();
+
+          if (registrations.length === 0) {
+            // No service worker registered - can't check subscription
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+            }));
+            return;
+          }
+
+          // Race between serviceWorker.ready and a timeout
+          const timeoutPromise = new Promise<null>((resolve) =>
+            setTimeout(() => resolve(null), 3000)
+          );
+
+          const registration = await Promise.race([
+            navigator.serviceWorker.ready,
+            timeoutPromise,
+          ]);
+
+          if (!registration) {
+            // Timed out waiting for service worker
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+            }));
+            return;
+          }
+
           const subscription = await registration.pushManager.getSubscription();
           setState((prev) => ({
             ...prev,

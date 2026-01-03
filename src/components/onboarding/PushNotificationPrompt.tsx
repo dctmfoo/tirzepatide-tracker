@@ -242,7 +242,6 @@ export function PushNotificationPrompt({ onComplete }: PushNotificationPromptPro
             </button>
             <button
               onClick={handleSkip}
-              disabled={isLoading}
               className="w-full py-3 text-muted-foreground hover:text-foreground transition-colors"
             >
               Not now
