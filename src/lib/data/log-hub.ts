@@ -116,8 +116,8 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
       .where(
         and(
           eq(weightEntries.userId, userId),
-          gte(weightEntries.recordedAt, new Date(startDate)),
-          lte(weightEntries.recordedAt, new Date(endDate + 'T23:59:59'))
+          gte(weightEntries.recordedAt, new Date(startDate + 'T00:00:00.000Z')),
+          lte(weightEntries.recordedAt, new Date(endDate + 'T23:59:59.999Z'))
         )
       ),
 
@@ -130,8 +130,8 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
       .where(
         and(
           eq(injections.userId, userId),
-          gte(injections.injectionDate, new Date(startDate)),
-          lte(injections.injectionDate, new Date(endDate + 'T23:59:59'))
+          gte(injections.injectionDate, new Date(startDate + 'T00:00:00.000Z')),
+          lte(injections.injectionDate, new Date(endDate + 'T23:59:59.999Z'))
         )
       ),
 
@@ -203,7 +203,8 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
     };
   });
 
-  // Calculate streak
+  // Calculate streak based on daily check-ins only
+  // Weight entries don't count toward streak (users shouldn't weigh daily)
   let streak = 0;
   const logDateStrings = streakData.map((l) => l.logDate);
   const checkDate = new Date(today);
@@ -211,16 +212,14 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
   // Start from today and go backwards
   while (true) {
     const dateStr = formatDate(checkDate);
-    // Check if there's a log OR weight entry for this date
     const hasLog = logDateStrings.includes(dateStr);
-    const hasWeight = weightDatesSet.has(dateStr);
 
-    if (hasLog || hasWeight) {
+    if (hasLog) {
       streak++;
       checkDate.setDate(checkDate.getDate() - 1);
     } else {
-      // If today has nothing logged, streak is 0
-      // If yesterday has nothing, break the streak
+      // If today has no check-in, streak is 0
+      // If yesterday has no check-in, break the streak
       break;
     }
 

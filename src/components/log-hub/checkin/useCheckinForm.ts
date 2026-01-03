@@ -153,9 +153,13 @@ export function useCheckinForm(existingData?: DailyLogData) {
           severity: se.severity,
         }));
 
+      // Mental section is always sent if any mental fields OR notes are set
+      // Notes are canonically stored in mental_logs to avoid data fragmentation
+      const hasMentalData = formState.moodLevel || formState.cravingsLevel || formState.motivationLevel || formState.notes;
+
       const payload = {
         logDate: date,
-        mental: formState.moodLevel || formState.cravingsLevel || formState.motivationLevel
+        mental: hasMentalData
           ? {
               moodLevel: formState.moodLevel || undefined,
               cravingsLevel: formState.cravingsLevel || undefined,
