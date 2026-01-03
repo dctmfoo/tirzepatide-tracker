@@ -39,15 +39,15 @@ const iconColorStyles: Record<IconColor, string> = {
 };
 
 const iconBgStyles: Record<IconColor, string> = {
-  primary: 'bg-primary/10',
-  success: 'bg-success/10',
-  warning: 'bg-warning/10',
-  destructive: 'bg-destructive/10',
-  violet: 'bg-violet-500/10',
-  amber: 'bg-amber-500/10',
-  blue: 'bg-blue-500/10',
-  orange: 'bg-orange-500/10',
-  emerald: 'bg-emerald-500/10',
+  primary: 'bg-primary/15',
+  success: 'bg-success/15',
+  warning: 'bg-warning/15',
+  destructive: 'bg-destructive/15',
+  violet: 'bg-violet-500/15',
+  amber: 'bg-amber-500/15',
+  blue: 'bg-blue-500/15',
+  orange: 'bg-orange-500/15',
+  emerald: 'bg-emerald-500/15',
 };
 
 const badgeStyles = {
@@ -68,63 +68,55 @@ export function StatCard({
   className,
 }: StatCardProps) {
   const displayValue = value !== null ? value : '—';
-  const hasIcon = !!Icon;
 
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-lg border border-border bg-card p-3',
+        'flex flex-col items-center rounded-[1.25rem] bg-card p-2 shadow-sm',
         className
       )}
     >
-      {/* Decorative circle - only shown when icon is provided */}
-      {hasIcon && (
+      {/* Icon container */}
+      {Icon && (
         <div
           className={cn(
-            'absolute -right-2 -top-2 h-10 w-10 rounded-full',
+            'mb-1 flex h-6 w-6 items-center justify-center rounded-full',
             iconBgStyles[iconColor]
           )}
-        />
+        >
+          <Icon className={cn('h-3 w-3', iconColorStyles[iconColor])} />
+        </div>
       )}
 
-      <div className="relative">
-        {/* Icon and label row */}
-        {hasIcon ? (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Icon className={cn('h-3.5 w-3.5', iconColorStyles[iconColor])} />
-            <span>{label}</span>
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">{label}</p>
-        )}
-
-        {/* Value with optional unit */}
-        <p className="mt-1 text-xl font-bold tabular-nums text-foreground">
+      {/* Value with optional unit and badge */}
+      <div className="flex items-center justify-center gap-1.5">
+        <p className="font-display text-base font-bold text-card-foreground">
           {displayValue}
           {unit && value !== null && (
-            <span className="ml-0.5 text-xs font-normal text-muted-foreground">
+            <span className="ml-0.5 text-[0.75rem] font-normal text-muted-foreground">
               {unit}
             </span>
           )}
         </p>
-
-        {/* Badge */}
         {badge && (
           <span
             className={cn(
-              'mt-1 inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+              'inline-flex items-center rounded-full px-1.5 py-0.5 text-[0.6875rem] font-medium',
               badgeStyles[badge.variant]
             )}
           >
             {badge.text}
           </span>
         )}
-
-        {/* Subtext */}
-        {subtext && (
-          <p className="mt-0.5 text-[10px] text-muted-foreground">{subtext}</p>
-        )}
       </div>
+
+      {/* Label */}
+      <p className="text-[0.75rem] text-muted-foreground">{label}</p>
+
+      {/* Subtext */}
+      {subtext && (
+        <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">{subtext}</p>
+      )}
     </div>
   );
 }

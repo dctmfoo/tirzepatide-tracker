@@ -1,9 +1,15 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
-import { SettingsSection, SettingsItem, ThemeToggle } from '@/components/settings';
+import {
+  SettingsSection,
+  SettingsItem,
+  ThemeToggle,
+  ProfileCard,
+  GoalsCard,
+} from '@/components/settings';
 import { usePushNotifications } from '@/lib/push';
 import {
   ResponsiveModal,
@@ -16,6 +22,19 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Calendar,
+  Clock,
+  Scale,
+  Bell,
+  Moon,
+  Download,
+  Archive,
+  HelpCircle,
+  MessageSquare,
+  FileText,
+  Trash2,
+} from 'lucide-react';
 
 type Profile = {
   age: number | null;
@@ -44,17 +63,41 @@ type NotificationPreference = {
 
 function SettingsSkeleton() {
   return (
-    <div className="space-y-6 p-4">
-      {[...Array(4)].map((_, i) => (
+    <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
+      {/* Header skeleton */}
+      <Skeleton className="h-8 w-24" />
+
+      {/* Profile card skeleton */}
+      <div className="rounded-[1.25rem] bg-card p-5 shadow-sm">
+        <div className="mb-5 flex items-center gap-4">
+          <Skeleton className="h-14 w-14 rounded-full" />
+          <div className="flex-1">
+            <Skeleton className="mb-2 h-6 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+
+      {/* Goals card skeleton */}
+      <Skeleton className="h-48 rounded-[1.25rem]" />
+
+      {/* Settings sections skeleton */}
+      {[...Array(3)].map((_, i) => (
         <div key={i}>
-          <Skeleton className="mb-2 h-4 w-24" />
-          <Skeleton className="rounded-xl p-4">
-            <div className="space-y-1">
-              {[...Array(3)].map((_, j) => (
-                <Skeleton key={j} className="h-12 bg-background/50" />
-              ))}
-            </div>
-          </Skeleton>
+          <Skeleton className="mb-3 h-3 w-20" />
+          <div className="divide-y divide-border/40 overflow-hidden rounded-[1.25rem] bg-card shadow-sm">
+            {[...Array(2)].map((_, j) => (
+              <div key={j} className="flex items-center gap-3 px-4 py-3.5">
+                <Skeleton className="h-9 w-9 rounded-xl" />
+                <Skeleton className="h-5 w-32" />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -62,9 +105,11 @@ function SettingsSkeleton() {
 }
 
 export default function SettingsPage() {
+  const { data: session } = useSession();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreference[]>([]);
+  const [currentWeight, setCurrentWeight] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
@@ -72,7 +117,7 @@ export default function SettingsPage() {
   const { isSubscribed: isPushSubscribed, isLoading: isPushLoading } = usePushNotifications();
 
   // Get theme state
-  const { theme, resolvedTheme } = useTheme();
+  const { theme } = useTheme();
   const [themeMounted, setThemeMounted] = useState(false);
 
   useEffect(() => {
@@ -81,10 +126,11 @@ export default function SettingsPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [profileRes, prefsRes, notifRes] = await Promise.all([
+      const [profileRes, prefsRes, notifRes, weightRes] = await Promise.all([
         fetch('/api/profile'),
         fetch('/api/preferences'),
         fetch('/api/notifications/preferences'),
+        fetch('/api/weight/latest'),
       ]);
 
       if (profileRes.ok) {
@@ -100,6 +146,11 @@ export default function SettingsPage() {
       if (notifRes.ok) {
         const data = await notifRes.json();
         setNotificationPrefs(data.preferences || []);
+      }
+
+      if (weightRes.ok) {
+        const data = await weightRes.json();
+        setCurrentWeight(data.weightKg);
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error);
@@ -149,13 +200,34 @@ export default function SettingsPage() {
   };
 
   const getDayName = (day: number | null): string => {
-    if (day === null) return 'No preference';
+    if (day === null) return 'Not set';
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     return days[day];
   };
 
-  const getNotificationStatusText = (): string => {
-    if (isPushLoading) return 'Checking...';
+  const getReminderText = (timing: string | undefined): string => {
+    switch (timing) {
+      case '1_day_before':
+        return '1 day before';
+      case '2_days_before':
+        return '2 days before';
+      case 'same_day':
+        return 'Same day';
+      case 'none':
+        return 'None';
+      default:
+        return '1 day before';
+    }
+  };
+
+  const getUnitsText = (): string => {
+    const weight = preferences?.weightUnit || 'kg';
+    const height = preferences?.heightUnit === 'ft-in' ? 'ft/in' : 'cm';
+    return `${weight}, ${height}`;
+  };
+
+  const getNotificationStatus = (): { text: string; enabled: boolean } => {
+    if (isPushLoading) return { text: 'Checking...', enabled: false };
 
     const enabledNotifs: string[] = [];
 
@@ -163,7 +235,6 @@ export default function SettingsPage() {
       enabledNotifs.push('Push');
     }
 
-    // Check email-based notifications (injection_reminder uses email, weekly_summary)
     const injectionReminder = notificationPrefs.find((p) => p.notificationType === 'injection_reminder');
     const weeklySummary = notificationPrefs.find((p) => p.notificationType === 'weekly_summary');
 
@@ -172,47 +243,69 @@ export default function SettingsPage() {
     }
 
     if (enabledNotifs.length === 0) {
-      return 'Disabled';
+      return { text: 'Off', enabled: false };
     }
 
-    return `${enabledNotifs.join(' & ')} enabled`;
+    return { text: 'On', enabled: true };
   };
+
+  const getThemeText = (): string => {
+    if (!themeMounted) return 'Loading...';
+    if (theme === 'system') return 'System';
+    return theme === 'dark' ? 'Dark' : 'Light';
+  };
+
+  // Get user display info - extract name from email if no name set
+  const userEmail = session?.user?.email || '';
+  const userName = session?.user?.name || extractNameFromEmail(userEmail);
 
   if (loading) {
     return <SettingsSkeleton />;
   }
 
-  return (
-    <div className="pb-24">
-      {/* Page Header */}
-      <div className="px-4 py-4">
-        <h1 className="text-xl font-bold text-foreground">Settings</h1>
-      </div>
+  const notificationStatus = getNotificationStatus();
 
-      {/* PROFILE Section */}
-      <SettingsSection title="Profile">
-        <SettingsItem
-          label="Personal Info"
-          sublabel={`Age: ${profile?.age || 'Not set'}, Gender: ${profile?.gender || 'Not set'}, Height: ${formatHeight(profile?.heightCm ?? null)}`}
-          onClick={() => setActiveModal('personalInfo')}
-        />
-        <SettingsItem
-          label="Goals"
-          sublabel={`Start: ${formatWeight(profile?.startingWeightKg ?? null)}, Goal: ${formatWeight(profile?.goalWeightKg ?? null)}`}
-          onClick={() => setActiveModal('goals')}
-        />
-        <SettingsItem
-          label="Account"
-          sublabel="Email, password"
-          onClick={() => setActiveModal('account')}
-        />
-      </SettingsSection>
+  return (
+    <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4 pb-24">
+      {/* Header */}
+      <header>
+        <h1 className="text-[1.625rem] font-bold tracking-tight text-foreground">Settings</h1>
+      </header>
+
+      {/* Profile Summary Card */}
+      <ProfileCard
+        name={userName}
+        email={userEmail}
+        age={profile?.age ?? null}
+        gender={profile?.gender ?? null}
+        height={formatHeight(profile?.heightCm ?? null)}
+        startWeight={formatWeight(profile?.startingWeightKg ?? null)}
+        onEdit={() => setActiveModal('personalInfo')}
+      />
+
+      {/* Goals Card */}
+      <GoalsCard
+        startWeight={profile?.startingWeightKg ?? null}
+        currentWeight={currentWeight}
+        goalWeight={profile?.goalWeightKg ?? null}
+        weightUnit={preferences?.weightUnit || 'kg'}
+        onEdit={() => setActiveModal('goals')}
+      />
 
       {/* TREATMENT Section */}
       <SettingsSection title="Treatment">
         <SettingsItem
-          label="Injection Schedule"
-          sublabel={`Preferred day: ${getDayName(preferences?.preferredInjectionDay ?? null)}`}
+          label="Injection Day"
+          icon={Calendar}
+          iconColor="violet"
+          value={getDayName(preferences?.preferredInjectionDay ?? null)}
+          onClick={() => setActiveModal('injectionSchedule')}
+        />
+        <SettingsItem
+          label="Reminder"
+          icon={Clock}
+          iconColor="amber"
+          value={getReminderText(preferences?.reminderTiming)}
           onClick={() => setActiveModal('injectionSchedule')}
         />
       </SettingsSection>
@@ -221,17 +314,28 @@ export default function SettingsPage() {
       <SettingsSection title="Preferences">
         <SettingsItem
           label="Units"
-          sublabel={`Weight: ${preferences?.weightUnit || 'kg'}, Height: ${preferences?.heightUnit || 'cm'}`}
+          icon={Scale}
+          iconColor="blue"
+          value={getUnitsText()}
           onClick={() => setActiveModal('units')}
         />
         <SettingsItem
           label="Notifications"
-          sublabel={getNotificationStatusText()}
+          icon={Bell}
+          iconColor="emerald"
+          badge={
+            notificationStatus.enabled
+              ? { text: notificationStatus.text, variant: 'success' }
+              : undefined
+          }
+          value={!notificationStatus.enabled ? notificationStatus.text : undefined}
           onClick={() => setActiveModal('notifications')}
         />
         <SettingsItem
-          label="Appearance"
-          sublabel={`Theme: ${themeMounted ? (theme === 'system' ? `System (${resolvedTheme})` : theme) : 'Loading...'}`}
+          label="Theme"
+          icon={Moon}
+          iconColor="slate"
+          value={getThemeText()}
           onClick={() => setActiveModal('appearance')}
         />
       </SettingsSection>
@@ -240,22 +344,40 @@ export default function SettingsPage() {
       <SettingsSection title="Data">
         <SettingsItem
           label="Export Data"
-          sublabel="Text, JSON, or image format"
+          sublabel="Text, JSON, or image"
+          icon={Download}
+          iconColor="blue"
           onClick={() => setActiveModal('export')}
         />
         <SettingsItem
-          label="Download All Data"
-          sublabel="Complete backup (GDPR export)"
+          label="Download All"
+          sublabel="Complete GDPR backup"
+          icon={Archive}
+          iconColor="slate"
           onClick={() => window.open('/api/export/full', '_blank')}
         />
       </SettingsSection>
 
       {/* SUPPORT Section */}
       <SettingsSection title="Support">
-        <SettingsItem label="Help & FAQ" onClick={() => {}} />
-        <SettingsItem label="Send Feedback" onClick={() => {}} />
-        <SettingsItem label="Privacy Policy" onClick={() => {}} />
-        <SettingsItem label="Terms of Service" onClick={() => {}} />
+        <SettingsItem
+          label="Help & FAQ"
+          icon={HelpCircle}
+          iconColor="default"
+          onClick={() => {}}
+        />
+        <SettingsItem
+          label="Send Feedback"
+          icon={MessageSquare}
+          iconColor="default"
+          onClick={() => {}}
+        />
+        <SettingsItem
+          label="Privacy & Terms"
+          icon={FileText}
+          iconColor="default"
+          onClick={() => {}}
+        />
       </SettingsSection>
 
       {/* DANGER ZONE Section */}
@@ -263,22 +385,23 @@ export default function SettingsPage() {
         <SettingsItem
           label="Delete Account"
           sublabel="Permanently delete all data"
+          icon={Trash2}
+          iconColor="rose"
           danger
           onClick={() => setActiveModal('deleteAccount')}
         />
       </SettingsSection>
 
       {/* Log Out Button */}
-      <div className="px-4 py-4">
-        <Button
-          onClick={handleLogout}
-          variant="secondary"
-          className="w-full rounded-xl py-3"
-        >
-          Log Out
-        </Button>
-        <p className="mt-4 text-center text-xs text-muted-foreground">App Version 1.0.0</p>
-      </div>
+      <button
+        onClick={handleLogout}
+        className="w-full rounded-xl bg-secondary py-3.5 font-medium text-card-foreground transition-colors hover:bg-secondary/80"
+      >
+        Log Out
+      </button>
+
+      {/* Version */}
+      <p className="text-center text-[0.75rem] text-muted-foreground">Version 1.0.0</p>
 
       {/* Modals */}
       <PersonalInfoModal
@@ -386,7 +509,7 @@ function PersonalInfoModal({
             type="number"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter age"
           />
         </FormField>
@@ -406,7 +529,7 @@ function PersonalInfoModal({
             step="0.1"
             value={heightCm}
             onChange={(e) => setHeightCm(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter height in cm"
           />
         </FormField>
@@ -479,7 +602,7 @@ function GoalsModal({
             step="0.1"
             value={startingWeight}
             onChange={(e) => setStartingWeight(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter starting weight"
           />
         </FormField>
@@ -490,7 +613,7 @@ function GoalsModal({
             step="0.1"
             value={goalWeight}
             onChange={(e) => setGoalWeight(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Enter goal weight"
           />
         </FormField>
@@ -500,7 +623,7 @@ function GoalsModal({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </FormField>
 
@@ -578,13 +701,19 @@ function InjectionScheduleModal({
         <FormField label="Preferred Injection Day">
           <select value={preferredDay} onChange={(e) => setPreferredDay(e.target.value)} className="input">
             {days.map((d) => (
-              <option key={d.value} value={d.value}>{d.label}</option>
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
             ))}
           </select>
         </FormField>
 
         <FormField label="Reminder Timing">
-          <select value={reminderTiming} onChange={(e) => setReminderTiming(e.target.value)} className="input">
+          <select
+            value={reminderTiming}
+            onChange={(e) => setReminderTiming(e.target.value)}
+            className="input"
+          >
             <option value="1_day_before">1 day before</option>
             <option value="2_days_before">2 days before</option>
             <option value="same_day">Same day</option>
@@ -696,7 +825,6 @@ function NotificationsModal({
   onOpenChange: (open: boolean) => void;
   onSave: () => void;
 }) {
-  // Get initial values from props
   const getInitialValue = (type: string) =>
     notificationPrefs.find((p) => p.notificationType === type)?.enabled ?? true;
 
@@ -705,7 +833,6 @@ function NotificationsModal({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync state when props change
   useEffect(() => {
     setInjectionReminder(getInitialValue('injection_reminder'));
     setWeeklySummary(getInitialValue('weekly_summary'));
@@ -760,7 +887,7 @@ function NotificationsModal({
     <Modal title="Notifications" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Push Notifications Section */}
-        <div className="rounded-lg bg-card p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-foreground">Push Notifications</p>
@@ -782,7 +909,7 @@ function NotificationsModal({
         </div>
 
         {/* Email Notifications */}
-        <label className="flex cursor-pointer items-center justify-between rounded-lg bg-card p-4">
+        <label className="flex cursor-pointer items-center justify-between rounded-lg border border-border bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Email Reminders</p>
             <p className="text-sm text-muted-foreground">Get injection reminders via email</p>
@@ -793,7 +920,7 @@ function NotificationsModal({
           />
         </label>
 
-        <label className="flex cursor-pointer items-center justify-between rounded-lg bg-card p-4">
+        <label className="flex cursor-pointer items-center justify-between rounded-lg border border-border bg-card p-4">
           <div>
             <p className="font-medium text-foreground">Weekly Report</p>
             <p className="text-sm text-muted-foreground">Receive weekly progress summary</p>
@@ -848,35 +975,35 @@ function ExportModal({ open, onOpenChange }: { open: boolean; onOpenChange: (ope
       <div className="space-y-3">
         <button
           onClick={() => window.open('/api/export/text', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
+          className="flex w-full items-center justify-between rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/50"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">Text Format</p>
             <p className="text-sm text-muted-foreground">Human-readable summary</p>
           </div>
-          <span className="text-muted-foreground">📄</span>
+          <FileText className="h-5 w-5 text-muted-foreground" />
         </button>
 
         <button
           onClick={() => window.open('/api/export/json', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
+          className="flex w-full items-center justify-between rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/50"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">JSON Format</p>
             <p className="text-sm text-muted-foreground">Machine-readable data</p>
           </div>
-          <span className="text-muted-foreground">{ }</span>
+          <span className="text-muted-foreground">{'{ }'}</span>
         </button>
 
         <button
           onClick={() => window.open('/api/export/image', '_blank')}
-          className="flex w-full items-center justify-between rounded-lg bg-card p-4 hover:bg-card/80"
+          className="flex w-full items-center justify-between rounded-lg border border-border bg-card p-4 transition-colors hover:bg-secondary/50"
         >
           <div className="text-left">
             <p className="font-medium text-foreground">Image Format</p>
             <p className="text-sm text-muted-foreground">Shareable progress card</p>
           </div>
-          <span className="text-muted-foreground">🖼️</span>
+          <Download className="h-5 w-5 text-muted-foreground" />
         </button>
       </div>
     </Modal>
@@ -911,7 +1038,7 @@ function DeleteAccountModal({ open, onOpenChange }: { open: boolean; onOpenChang
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
-            className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Type DELETE"
           />
         </FormField>
@@ -961,4 +1088,16 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
       {children}
     </div>
   );
+}
+
+// Extract a display name from email address
+function extractNameFromEmail(email: string): string {
+  if (!email) return 'User';
+  const localPart = email.split('@')[0];
+  // Replace dots, underscores, hyphens with spaces and capitalize each word
+  return localPart
+    .replace(/[._-]/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 }

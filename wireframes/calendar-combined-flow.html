@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar/Log Redesign - Complete Flow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            'card': 'hsl(0 0% 100%)',
+            'card-foreground': 'hsl(222.2 47.4% 11.2%)',
+            'muted-foreground': 'hsl(215.4 16.3% 46.9%)',
+            'secondary': 'hsl(210 40% 96.1%)',
+            'border': 'hsl(214.3 31.8% 91.4%)',
+            'success': '#22c55e',
+            'success-light': 'hsl(142.1 76.2% 96.3%)',
+            'warning': 'hsl(45.4 93.4% 47.5%)',
+            'destructive': 'hsl(0 84.2% 60.2%)',
+            'violet': { 500: '#8b5cf6', light: '#ede9fe' },
+            'amber': { 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706' },
+            'blue': { 100: '#dbeafe', 500: '#3b82f6' },
+            'emerald': { 100: '#d1fae5', 500: '#10b981' },
+            'rose': { 100: '#ffe4e6', 500: '#f43f5e' },
+            'cyan': { 100: '#cffafe', 500: '#06b6d4' },
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+    .page-gradient {
+      background: linear-gradient(180deg, #f4f7f4 0%, #eef3ee 40%, #e8f0e8 70%, #e0ebe0 100%);
+    }
+
+    .card {
+      background: white;
+      border-radius: 1.25rem;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .card-nested {
+      background: hsl(210 40% 96.1% / 0.5);
+      border: 1px solid hsl(214.3 31.8% 91.4% / 0.4);
+      border-radius: 1rem;
+    }
+
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      border-radius: 2.5rem;
+      border: 8px solid #1a1a1a;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+      flex-shrink: 0;
+    }
+
+    .phone-content {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .nav-active {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-radius: 0.875rem;
+    }
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .day-cell:hover {
+      background: hsl(210 40% 96.1% / 0.7);
+    }
+
+    .day-cell.selected {
+      background: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(173 58% 35%) 100%);
+      color: white;
+    }
+
+    .dot-indicator {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+    }
+
+    .action-card {
+      transition: all 0.2s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+    }
+
+    .option-button {
+      transition: all 0.15s ease;
+    }
+
+    .option-button.selected {
+      background: hsl(173 58% 39%);
+      color: white;
+      border-color: transparent;
+    }
+
+    .mood-option {
+      transition: all 0.15s ease;
+      border: 2px solid transparent;
+    }
+
+    .mood-option.selected {
+      border-color: hsl(173 58% 39%);
+      background: hsl(173 58% 39% / 0.1);
+    }
+
+    .flow-arrow {
+      color: #94a3b8;
+    }
+
+    .screen-label {
+      background: #1e293b;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-12">
+
+  <!-- Header -->
+  <div class="text-center mb-12 px-4">
+    <h1 class="text-3xl font-bold text-slate-800 mb-2">Calendar/Log Page Redesign</h1>
+    <p class="text-slate-600 max-w-2xl mx-auto">Complete user flow showing the Log page, day details, and daily check-in. No injection logging here - that stays on Jabs page.</p>
+  </div>
+
+  <!-- Flow Container -->
+  <div class="flex items-start justify-center gap-8 px-8 overflow-x-auto pb-12">
+
+    <!-- ============================================ -->
+    <!-- SCREEN 1: LOG PAGE (Main View) -->
+    <!-- ============================================ -->
+    <div class="flex flex-col items-center">
+      <div class="screen-label">1. Log Page (Main)</div>
+      <div class="phone-frame">
+        <div class="phone-content page-gradient">
+          <div class="flex min-h-full flex-col gap-4 p-4 pb-24">
+
+            <!-- Header -->
+            <header class="flex items-center justify-between">
+              <h1 class="text-[1.625rem] font-bold tracking-tight text-card-foreground">Log</h1>
+              <button class="p-2.5 rounded-full hover:bg-white/60">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+              </button>
+            </header>
+
+            <!-- Today Hero Card -->
+            <section class="card p-5">
+              <div class="mb-4">
+                <h2 class="text-xl font-bold tracking-tight text-card-foreground">Saturday, Jan 3</h2>
+                <p class="mt-0.5 text-[0.9375rem] font-normal text-muted-foreground">
+                  Today's check-in
+                </p>
+              </div>
+
+              <!-- Status Ring -->
+              <div class="card-nested p-4">
+                <div class="flex items-center gap-4">
+                  <!-- Progress Ring -->
+                  <div class="relative w-16 h-16 flex-shrink-0">
+                    <svg class="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                      <circle cx="32" cy="32" r="28" fill="none" stroke="#22c55e" stroke-width="6"
+                              stroke-dasharray="176" stroke-dashoffset="88" stroke-linecap="round"/>
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center font-display text-lg font-bold text-card-foreground">2/4</span>
+                  </div>
+
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-medium bg-success/15 text-success">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Weight
+                      </span>
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-medium bg-success/15 text-success">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Mood
+                      </span>
+                    </div>
+                    <p class="text-[0.75rem] text-muted-foreground">Diet & Activity remaining</p>
+                  </div>
+                </div>
+
+                <!-- Streak -->
+                <div class="mt-3 pt-3 border-t border-border/40 flex items-center justify-center gap-2">
+                  <svg class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                  </svg>
+                  <span class="text-[0.875rem] font-semibold text-card-foreground">7 day streak!</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section>
+              <h3 class="mb-3 text-[0.75rem] font-semibold uppercase tracking-wider text-muted-foreground px-1">Quick Log</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <!-- Log Weight -->
+                <button class="action-card card p-4 text-left">
+                  <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 mb-3">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75" />
+                    </svg>
+                  </div>
+                  <h4 class="font-semibold text-card-foreground">Weight</h4>
+                  <p class="text-[0.75rem] text-muted-foreground mt-0.5">Last: 91.2 kg</p>
+                </button>
+
+                <!-- Daily Check-in -->
+                <button class="action-card card p-4 text-left border-2 border-blue-500/30 bg-blue-50/30">
+                  <div class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 mb-3">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h4 class="font-semibold text-card-foreground">Daily Check-in</h4>
+                  <p class="text-[0.75rem] text-blue-600 font-medium mt-0.5">Continue →</p>
+                </button>
+              </div>
+            </section>
+
+            <!-- This Week Timeline -->
+            <section>
+              <div class="flex items-center justify-between mb-3 px-1">
+                <h3 class="text-[0.75rem] font-semibold uppercase tracking-wider text-muted-foreground">This Week</h3>
+                <button class="text-[0.75rem] font-medium text-violet-500">Full Calendar</button>
+              </div>
+
+              <!-- Week Strip -->
+              <div class="card p-3">
+                <div class="flex justify-between">
+                  <div class="flex flex-col items-center gap-1 px-2">
+                    <span class="text-[0.6875rem] text-muted-foreground">Thu</span>
+                    <div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
+                      <span class="text-[0.875rem] font-medium text-muted-foreground">1</span>
+                    </div>
+                    <div class="flex gap-0.5">
+                      <span class="dot-indicator bg-blue-500"></span>
+                      <span class="dot-indicator bg-emerald-500"></span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-center gap-1 px-2">
+                    <span class="text-[0.6875rem] text-muted-foreground">Fri</span>
+                    <div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
+                      <span class="text-[0.875rem] font-medium text-muted-foreground">2</span>
+                    </div>
+                    <div class="flex gap-0.5">
+                      <span class="dot-indicator bg-violet-500"></span>
+                      <span class="dot-indicator bg-blue-500"></span>
+                      <span class="dot-indicator bg-emerald-500"></span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-center gap-1 px-2">
+                    <span class="text-[0.6875rem] font-semibold text-card-foreground">Sat</span>
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+                      <span class="text-[0.875rem] font-bold text-white">3</span>
+                    </div>
+                    <div class="flex gap-0.5">
+                      <span class="dot-indicator bg-blue-500"></span>
+                      <span class="dot-indicator bg-emerald-500"></span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-center gap-1 px-2">
+                    <span class="text-[0.6875rem] text-muted-foreground">Sun</span>
+                    <div class="w-9 h-9 rounded-full bg-secondary/50 flex items-center justify-center">
+                      <span class="text-[0.875rem] font-medium text-muted-foreground/50">4</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-center gap-1 px-2">
+                    <span class="text-[0.6875rem] text-muted-foreground">Mon</span>
+                    <div class="w-9 h-9 rounded-full bg-secondary/50 flex items-center justify-center">
+                      <span class="text-[0.875rem] font-medium text-muted-foreground/50">5</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-border/40">
+                  <div class="flex items-center gap-1">
+                    <span class="dot-indicator bg-blue-500"></span>
+                    <span class="text-[0.6875rem] text-muted-foreground">Weight</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="dot-indicator bg-emerald-500"></span>
+                    <span class="text-[0.6875rem] text-muted-foreground">Check-in</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="dot-indicator bg-violet-500"></span>
+                    <span class="text-[0.6875rem] text-muted-foreground">Injection</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- Bottom Nav -->
+          <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-border" style="width: 359px;">
+            <div class="flex justify-around items-center h-[4.25rem] px-2">
+              <a href="#" class="flex flex-col items-center gap-1 px-3 py-2">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+                <span class="text-[0.6875rem] font-medium text-muted-foreground">Summary</span>
+              </a>
+              <a href="#" class="flex flex-col items-center gap-1 px-3 py-2">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+                <span class="text-[0.6875rem] font-medium text-muted-foreground">Jabs</span>
+              </a>
+              <a href="#" class="flex flex-col items-center gap-1 px-3 py-2">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                </svg>
+                <span class="text-[0.6875rem] font-medium text-muted-foreground">Results</span>
+              </a>
+              <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 nav-active">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+                <span class="text-[0.6875rem] font-semibold text-blue-500">Log</span>
+              </a>
+              <a href="#" class="flex flex-col items-center gap-1 px-3 py-2">
+                <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-[0.6875rem] font-medium text-muted-foreground">Settings</span>
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="flex items-center self-center flow-arrow">
+      <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+      </svg>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCREEN 2: DAY DETAILS (Tap on a past day) -->
+    <!-- ============================================ -->
+    <div class="flex flex-col items-center">
+      <div class="screen-label">2. Day Details (Tap day)</div>
+      <div class="phone-frame">
+        <div class="phone-content page-gradient">
+          <div class="flex min-h-full flex-col gap-4 p-4 pb-24">
+
+            <!-- Header with Back -->
+            <header class="flex items-center gap-3">
+              <button class="p-2 -ml-2 rounded-full hover:bg-white/60">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+              <div class="flex-1">
+                <h1 class="text-[1.0625rem] font-semibold text-card-foreground">Friday, Jan 2</h1>
+                <p class="text-[0.75rem] text-muted-foreground">Yesterday</p>
+              </div>
+              <button class="text-[0.875rem] font-medium text-violet-500">Edit</button>
+            </header>
+
+            <!-- Day Summary Card -->
+            <section class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold tracking-tight text-card-foreground">Day Summary</h2>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.75rem] font-medium bg-success/15 text-success">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Complete
+                </span>
+              </div>
+
+              <div class="space-y-3">
+                <!-- Weight Entry -->
+                <div class="card-nested p-3 flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-card-foreground">Weight</p>
+                    <p class="text-[0.75rem] text-muted-foreground">8:15 AM</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-display text-lg font-bold text-card-foreground">91.5<span class="text-[0.75rem] font-normal text-muted-foreground ml-0.5">kg</span></p>
+                    <p class="text-[0.6875rem] text-success font-medium">-0.2 kg</p>
+                  </div>
+                </div>
+
+                <!-- Injection Entry (only on injection days) -->
+                <div class="card-nested p-3 flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-violet-light flex-shrink-0">
+                    <svg class="h-5 w-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-card-foreground">Injection</p>
+                    <p class="text-[0.75rem] text-muted-foreground">Thigh - Left</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-display text-lg font-bold text-violet-500">2.5<span class="text-[0.75rem] font-normal text-muted-foreground ml-0.5">mg</span></p>
+                    <p class="text-[0.6875rem] text-muted-foreground">Week 4</p>
+                  </div>
+                </div>
+
+                <!-- Check-in Summary -->
+                <div class="card-nested p-3">
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 flex-shrink-0">
+                      <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="font-semibold text-card-foreground">Daily Check-in</p>
+                      <p class="text-[0.75rem] text-muted-foreground">9:00 PM</p>
+                    </div>
+                    <svg class="h-4 w-4 text-muted-foreground/60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </div>
+
+                  <!-- Check-in Tags -->
+                  <div class="flex flex-wrap gap-1.5 pl-[52px]">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-medium bg-emerald-100 text-emerald-600">Good mood</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-medium bg-blue-100 text-blue-600">Low cravings</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-medium bg-amber-100 text-amber-600">3 meals</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-medium bg-cyan-100 text-cyan-600">Walking</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Notes (if any) -->
+            <section class="card p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                </svg>
+                <h3 class="text-[0.875rem] font-semibold text-card-foreground">Notes</h3>
+              </div>
+              <p class="text-[0.875rem] text-muted-foreground">Felt great today! Energy levels improving since increasing protein intake.</p>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="flex items-center self-center flow-arrow">
+      <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+      </svg>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCREEN 3: DAILY CHECK-IN (Single Page Form) -->
+    <!-- ============================================ -->
+    <div class="flex flex-col items-center">
+      <div class="screen-label">3. Daily Check-in (Single Page)</div>
+      <div class="phone-frame">
+        <div class="phone-content page-gradient">
+          <div class="flex flex-col gap-3 p-4 pb-6">
+
+            <!-- Header -->
+            <header class="flex items-center justify-between">
+              <button class="flex items-center gap-1 text-muted-foreground">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+                <span class="text-[0.875rem] font-medium">Back</span>
+              </button>
+              <h1 class="text-[1.0625rem] font-semibold text-card-foreground">Daily Check-in</h1>
+              <span class="text-[0.875rem] text-muted-foreground">Today</span>
+            </header>
+
+            <!-- Progress -->
+            <div class="flex items-center justify-center">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/15 text-[0.75rem] font-medium text-success">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                2 of 4 sections
+              </span>
+            </div>
+
+            <!-- MOOD SECTION -->
+            <section class="card p-4">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
+                  <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold text-card-foreground">Mood & Energy</h3>
+                <span class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-medium bg-success/15 text-success">Done</span>
+              </div>
+
+              <!-- Mood Icons -->
+              <div class="flex gap-2 mb-3">
+                <button class="mood-option flex-1 flex flex-col items-center gap-1 p-2 rounded-lg">
+                  <svg class="h-5 w-5 text-destructive" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-[0.6875rem] text-muted-foreground">Poor</span>
+                </button>
+                <button class="mood-option flex-1 flex flex-col items-center gap-1 p-2 rounded-lg">
+                  <svg class="h-5 w-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-[0.6875rem] text-muted-foreground">Fair</span>
+                </button>
+                <button class="mood-option selected flex-1 flex flex-col items-center gap-1 p-2 rounded-lg">
+                  <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-[0.6875rem] font-medium text-card-foreground">Good</span>
+                </button>
+                <button class="mood-option flex-1 flex flex-col items-center gap-1 p-2 rounded-lg">
+                  <svg class="h-5 w-5 text-success" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-[0.6875rem] text-muted-foreground">Great</span>
+                </button>
+              </div>
+
+              <!-- Cravings -->
+              <div class="flex gap-1.5">
+                <span class="text-[0.75rem] text-muted-foreground mr-1">Cravings:</span>
+                <button class="option-button px-2 py-1 rounded text-[0.6875rem] border border-border/60 text-muted-foreground">None</button>
+                <button class="option-button selected px-2 py-1 rounded text-[0.6875rem] border border-border/60">Low</button>
+                <button class="option-button px-2 py-1 rounded text-[0.6875rem] border border-border/60 text-muted-foreground">Med</button>
+                <button class="option-button px-2 py-1 rounded text-[0.6875rem] border border-border/60 text-muted-foreground">High</button>
+              </div>
+            </section>
+
+            <!-- SIDE EFFECTS SECTION (Collapsed) -->
+            <section class="card p-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-100">
+                  <svg class="h-4 w-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold text-card-foreground">Side Effects</h3>
+                <span class="ml-auto text-[0.75rem] text-muted-foreground">None</span>
+                <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+            </section>
+
+            <!-- DIET SECTION -->
+            <section class="card p-4">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
+                  <svg class="h-4 w-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold text-card-foreground">Diet</h3>
+                <span class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-medium bg-success/15 text-success">Done</span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2">
+                <div class="card-nested p-2 text-center">
+                  <p class="text-[0.6875rem] text-muted-foreground">Meals</p>
+                  <p class="font-display text-lg font-bold text-card-foreground">3</p>
+                </div>
+                <div class="card-nested p-2 text-center">
+                  <p class="text-[0.6875rem] text-muted-foreground">Protein</p>
+                  <p class="font-display text-lg font-bold text-card-foreground">90g</p>
+                </div>
+                <div class="card-nested p-2 text-center">
+                  <p class="text-[0.6875rem] text-muted-foreground">Water</p>
+                  <p class="font-display text-lg font-bold text-card-foreground">2L</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- ACTIVITY SECTION (Collapsed) -->
+            <section class="card p-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100">
+                  <svg class="h-4 w-4 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048" />
+                  </svg>
+                </div>
+                <h3 class="font-semibold text-card-foreground">Activity</h3>
+                <span class="ml-auto text-[0.75rem] text-muted-foreground">Tap to add</span>
+                <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </div>
+            </section>
+
+            <!-- Notes -->
+            <section class="card p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <svg class="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                </svg>
+                <span class="text-[0.875rem] font-medium text-card-foreground">Notes</span>
+              </div>
+              <textarea class="w-full px-3 py-2 rounded-lg border border-border/60 bg-secondary/30 text-[0.875rem] placeholder:text-muted-foreground/60 resize-none" rows="2" placeholder="Any thoughts..."></textarea>
+            </section>
+
+            <!-- Save Button -->
+            <button class="w-full py-3 rounded-xl bg-card-foreground text-card font-semibold flex items-center justify-center gap-2 mt-2">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              Save Check-in
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Summary Section -->
+  <div class="max-w-4xl mx-auto mt-16 px-8">
+    <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">Key Changes Summary</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+            <span class="text-blue-600 font-bold">1</span>
+          </div>
+          <h3 class="font-semibold text-slate-800">Log Page (Hub)</h3>
+        </div>
+        <ul class="text-sm text-slate-600 space-y-2">
+          <li>• Renamed from "Calendar" to "Log"</li>
+          <li>• Hero card shows today's progress (2/4)</li>
+          <li>• Streak gamification</li>
+          <li>• Quick actions: Weight + Check-in only</li>
+          <li>• Week strip with activity dots</li>
+          <li>• <strong>No injection</strong> - stays on Jabs</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+            <span class="text-emerald-600 font-bold">2</span>
+          </div>
+          <h3 class="font-semibold text-slate-800">Day Details</h3>
+        </div>
+        <ul class="text-sm text-slate-600 space-y-2">
+          <li>• Rich cards for each entry type</li>
+          <li>• Shows time logged + values</li>
+          <li>• Weight shows change from previous</li>
+          <li>• Check-in shows tag summary</li>
+          <li>• Injection only on injection days</li>
+          <li>• Edit button for corrections</li>
+        </ul>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
+            <span class="text-violet-600 font-bold">3</span>
+          </div>
+          <h3 class="font-semibold text-slate-800">Daily Check-in</h3>
+        </div>
+        <ul class="text-sm text-slate-600 space-y-2">
+          <li>• <strong>Single page</strong> (no 4-step wizard!)</li>
+          <li>• Accordion sections - expand what you need</li>
+          <li>• Lucide icons (no emojis)</li>
+          <li>• Skip sections you don't want</li>
+          <li>• One "Save" button at bottom</li>
+          <li>• Progress shows sections completed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

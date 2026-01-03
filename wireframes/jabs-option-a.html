@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jabs Page Wireframe (Option A) - Mounjaro Tracker</title>
+
+  <!-- Inter for body, Plus Jakarta Sans for display numbers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            // Semantic tokens matching globals.css
+            'card': 'hsl(0 0% 100%)',           // --card in light mode
+            'card-foreground': 'hsl(222.2 47.4% 11.2%)', // --card-foreground
+            'muted-foreground': 'hsl(215.4 16.3% 46.9%)', // --muted-foreground
+            'secondary': 'hsl(210 40% 96.1%)',  // --secondary
+            'border': 'hsl(214.3 31.8% 91.4%)', // --border
+            'success': '#22c55e',               // Tailwind green-500
+            'success-light': 'hsl(142.1 76.2% 96.3%)',
+            'warning': 'hsl(45.4 93.4% 47.5%)', // --warning
+            'destructive': 'hsl(0 84.2% 60.2%)',
+            'violet': {
+              500: '#8b5cf6',
+              light: '#ede9fe',
+            },
+            'amber': {
+              100: '#fef3c7',
+              600: '#d97706',
+            },
+            'blue': {
+              100: '#dbeafe',
+              500: '#3b82f6',
+            },
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Light theme page gradient */
+    .page-gradient {
+      background: linear-gradient(
+        180deg,
+        #f4f7f4 0%,
+        #eef3ee 40%,
+        #e8f0e8 70%,
+        #e0ebe0 100%
+      );
+      min-height: 100vh;
+    }
+
+    /* Card - matches Journey: rounded-[1.25rem] bg-card shadow-sm */
+    .card {
+      background: white;
+      border-radius: 1.25rem;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* Tailwind shadow-sm */
+    }
+
+    /* Nested card - matches Journey: bg-secondary/50 border-border/40 */
+    .card-nested {
+      background: hsl(210 40% 96.1% / 0.5); /* secondary/50 */
+      border: 1px solid hsl(214.3 31.8% 91.4% / 0.4); /* border/40 */
+      border-radius: 1rem; /* rounded-2xl */
+    }
+
+    /* Nav active state */
+    .nav-active {
+      background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+      border-radius: 0.875rem;
+    }
+  </style>
+</head>
+<body class="page-gradient pb-28">
+  <!-- Main Container -->
+  <div class="max-w-md mx-auto px-5 pt-5">
+
+    <!-- Header - matches Journey: text-[1.625rem] font-bold tracking-tight -->
+    <header class="flex items-center justify-between mb-6">
+      <h1 class="text-[1.625rem] font-bold tracking-tight text-card-foreground">Jabs</h1>
+      <button class="p-2.5 rounded-full hover:bg-white/60 transition-colors duration-200">
+        <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- Last Injection Hero Card - follows HeroStatusCard pattern -->
+    <section class="card p-5 mb-4">
+      <!-- Header - matches: mb-5 -->
+      <div class="mb-5">
+        <h2 class="text-xl font-bold tracking-tight text-card-foreground">Last Injection</h2>
+        <p class="mt-0.5 text-[0.9375rem] font-normal text-muted-foreground">
+          6 days ago · Week 4
+        </p>
+      </div>
+
+      <!-- Nested card - matches: rounded-2xl border border-border/40 bg-secondary/50 p-4 -->
+      <div class="card-nested p-4">
+        <div class="flex items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <!-- Date + Dose -->
+            <h3 class="text-[1.0625rem] font-semibold text-card-foreground">
+              Dec 27, 2024
+            </h3>
+            <p class="mt-0.5 text-[0.9375rem] text-muted-foreground">
+              2.5 mg · Phase 1
+            </p>
+
+            <!-- Injection Site - matches: mt-3 flex items-center gap-1.5 text-[0.875rem] -->
+            <div class="mt-3 flex items-center gap-1.5 text-[0.875rem] text-muted-foreground">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              <span>Thigh - Left</span>
+            </div>
+
+            <!-- Next suggested site -->
+            <div class="mt-3 flex items-center gap-1.5 text-[0.875rem] font-medium text-success">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+              <span>Next: Thigh - Right</span>
+            </div>
+          </div>
+
+          <!-- Large Dose Display -->
+          <div class="flex h-[4.25rem] w-[4.25rem] flex-shrink-0 items-center justify-center rounded-2xl bg-violet-light">
+            <span class="font-display text-2xl font-bold text-violet-500">2.5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Grid - 3 compact cards -->
+    <section class="grid grid-cols-3 gap-3 mb-4">
+      <!-- Total Injections -->
+      <div class="card p-3">
+        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-violet-light mb-2">
+          <svg class="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+          </svg>
+        </div>
+        <p class="font-display text-lg font-bold text-card-foreground">4</p>
+        <p class="text-[0.75rem] text-muted-foreground">Total</p>
+      </div>
+
+      <!-- Current Dose -->
+      <div class="card p-3">
+        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 mb-2">
+          <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+          </svg>
+        </div>
+        <p class="font-display text-lg font-bold text-card-foreground">2.5<span class="text-[0.75rem] font-normal text-muted-foreground ml-0.5">mg</span></p>
+        <p class="text-[0.75rem] text-muted-foreground">Dose</p>
+      </div>
+
+      <!-- Weeks on Dose -->
+      <div class="card p-3">
+        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 mb-2">
+          <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+        </div>
+        <p class="font-display text-lg font-bold text-card-foreground">4<span class="text-[0.75rem] font-normal text-muted-foreground ml-0.5">wks</span></p>
+        <p class="text-[0.75rem] text-muted-foreground">On dose</p>
+      </div>
+    </section>
+
+    <!-- Injection History Section -->
+    <section class="mb-4">
+      <h3 class="font-semibold text-card-foreground text-[1.0625rem] mb-3">History</h3>
+
+      <div class="space-y-3">
+        <!-- Injection Item 1 - Most Recent -->
+        <div class="card p-4">
+          <div class="flex items-start justify-between">
+            <div class="flex gap-3">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-light flex-shrink-0">
+                <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="font-semibold text-card-foreground">Dec 27, 2024</span>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[0.875rem] text-muted-foreground">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    Thigh - Left
+                  </span>
+                  <span>Week 4</span>
+                </div>
+              </div>
+            </div>
+            <span class="font-display text-lg font-bold text-card-foreground">2.5mg</span>
+          </div>
+        </div>
+
+        <!-- Injection Item 2 -->
+        <div class="card p-4">
+          <div class="flex items-start justify-between">
+            <div class="flex gap-3">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-light flex-shrink-0">
+                <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="font-semibold text-card-foreground">Dec 20, 2024</span>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[0.875rem] text-muted-foreground">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    Abdomen - Right
+                  </span>
+                  <span>Week 3</span>
+                </div>
+              </div>
+            </div>
+            <span class="font-display text-lg font-bold text-card-foreground">2.5mg</span>
+          </div>
+        </div>
+
+        <!-- Injection Item 3 - with Dose Change Badge -->
+        <div class="card p-4">
+          <div class="flex items-start justify-between">
+            <div class="flex gap-3">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-light flex-shrink-0">
+                <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-semibold text-card-foreground">Dec 13, 2024</span>
+                  <!-- Dose Up Badge - matches success styling -->
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-medium bg-success-light text-success">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                    </svg>
+                    Dose Up
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[0.875rem] text-muted-foreground">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    Abdomen - Left
+                  </span>
+                  <span>Week 2</span>
+                </div>
+              </div>
+            </div>
+            <span class="font-display text-lg font-bold text-card-foreground">2.5mg</span>
+          </div>
+        </div>
+
+        <!-- Injection Item 4 - First Injection -->
+        <div class="card p-4">
+          <div class="flex items-start justify-between">
+            <div class="flex gap-3">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-light flex-shrink-0">
+                <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-semibold text-card-foreground">Dec 6, 2024</span>
+                  <!-- First Jab Badge -->
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[0.6875rem] font-medium bg-violet-light text-violet-500">
+                    First Jab
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[0.875rem] text-muted-foreground">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    </svg>
+                    Thigh - Right
+                  </span>
+                  <span>Week 1</span>
+                </div>
+              </div>
+            </div>
+            <span class="font-display text-lg font-bold text-card-foreground">2.5mg</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="fixed bottom-[6.5rem] left-0 right-0 flex justify-center px-4 z-40">
+    <button class="flex items-center gap-2 bg-card-foreground text-card font-semibold px-8 py-3 rounded-xl shadow-lg hover:opacity-90 transition-opacity">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Log Injection
+    </button>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-border">
+    <div class="max-w-md mx-auto flex justify-around items-center h-[4.25rem] px-2">
+      <!-- Journey -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-muted-foreground">Journey</span>
+      </a>
+
+      <!-- Jabs (Active) -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 nav-active">
+        <svg class="w-6 h-6 text-violet-500" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+        </svg>
+        <span class="text-[0.6875rem] font-semibold text-violet-500">Jabs</span>
+      </a>
+
+      <!-- Results -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-muted-foreground">Results</span>
+      </a>
+
+      <!-- Calendar -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-muted-foreground">Calendar</span>
+      </a>
+
+      <!-- Settings -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-muted-foreground">Settings</span>
+      </a>
+    </div>
+  </nav>
+
+  <!--
+  ============================================================
+  DESIGN TOKENS - MATCHING JOURNEY PAGE EXACTLY
+  ============================================================
+
+  TYPOGRAPHY (from HeroStatusCard.tsx):
+  - Page title: text-[1.625rem] font-bold tracking-tight text-card-foreground
+  - Hero title: text-xl font-bold tracking-tight text-card-foreground
+  - Subtitle: mt-0.5 text-[0.9375rem] font-normal text-muted-foreground
+  - Card title: text-[1.0625rem] font-semibold text-card-foreground
+  - Body: text-[0.9375rem] text-muted-foreground
+  - Small: text-[0.875rem] text-muted-foreground
+  - Tiny: text-[0.75rem] text-muted-foreground
+
+  CARD STYLES:
+  - Main card: rounded-[1.25rem] bg-card p-5 shadow-sm
+  - Nested card: rounded-2xl border border-border/40 bg-secondary/50 p-4
+  - Stat card: rounded-[1.25rem] bg-card p-3 shadow-sm
+
+  COLORS (semantic tokens):
+  - text-card-foreground (primary text)
+  - text-muted-foreground (secondary/muted text)
+  - bg-card (card backgrounds)
+  - bg-secondary/50 (nested card background)
+  - border-border/40 (nested card border)
+  - text-success / bg-success-light (positive states)
+
+  SHADOWS:
+  - shadow-sm (Tailwind built-in, NOT custom shadow-card)
+  -->
+</body>
+</html>

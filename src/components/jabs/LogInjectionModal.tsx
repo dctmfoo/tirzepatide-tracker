@@ -87,7 +87,7 @@ export function LogInjectionModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Dose Selection */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-[0.875rem] font-medium text-foreground">
               Dose
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -97,13 +97,13 @@ export function LogInjectionModal({
                   type="button"
                   onClick={() => setDoseMg(d)}
                   disabled={isPending}
-                  className={`rounded-lg py-3 text-sm font-medium transition-colors ${
+                  className={`rounded-xl py-3 text-[0.875rem] font-medium transition-colors ${
                     doseMg === d
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-card text-foreground hover:bg-card/80'
+                      : 'bg-secondary text-foreground hover:bg-secondary/80'
                   }`}
                 >
-                  {d} mg
+                  <span className="font-display">{d}</span> mg
                 </button>
               ))}
             </div>
@@ -111,14 +111,14 @@ export function LogInjectionModal({
 
           {/* Site Selection */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-foreground">
+            <label className="mb-2 block text-[0.875rem] font-medium text-foreground">
               Injection Site
             </label>
             <select
               value={site}
               onChange={(e) => setSite(e.target.value)}
               disabled={isPending}
-              className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full rounded-xl border border-border/40 bg-secondary/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {VALID_SITES.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -132,7 +132,7 @@ export function LogInjectionModal({
           {/* Date/Time - only show if no fixedDate */}
           {!fixedDate && (
             <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-[0.875rem] font-medium text-foreground">
                 Date & Time
               </label>
               <input
@@ -140,7 +140,7 @@ export function LogInjectionModal({
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 disabled={isPending}
-                className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full rounded-xl border border-border/40 bg-secondary/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           )}
@@ -148,7 +148,7 @@ export function LogInjectionModal({
           {/* Notes - only show if no fixedDate (simplified modal for calendar) */}
           {!fixedDate && (
             <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">
+              <label className="mb-2 block text-[0.875rem] font-medium text-foreground">
                 Notes (optional)
               </label>
               <textarea
@@ -157,7 +157,7 @@ export function LogInjectionModal({
                 placeholder="Any notes about this injection..."
                 rows={2}
                 disabled={isPending}
-                className="w-full resize-none rounded-lg bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full resize-none rounded-xl border border-border/40 bg-secondary/50 px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           )}

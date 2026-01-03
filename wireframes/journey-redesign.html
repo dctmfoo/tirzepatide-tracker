@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journey Page Wireframe - Mounjaro Tracker</title>
+
+  <!-- Inter for body, Plus Jakarta Sans for display numbers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            'display': ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            // Refined light theme colors
+            'sage': {
+              50: '#f6f7f6',
+              100: '#e8ebe8',
+              200: '#d4dad4',
+              300: '#b8c4b8',
+              400: '#94a894',
+            },
+            'forest': {
+              500: '#3d6b4f',
+              600: '#2d5a3d',
+            },
+            'success': '#2d8a4e',
+            'success-light': '#e8f5ed',
+            'amber': '#b8860b',
+            'amber-light': '#fef7e6',
+          },
+          boxShadow: {
+            'card': '0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 4px 16px -4px rgba(0, 0, 0, 0.05)',
+            'card-hover': '0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 8px 24px -4px rgba(0, 0, 0, 0.06)',
+          },
+          borderRadius: {
+            '2xl': '1rem',
+            '3xl': '1.25rem',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Refined page gradient */
+    .page-gradient {
+      background: linear-gradient(
+        180deg,
+        #f4f7f4 0%,
+        #eef3ee 40%,
+        #e8f0e8 70%,
+        #e0ebe0 100%
+      );
+      min-height: 100vh;
+    }
+
+    /* Progress ring */
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    /* Card styles */
+    .card {
+      background: white;
+      border-radius: 1.25rem;
+      box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04),
+                  0 4px 16px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-nested {
+      background: linear-gradient(135deg, #fafbfa 0%, #f5f7f5 100%);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    /* Active nav */
+    .nav-active {
+      background: linear-gradient(135deg, #dcf5e4 0%, #c8ecd4 100%);
+      border-radius: 0.875rem;
+    }
+
+    /* Subtle text improvements */
+    .text-balance {
+      text-wrap: balance;
+    }
+  </style>
+</head>
+<body class="page-gradient pb-24">
+  <!-- Main Container -->
+  <div class="max-w-md mx-auto px-5 pt-5">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-7">
+      <h1 class="text-[1.625rem] font-semibold tracking-tight text-gray-900">Journey</h1>
+      <button class="p-2.5 rounded-full hover:bg-white/60 transition-colors duration-200">
+        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- Hero Status Card -->
+    <section class="card p-5 mb-4">
+      <!-- Status Header - weight contrast: bold title vs regular subtitle -->
+      <div class="mb-5">
+        <h2 class="text-xl font-bold text-gray-900 tracking-tight">You're on track</h2>
+        <p class="text-gray-400 text-[0.9375rem] mt-0.5 font-normal">Week 1 · Consistency looks good</p>
+      </div>
+
+      <!-- Next Injection Card (nested) -->
+      <div class="card-nested rounded-2xl p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-gray-900 text-[1.0625rem]">Next Injection</h3>
+            <p class="text-gray-500 text-[0.9375rem] mt-0.5">Tomorrow · 2.5 mg</p>
+
+            <!-- Injection Site -->
+            <div class="flex items-center gap-1.5 mt-3 text-[0.875rem] text-gray-500">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+              </svg>
+              <span>Abdomen · Left</span>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center gap-1.5 mt-3 text-[0.875rem] text-success font-medium">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span>Everything is on schedule</span>
+            </div>
+          </div>
+
+          <!-- Progress Ring (86%) -->
+          <div class="relative w-[4.25rem] h-[4.25rem] flex items-center justify-center flex-shrink-0">
+            <svg class="w-full h-full progress-ring" viewBox="0 0 68 68">
+              <!-- Background circle -->
+              <circle cx="34" cy="34" r="29" fill="none" stroke="#e8ebe8" stroke-width="5"/>
+              <!-- Green segment (main progress ~74%) -->
+              <circle cx="34" cy="34" r="29" fill="none" stroke="#2d8a4e" stroke-width="5"
+                      stroke-dasharray="182" stroke-dashoffset="47" stroke-linecap="round"/>
+              <!-- Amber segment (remaining ~12%) -->
+              <circle cx="34" cy="34" r="29" fill="none" stroke="#b8860b" stroke-width="5"
+                      stroke-dasharray="182" stroke-dashoffset="160" stroke-linecap="round"/>
+            </svg>
+            <!-- Display font for large number -->
+            <span class="absolute font-display text-[1.125rem] font-bold text-gray-900">86%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Journey Progress Section -->
+    <section class="card p-5 mb-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-semibold text-gray-900 text-[1.0625rem]">Journey Progress</h3>
+        <button class="p-1.5 -mr-1.5 text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Weight Progress Slider -->
+      <div class="relative pt-1 pb-2">
+        <!-- Start and Goal weights -->
+        <div class="flex justify-between text-[0.875rem] text-gray-500 mb-3">
+          <span class="font-medium">104 kg</span>
+          <span class="font-medium">70 kg</span>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="relative">
+          <!-- Track background -->
+          <div class="h-[3px] bg-gray-200 rounded-full"></div>
+
+          <!-- Progress fill -->
+          <div class="absolute top-0 left-0 h-[3px] rounded-full bg-gradient-to-r from-gray-300 via-gray-400 to-success" style="width: 38%"></div>
+
+          <!-- Current position marker with label -->
+          <div class="absolute top-1/2 -translate-y-1/2" style="left: 38%">
+            <!-- Weight label bubble - display font for number -->
+            <div class="absolute -top-9 left-1/2 -translate-x-1/2">
+              <span class="inline-block font-display text-[0.875rem] font-bold text-gray-900 bg-white px-2.5 py-1 rounded-lg shadow-card whitespace-nowrap">
+                91 kg
+              </span>
+            </div>
+            <!-- Dot -->
+            <div class="w-4 h-4 -ml-2 bg-success rounded-full border-[3px] border-white shadow-md"></div>
+          </div>
+        </div>
+
+        <!-- "You are here" label -->
+        <div class="text-center mt-4">
+          <span class="text-[0.75rem] text-gray-400 font-medium">You are here</span>
+        </div>
+      </div>
+
+      <!-- Completion Status Box -->
+      <div class="bg-success-light/60 rounded-2xl p-4 mt-4">
+        <div class="flex items-baseline gap-2">
+          <!-- Display font for percentage -->
+          <span class="font-display text-success font-bold text-[1.125rem]">13%</span>
+          <span class="text-gray-500 text-[0.9375rem] font-normal">complete · 29.7 kg to go</span>
+        </div>
+        <p class="text-amber text-[0.875rem] mt-1.5 font-medium">
+          ✨ First milestone coming soon
+        </p>
+      </div>
+    </section>
+
+    <!-- Phase & Streak Cards -->
+    <section class="grid grid-cols-2 gap-3 mb-4">
+      <!-- Phase Card -->
+      <div class="card p-4">
+        <div class="flex items-center gap-2 mb-2.5">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          <span class="font-semibold text-gray-900">Phase 1</span>
+        </div>
+        <p class="text-[0.875rem] text-gray-600">Started Dec 28</p>
+        <p class="text-[0.875rem] text-gray-400 mt-0.5">Dose · 2.5 mg</p>
+      </div>
+
+      <!-- Streak Card -->
+      <div class="card p-4">
+        <div class="flex items-center gap-2 mb-2.5">
+          <span class="text-lg">🔥</span>
+          <span class="font-semibold text-gray-900">Streak</span>
+        </div>
+        <p class="text-[0.875rem] text-gray-600 leading-relaxed text-balance">Build momentum by logging daily</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-100">
+    <div class="max-w-md mx-auto flex justify-around items-center h-[4.25rem] px-2">
+      <!-- Journey (Active) -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2 nav-active">
+        <svg class="w-6 h-6 text-success" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        <span class="text-[0.6875rem] font-semibold text-success">Journey</span>
+      </a>
+
+      <!-- Treatment -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-gray-400">Treatment</span>
+      </a>
+
+      <!-- Insights -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-gray-400">Insights</span>
+      </a>
+
+      <!-- Calendar -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-gray-400">Calendar</span>
+      </a>
+
+      <!-- Settings -->
+      <a href="#" class="flex flex-col items-center gap-1 px-4 py-2">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span class="text-[0.6875rem] font-medium text-gray-400">Settings</span>
+      </a>
+    </div>
+  </nav>
+
+  <!--
+  ============================================================
+  DESIGN TOKENS FOR REACT TRANSLATION
+  ============================================================
+
+  TYPOGRAPHY SYSTEM (Weight > Size contrast):
+
+  Display Font (large numbers):
+  - font-family: 'Plus Jakarta Sans', 'Inter', system-ui
+  - Use for: percentages (86%, 13%), weights (91 kg)
+  - Weight: 700 (bold)
+
+  Body Font:
+  - font-family: 'Inter', system-ui, -apple-system, sans-serif
+  - Headlines: 700 (bold), tracking-tight
+  - Labels: 600 (semibold)
+  - Body: 400 (normal)
+  - Muted: 400 (normal) + gray-400 color
+
+  FONT SIZES (minimal variation - rely on weight):
+  - Page title: 1.625rem (26px) - font-bold
+  - Card title: 1.0625rem (17px) - font-semibold
+  - Display numbers: 1.125rem (18px) - font-bold + font-display
+  - Body: 0.9375rem (15px) - font-normal
+  - Small: 0.875rem (14px) - font-medium or font-normal
+  - Muted: 0.75rem (12px) - font-medium
+  - Nav: 0.6875rem (11px) - font-semibold (active) / font-medium
+
+  COLORS:
+  - Gray 900: #111827 - Headlines, display numbers
+  - Gray 600: #4b5563 - Body text
+  - Gray 500: #6b7280 - Secondary text
+  - Gray 400: #9ca3af - Muted text, icons, subtitles
+  - Gray 200: #e5e7eb - Borders, progress tracks
+  - Success: #2d8a4e - Green accents, progress
+  - Success Light: #e8f5ed - Green backgrounds (60% opacity)
+  - Amber: #b8860b - Warning, milestones
+
+  SHADOWS:
+  - Card: 0 2px 8px -2px rgba(0,0,0,0.04), 0 4px 16px -4px rgba(0,0,0,0.04)
+  - Bubble: shadow-card (same as card)
+
+  BORDER RADIUS:
+  - Cards: 1.25rem (20px)
+  - Nested cards: 1rem (16px)
+  - Buttons/pills: 0.875rem (14px)
+  - Bubbles: 0.5rem (8px)
+
+  SPACING:
+  - Page padding: 1.25rem (20px)
+  - Card padding: 1.25rem (20px)
+  - Card gap: 1rem (16px)
+  - Section gap: 1.25rem (20px)
+
+  BACKGROUND GRADIENT:
+  - linear-gradient(180deg, #f4f7f4, #eef3ee, #e8f0e8, #e0ebe0)
+
+  PROGRESS RING:
+  - Size: 4.25rem (68px)
+  - Stroke: 5px
+  - Track: #e8ebe8
+  - Green: #2d8a4e
+  - Amber: #b8860b
+
+  REACT IMPLEMENTATION NOTES:
+  - Add 'Plus Jakarta Sans' to next/font or load via Google Fonts
+  - Create font-display utility class
+  - Weight contrast pattern: bold (700) for emphasis, normal (400) for supporting
+  - Same size, different weights creates cleaner hierarchy
+  -->
+</body>
+</html>
