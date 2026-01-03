@@ -441,35 +441,206 @@ Bottom Nav "Log" tap
 
 ---
 
-## Implementation Checklist
+## Implementation Phases (Detailed)
 
-### Phase 1: Core Structure
-- [ ] Create `/log` route (redirect from `/calendar`)
-- [ ] Build `LogHeroCard` component
-- [ ] Build `WeekStrip` component
-- [ ] Build `QuickLogActions` component
+> **Agent Handoff Notes:** Each phase is self-contained. If context runs out, the next agent can pick up from the next incomplete phase. Check boxes marked [x] are complete.
 
-### Phase 2: Check-in Page
-- [ ] Create `/log/checkin` route
-- [ ] Build accordion section components
-- [ ] Implement `MoodSelector` with Lucide icons
-- [ ] Implement `SideEffectSlider` components
-- [ ] Implement `Stepper` component for diet
-- [ ] Implement activity sliders
-- [ ] Wire up form state and save
+---
 
-### Phase 3: Day Details
-- [ ] Create `/log/[date]` route
-- [ ] Build `DaySummaryCard` component
-- [ ] Display weight, injection (if any), check-in data
-- [ ] Add edit functionality
+### Phase 0: Schema Updates (PREREQUISITE)
+**Status:** ✅ Complete (2026-01-03)
 
-### Phase 4: Polish
+**Backend Changes Required:**
+- [x] Update `sideEffects` table: change `severity` from varchar to integer (0-5 scale)
+- [ ] Verify `dailyLogs` has `notes` field (for general notes) - Not needed, notes are per sub-table
+- [ ] Create data function `getLogHubData(userId)` for today's progress, streak, week data - Phase 2
+
+**Files modified:**
+- `src/lib/db/schema.ts` - Updated sideEffects severity to integer
+- `src/lib/data/daily-log.ts` - Updated SideEffectData type
+- `src/app/api/daily-logs/[date]/route.ts` - Updated validation for integer severity
+- `src/app/api/daily-logs/route.ts` - Updated validation for integer severity
+- All related test files updated
+
+---
+
+### Phase 1: Route Structure & Navigation
+**Status:** ✅ Complete (2026-01-03)
+
+**Tasks:**
+- [x] Create `/log` route folder at `src/app/(app)/log/` - Already existed, updated content
+- [x] Add redirect from `/calendar` to `/log`
+- [x] Update `BottomNav.tsx`: Change `/calendar` to `/log`, change label "Calendar" to "Log"
+- [x] Create `src/components/log-hub/` folder for new components
+- [x] Create basic page.tsx with placeholder content
+- [ ] Verify navigation works in browser - Next agent should verify
+
+**Files modified:**
+- `src/app/(app)/log/page.tsx` - Replaced LogWizard with placeholder Log Hub
+- `src/app/(app)/log/loading.tsx` - Updated skeleton to match new layout
+- `src/app/(app)/log/[date]/page.tsx` - Updated redirectTo from /calendar to /log
+- `src/app/(app)/calendar/page.tsx` - Now redirects to /log
+- `src/components/layout/BottomNav.tsx` - Changed /calendar to /log, label to "Log"
+- `src/components/log-hub/index.ts` - Created barrel export file
+
+---
+
+### Phase 2: Log Hub Components
+**Status:** ✅ Complete (2026-01-03)
+
+**Tasks:**
+- [x] Build `LogHeroCard` - Today's progress ring + streak
+- [x] Build `QuickLogActions` - Weight + Check-in action cards
+- [x] Build `WeekStrip` - 7-day horizontal view with dots
+- [x] Build `LogHeader` - Page title + calendar icon link (integrated into page)
+- [x] Create data fetching in page.tsx
+- [x] Wire up weight modal (reuse existing LogWeightModal)
+- [x] Test in browser - verify all components render
+
+**Files created:**
+- `src/components/log-hub/LogHeroCard.tsx` - Hero card with progress ring (X/4), status badges, streak
+- `src/components/log-hub/QuickLogActions.tsx` - Weight modal trigger + Check-in navigation
+- `src/components/log-hub/WeekStrip.tsx` - 7-day horizontal view with activity dots
+- `src/lib/data/log-hub.ts` - `getLogHubData()` function for aggregating hub data
+
+**Data implemented:**
+- Today's date, completed sections count (Weight, Mood, Diet, Activity)
+- Streak calculation (consecutive days with any log or weight entry)
+- Last 7 days with indicators (weight=blue, check-in=green, injection=violet)
+- Latest weight value for display
+
+**Notes:**
+- LogHeader is inline in page.tsx (simple enough to not need separate component)
+- QuickLogActions links to `/log/{todayDate}` until Phase 3 adds `/log/checkin`
+
+---
+
+### Phase 3: Daily Check-in Page (Single Page Form)
+**Status:** ✅ Complete (2026-01-03)
+
+**Tasks:**
+- [x] Create `/log/checkin` route
+- [x] Create `/log/checkin/[date]` route for editing past days
+- [x] Build `MoodSection` - Mood icons + cravings/energy toggles
+- [x] Build `SideEffectsSection` - Sliders (0-5) with shadcn Slider
+- [x] Build `DietSection` - Steppers for meals/protein/water + hunger toggle
+- [x] Build `ActivitySection` - Steps/duration sliders + workout type toggle
+- [x] Build `NotesSection` - Textarea
+- [x] Build form state hook `useCheckinForm`
+- [x] Wire up save functionality to existing API
+- [x] Test all inputs work correctly
+
+**Files created:**
+- `src/app/(app)/log/checkin/page.tsx` - Today's check-in page
+- `src/app/(app)/log/checkin/[date]/page.tsx` - Edit past day check-in
+- `src/components/log-hub/checkin/MoodSection.tsx` - Mood icons + cravings/energy toggles
+- `src/components/log-hub/checkin/SideEffectsSection.tsx` - 0-5 sliders per side effect
+- `src/components/log-hub/checkin/DietSection.tsx` - Stepper inputs + hunger toggle
+- `src/components/log-hub/checkin/ActivitySection.tsx` - Steps/duration sliders + workout type
+- `src/components/log-hub/checkin/NotesSection.tsx` - Textarea for notes
+- `src/components/log-hub/checkin/useCheckinForm.ts` - Form state management hook
+- `src/components/log-hub/checkin/CheckinPageContent.tsx` - Client component with form
+- `src/components/ui/slider.tsx` - shadcn Slider component
+- `src/components/ui/stepper.tsx` - Custom +/- stepper component
+
+**Notes:**
+- Used cards instead of accordion (cleaner UX, all sections visible)
+- Sections show "Done" badge when completed
+- Progress indicator shows "X of 4 sections" at top
+- Save button calls existing POST /api/daily-logs endpoint
+- Form loads existing data when editing past days
+
+---
+
+### Phase 4: Day Details Page
+**Status:** 🔲 Not Started
+
+**Tasks:**
+- [ ] Create `/log/[date]` route (replaces old log wizard route)
+- [ ] Build `DaySummaryCard` - Read-only view of day's data
+- [ ] Show weight entry with time and delta
+- [ ] Show injection if any (read from injections table)
+- [ ] Show check-in summary as tags
+- [ ] Show notes if any
+- [ ] Add "Edit" button linking to `/log/checkin/[date]`
+- [ ] Handle empty state gracefully
+- [ ] Test navigation from WeekStrip to day details
+
+**Components to create:**
+- `src/app/(app)/log/[date]/page.tsx`
+- `src/components/log-hub/DaySummaryCard.tsx`
+
+---
+
+### Phase 5: Full Calendar View
+**Status:** 🔲 Not Started
+
+**Tasks:**
+- [ ] Create `/log/calendar` route for full month view
+- [ ] Reuse existing CalendarGrid component (or adapt)
+- [ ] Navigate from day tap to `/log/[date]`
+- [ ] Add back button to Log Hub
+
+**Files to modify/create:**
+- `src/app/(app)/log/calendar/page.tsx`
+- May reuse `src/components/calendar/CalendarGrid.tsx`
+
+---
+
+### Phase 6: Cleanup & Polish
+**Status:** 🔲 Not Started
+
+**Tasks:**
+- [ ] Remove old `/calendar` route (after redirect confirmed working)
+- [ ] Remove old wizard components if no longer needed
+- [ ] Add loading skeletons for all new pages
+- [ ] Ensure dark mode works on all components
+- [ ] Test on mobile viewport (Chrome DevTools)
 - [ ] Add streak calculation logic
 - [ ] Add progress ring animation
-- [ ] Add loading skeletons matching design system
-- [ ] Ensure dark mode support
-- [ ] Test on mobile viewport
+- [ ] Run `pnpm lint` and fix issues
+- [ ] Run `pnpm build` to verify no errors
+
+**Cleanup candidates:**
+- `src/components/log/LogWizard.tsx` (replaced by check-in)
+- `src/components/log/steps/` (replaced by accordion sections)
+- `src/components/log/WizardProgress.tsx`
+- `src/components/log/WizardFooter.tsx`
+
+---
+
+## Implementation Checklist (Quick Reference)
+
+### Phase 0: Schema ✅
+- [x] Update sideEffects severity to integer
+
+### Phase 1: Routes ✅
+- [x] Create /log route
+- [x] Redirect /calendar → /log
+- [x] Update BottomNav
+
+### Phase 2: Hub Components ✅
+- [x] LogHeroCard
+- [x] QuickLogActions
+- [x] WeekStrip
+- [x] Data fetching (getLogHubData)
+
+### Phase 3: Check-in Page ✅
+- [x] MoodSection, SideEffectsSection, DietSection, ActivitySection, NotesSection
+- [x] useCheckinForm hook
+- [x] /log/checkin and /log/checkin/[date] routes
+- [x] Form state & save
+
+### Phase 4: Day Details
+- [ ] DaySummaryCard
+- [ ] Edit functionality
+
+### Phase 5: Full Calendar
+- [ ] Month view page
+
+### Phase 6: Cleanup
+- [ ] Remove old code
+- [ ] Polish & test
 
 ---
 

@@ -1,14 +1,14 @@
-'use server';
+import 'server-only';
 
 import { cache } from 'react';
 import { db } from '@/lib/db';
-import { dailyLogs, dietLogs, activityLogs, mentalLogs, sideEffects } from '@/lib/db/schema';
+import { dailyLogs } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 export type SideEffectData = {
   id?: string;
   effectType: string;
-  severity: 'None' | 'Mild' | 'Moderate' | 'Severe';
+  severity: number; // 0-5 scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
   notes?: string;
 };
 
@@ -44,68 +44,59 @@ export type DailyLogData = {
 } | null;
 
 /**
- * Fetch daily log data for a specific date
+ * Fetch daily log data for a specific date using Drizzle relations (single query)
  */
 export const getDailyLogData = cache(async (
   userId: string,
   date: string
 ): Promise<DailyLogData> => {
-  // Find the daily log for this date
-  const [log] = await db
-    .select()
-    .from(dailyLogs)
-    .where(
-      and(
-        eq(dailyLogs.userId, userId),
-        eq(dailyLogs.logDate, date)
-      )
-    )
-    .limit(1);
+  // Fetch daily log with all related data in a single query using Drizzle relations
+  const log = await db.query.dailyLogs.findFirst({
+    where: and(eq(dailyLogs.userId, userId), eq(dailyLogs.logDate, date)),
+    with: {
+      dietLog: true,
+      activityLog: true,
+      mentalLog: true,
+      sideEffects: true,
+    },
+  });
 
   if (!log) {
     return null;
   }
 
-  // Fetch related data in parallel
-  const [dietData, activityData, mentalData, sideEffectsData] = await Promise.all([
-    db.select().from(dietLogs).where(eq(dietLogs.dailyLogId, log.id)).limit(1),
-    db.select().from(activityLogs).where(eq(activityLogs.dailyLogId, log.id)).limit(1),
-    db.select().from(mentalLogs).where(eq(mentalLogs.dailyLogId, log.id)).limit(1),
-    db.select().from(sideEffects).where(eq(sideEffects.dailyLogId, log.id)),
-  ]);
-
   return {
     id: log.id,
     logDate: log.logDate,
-    diet: dietData[0]
+    diet: log.dietLog
       ? {
-          hungerLevel: dietData[0].hungerLevel || undefined,
-          mealsCount: dietData[0].mealsCount ? Number(dietData[0].mealsCount) : undefined,
-          proteinGrams: dietData[0].proteinGrams ? Number(dietData[0].proteinGrams) : undefined,
-          waterLiters: dietData[0].waterLiters ? Number(dietData[0].waterLiters) : undefined,
-          notes: dietData[0].notes || undefined,
+          hungerLevel: log.dietLog.hungerLevel || undefined,
+          mealsCount: log.dietLog.mealsCount ? Number(log.dietLog.mealsCount) : undefined,
+          proteinGrams: log.dietLog.proteinGrams ? Number(log.dietLog.proteinGrams) : undefined,
+          waterLiters: log.dietLog.waterLiters ? Number(log.dietLog.waterLiters) : undefined,
+          notes: log.dietLog.notes || undefined,
         }
       : null,
-    activity: activityData[0]
+    activity: log.activityLog
       ? {
-          workoutType: activityData[0].workoutType || undefined,
-          durationMinutes: activityData[0].durationMinutes ? Number(activityData[0].durationMinutes) : undefined,
-          steps: activityData[0].steps ? Number(activityData[0].steps) : undefined,
-          notes: activityData[0].notes || undefined,
+          workoutType: log.activityLog.workoutType || undefined,
+          durationMinutes: log.activityLog.durationMinutes ? Number(log.activityLog.durationMinutes) : undefined,
+          steps: log.activityLog.steps ? Number(log.activityLog.steps) : undefined,
+          notes: log.activityLog.notes || undefined,
         }
       : null,
-    mental: mentalData[0]
+    mental: log.mentalLog
       ? {
-          motivationLevel: mentalData[0].motivationLevel || undefined,
-          cravingsLevel: mentalData[0].cravingsLevel || undefined,
-          moodLevel: mentalData[0].moodLevel || undefined,
-          notes: mentalData[0].notes || undefined,
+          motivationLevel: log.mentalLog.motivationLevel || undefined,
+          cravingsLevel: log.mentalLog.cravingsLevel || undefined,
+          moodLevel: log.mentalLog.moodLevel || undefined,
+          notes: log.mentalLog.notes || undefined,
         }
       : null,
-    sideEffects: sideEffectsData.map((se) => ({
+    sideEffects: log.sideEffects.map((se) => ({
       id: se.id,
       effectType: se.effectType,
-      severity: se.severity as 'None' | 'Mild' | 'Moderate' | 'Severe',
+      severity: se.severity,
       notes: se.notes || undefined,
     })),
   };

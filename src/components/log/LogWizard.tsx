@@ -13,7 +13,7 @@ import Link from 'next/link';
 type LogWizardProps = {
   logDate: string;
   initialData: DailyLogData | null;
-  redirectTo: '/summary' | '/calendar';
+  redirectTo: '/summary' | '/calendar' | '/log';
   showBackButton?: boolean;
 };
 
@@ -64,7 +64,7 @@ export function LogWizard({ logDate, initialData, redirectTo, showBackButton = f
         <div className="flex items-center gap-3">
           {showBackButton && (
             <Link
-              href="/calendar"
+              href={redirectTo}
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-card text-muted-foreground hover:text-foreground"
             >
               ←

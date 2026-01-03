@@ -9,7 +9,7 @@ type WizardFooterProps = {
   onFinish: () => Promise<void>;
   isFirst: boolean;
   isLast: boolean;
-  redirectTo: '/summary' | '/calendar';
+  redirectTo: '/summary' | '/calendar' | '/log';
 };
 
 export function WizardFooter({

@@ -2,7 +2,8 @@ import { faker } from '@faker-js/faker';
 import { DEFAULT_TEST_USER_ID } from './user';
 
 // Severity and level constants matching schema
-export const SEVERITY_LEVELS = ['None', 'Mild', 'Moderate', 'Severe'] as const;
+// Severity is now 0-5 integer scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
+export const SEVERITY_LEVELS = [0, 1, 2, 3, 4, 5] as const;
 export const MOTIVATION_LEVELS = ['Low', 'Medium', 'High'] as const;
 export const CRAVINGS_LEVELS = ['None', 'Low', 'Medium', 'High', 'Intense'] as const;
 export const MOOD_LEVELS = ['Poor', 'Fair', 'Good', 'Great', 'Excellent'] as const;
@@ -42,7 +43,7 @@ export type SideEffect = {
   id: string;
   dailyLogId: string;
   effectType: string;
-  severity: string;
+  severity: number; // 0-5 scale
   notes: string | null;
   createdAt: Date;
 };

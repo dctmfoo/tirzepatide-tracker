@@ -19,6 +19,19 @@ const mockSet = vi.fn().mockReturnThis();
 const mockWhere = vi.fn().mockReturnThis();
 const mockDelete = vi.fn().mockReturnThis();
 
+// Create transaction context mock that mirrors db structure
+const createTxMock = () => ({
+  query: {
+    dailyLogs: {
+      findMany: (...args: unknown[]) => mockFindMany(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
+    },
+  },
+  insert: () => mockInsert(),
+  update: () => mockUpdate(),
+  delete: () => mockDelete(),
+});
+
 vi.mock('@/lib/db', () => ({
   db: {
     query: {
@@ -30,6 +43,9 @@ vi.mock('@/lib/db', () => ({
     insert: () => mockInsert(),
     update: () => mockUpdate(),
     delete: () => mockDelete(),
+    transaction: async <T>(callback: (tx: ReturnType<typeof createTxMock>) => Promise<T>): Promise<T> => {
+      return callback(createTxMock());
+    },
   },
   schema: {
     dailyLogs: {
@@ -110,7 +126,7 @@ describe('GET /api/daily-logs', () => {
         userId: 'test-user-id',
         logDate: '2025-01-15',
         sideEffects: [
-          { id: 'se-1', effectType: 'Nausea', severity: 'Mild', notes: null },
+          { id: 'se-1', effectType: 'Nausea', severity: 2, notes: null },
         ],
         activityLog: { id: 'al-1', workoutType: 'Walking', durationMinutes: 30, steps: 5000, notes: null },
         mentalLog: { id: 'ml-1', moodLevel: 'Good', motivationLevel: 'High', cravingsLevel: 'Low', notes: null },
@@ -310,7 +326,7 @@ describe('POST /api/daily-logs', () => {
         id: 'new-log-id',
         userId: 'test-user-id',
         logDate: '2025-01-15',
-        sideEffects: [{ id: 'se-1', effectType: 'Nausea', severity: 'Mild', notes: null }],
+        sideEffects: [{ id: 'se-1', effectType: 'Nausea', severity: 2, notes: null }],
         activityLog: null,
         mentalLog: null,
         dietLog: null,
@@ -324,7 +340,7 @@ describe('POST /api/daily-logs', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         logDate: '2025-01-15',
-        sideEffects: [{ effectType: 'Nausea', severity: 'Mild' }],
+        sideEffects: [{ effectType: 'Nausea', severity: 2 }],
       }),
     });
     const response = await POST(request);
@@ -335,7 +351,7 @@ describe('POST /api/daily-logs', () => {
     expect(data.sideEffects[0].effectType).toBe('Nausea');
   });
 
-  it('validates side effect severity enum', async () => {
+  it('validates side effect severity range', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
 
     const request = new Request('http://localhost:3000/api/daily-logs', {
@@ -343,7 +359,7 @@ describe('POST /api/daily-logs', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         logDate: '2025-01-15',
-        sideEffects: [{ effectType: 'Nausea', severity: 'InvalidSeverity' }],
+        sideEffects: [{ effectType: 'Nausea', severity: 10 }], // Invalid: must be 0-5
       }),
     });
     const response = await POST(request);

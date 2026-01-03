@@ -12,7 +12,7 @@ if (!connectionString) {
 // Create postgres connection
 // For queries (uses connection pooling in production)
 const client = postgres(connectionString, {
-  max: process.env.NODE_ENV === 'production' ? 10 : 1,
+  max: process.env.NODE_ENV === 'production' ? 10 : 5,
   idle_timeout: 20,
   connect_timeout: 10,
 });

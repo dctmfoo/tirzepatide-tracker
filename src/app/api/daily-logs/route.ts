@@ -7,7 +7,7 @@ import { z } from 'zod';
 // Validation schemas
 const sideEffectSchema = z.object({
   effectType: z.string().min(1).max(50),
-  severity: z.enum(['None', 'Mild', 'Moderate', 'Severe']),
+  severity: z.number().int().min(0).max(5), // 0-5 scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
   notes: z.string().max(500).nullable().optional(),
 });
 
@@ -152,95 +152,105 @@ export async function POST(request: Request) {
         .where(eq(schema.dailyLogs.id, dailyLog.id));
     }
 
-    // Handle side effects
-    if (data.sideEffects) {
-      // Delete existing side effects for this log
-      await db
-        .delete(schema.sideEffects)
-        .where(eq(schema.sideEffects.dailyLogId, dailyLog.id));
+    const logId = dailyLog.id;
 
-      // Insert new side effects
-      if (data.sideEffects.length > 0) {
-        await db.insert(schema.sideEffects).values(
-          data.sideEffects.map((se) => ({
-            dailyLogId: dailyLog.id,
-            effectType: se.effectType,
-            severity: se.severity,
-            notes: se.notes || null,
-          }))
-        );
-      }
+    // Run all delete and insert operations in parallel
+    const ops: Promise<unknown>[] = [];
+
+    // Side effects: delete then insert
+    if (data.sideEffects) {
+      ops.push(
+        db.delete(schema.sideEffects).where(eq(schema.sideEffects.dailyLogId, logId))
+          .then(() => {
+            if (data.sideEffects && data.sideEffects.length > 0) {
+              return db.insert(schema.sideEffects).values(
+                data.sideEffects.map((se) => ({
+                  dailyLogId: logId,
+                  effectType: se.effectType,
+                  severity: se.severity,
+                  notes: se.notes || null,
+                }))
+              );
+            }
+          })
+      );
     }
 
-    // Handle activity log
+    // Activity: delete then insert
     if (data.activity) {
-      await db
-        .delete(schema.activityLogs)
-        .where(eq(schema.activityLogs.dailyLogId, dailyLog.id));
+      ops.push(
+        db.delete(schema.activityLogs).where(eq(schema.activityLogs.dailyLogId, logId))
+          .then(() => db.insert(schema.activityLogs).values({
+            dailyLogId: logId,
+            workoutType: data.activity!.workoutType || null,
+            durationMinutes: data.activity!.durationMinutes || null,
+            steps: data.activity!.steps || null,
+            notes: data.activity!.notes || null,
+          }))
+      );
+    }
 
-      await db.insert(schema.activityLogs).values({
-        dailyLogId: dailyLog.id,
+    // Mental: delete then insert
+    if (data.mental) {
+      ops.push(
+        db.delete(schema.mentalLogs).where(eq(schema.mentalLogs.dailyLogId, logId))
+          .then(() => db.insert(schema.mentalLogs).values({
+            dailyLogId: logId,
+            motivationLevel: data.mental!.motivationLevel || null,
+            cravingsLevel: data.mental!.cravingsLevel || null,
+            moodLevel: data.mental!.moodLevel || null,
+            notes: data.mental!.notes || null,
+          }))
+      );
+    }
+
+    // Diet: delete then insert
+    if (data.diet) {
+      ops.push(
+        db.delete(schema.dietLogs).where(eq(schema.dietLogs.dailyLogId, logId))
+          .then(() => db.insert(schema.dietLogs).values({
+            dailyLogId: logId,
+            hungerLevel: data.diet!.hungerLevel || null,
+            mealsCount: data.diet!.mealsCount || null,
+            proteinGrams: data.diet!.proteinGrams || null,
+            waterLiters: data.diet!.waterLiters?.toString() || null,
+            notes: data.diet!.notes || null,
+          }))
+      );
+    }
+
+    await Promise.all(ops);
+
+    // Return the data we already have - no need to refetch
+    return NextResponse.json({
+      id: logId,
+      logDate: data.logDate,
+      sideEffects: data.sideEffects?.map((se) => ({
+        effectType: se.effectType,
+        severity: se.severity,
+        notes: se.notes || null,
+      })) || [],
+      activity: data.activity ? {
         workoutType: data.activity.workoutType || null,
         durationMinutes: data.activity.durationMinutes || null,
         steps: data.activity.steps || null,
         notes: data.activity.notes || null,
-      });
-    }
-
-    // Handle mental log
-    if (data.mental) {
-      await db
-        .delete(schema.mentalLogs)
-        .where(eq(schema.mentalLogs.dailyLogId, dailyLog.id));
-
-      await db.insert(schema.mentalLogs).values({
-        dailyLogId: dailyLog.id,
+      } : null,
+      mental: data.mental ? {
         motivationLevel: data.mental.motivationLevel || null,
         cravingsLevel: data.mental.cravingsLevel || null,
         moodLevel: data.mental.moodLevel || null,
         notes: data.mental.notes || null,
-      });
-    }
-
-    // Handle diet log
-    if (data.diet) {
-      await db
-        .delete(schema.dietLogs)
-        .where(eq(schema.dietLogs.dailyLogId, dailyLog.id));
-
-      await db.insert(schema.dietLogs).values({
-        dailyLogId: dailyLog.id,
+      } : null,
+      diet: data.diet ? {
         hungerLevel: data.diet.hungerLevel || null,
         mealsCount: data.diet.mealsCount || null,
         proteinGrams: data.diet.proteinGrams || null,
-        waterLiters: data.diet.waterLiters?.toString() || null,
+        waterLiters: data.diet.waterLiters || null,
         notes: data.diet.notes || null,
-      });
-    }
-
-    // Fetch the complete log
-    const completeLog = await db.query.dailyLogs.findFirst({
-      where: eq(schema.dailyLogs.id, dailyLog.id),
-      with: {
-        sideEffects: true,
-        activityLog: true,
-        mentalLog: true,
-        dietLog: true,
-      },
-    });
-
-    return NextResponse.json({
-      id: completeLog!.id,
-      logDate: completeLog!.logDate,
-      sideEffects: completeLog!.sideEffects,
-      activity: completeLog!.activityLog,
-      mental: completeLog!.mentalLog,
-      diet: completeLog!.dietLog ? {
-        ...completeLog!.dietLog,
-        waterLiters: completeLog!.dietLog.waterLiters ? Number(completeLog!.dietLog.waterLiters) : null,
       } : null,
-      createdAt: completeLog!.createdAt,
-      updatedAt: completeLog!.updatedAt,
+      createdAt: dailyLog.createdAt,
+      updatedAt: new Date(),
     }, { status: 201 });
   } catch (error) {
     console.error('POST /api/daily-logs error:', error);

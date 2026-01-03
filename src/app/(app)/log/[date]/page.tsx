@@ -25,7 +25,7 @@ async function LogDateContent({ dateParam }: { dateParam: string }) {
     <LogWizard
       logDate={dateParam}
       initialData={initialData}
-      redirectTo="/calendar"
+      redirectTo="/log"
       showBackButton={true}
     />
   );
@@ -39,8 +39,8 @@ export default async function LogDatePage({ params }: Props) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center p-4">
         <p className="mb-4 text-error">Invalid date format. Use YYYY-MM-DD.</p>
-        <Link href="/calendar" className="text-primary hover:underline">
-          Back to Calendar
+        <Link href="/log" className="text-primary hover:underline">
+          Back to Log
         </Link>
       </div>
     );

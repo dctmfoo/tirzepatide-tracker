@@ -7,7 +7,7 @@ import { z } from 'zod';
 // Validation schemas (same as in route.ts)
 const sideEffectSchema = z.object({
   effectType: z.string().min(1).max(50),
-  severity: z.enum(['None', 'Mild', 'Moderate', 'Severe']),
+  severity: z.number().int().min(0).max(5), // 0-5 scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
   notes: z.string().max(500).nullable().optional(),
 });
 

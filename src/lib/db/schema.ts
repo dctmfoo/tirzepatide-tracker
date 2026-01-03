@@ -193,7 +193,7 @@ export const sideEffects = pgTable(
       .references(() => dailyLogs.id, { onDelete: 'cascade' })
       .notNull(),
     effectType: varchar('effect_type', { length: 50 }).notNull(),
-    severity: varchar('severity', { length: 20 }).notNull(), // None, Mild, Moderate, Severe
+    severity: integer('severity').notNull().default(0), // 0-5 scale: 0=None, 1-2=Mild, 3-4=Moderate, 5=Severe
     notes: text('notes'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },

@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     const totalDaysLogged = logs.length;
 
     // Side effects summary
-    const sideEffectCounts: Record<string, { count: number; severities: string[] }> = {};
+    const sideEffectCounts: Record<string, { count: number; severities: number[] }> = {};
     logs.forEach((log) => {
       log.sideEffects.forEach((se) => {
         if (!sideEffectCounts[se.effectType]) {
