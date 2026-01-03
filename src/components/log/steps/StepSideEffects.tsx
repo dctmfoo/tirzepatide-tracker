@@ -24,13 +24,19 @@ const SIDE_EFFECTS = [
   'Other',
 ] as const;
 
-const SEVERITY_LEVELS = ['None', 'Mild', 'Moderate', 'Severe'] as const;
+// Severity labels and their corresponding numeric values (0-5 scale)
+const SEVERITY_CONFIG = [
+  { label: 'None', value: 0 },
+  { label: 'Mild', value: 2 },
+  { label: 'Moderate', value: 3 },
+  { label: 'Severe', value: 5 },
+] as const;
 
 const SEVERITY_STYLES: Record<string, string> = {
-  None: 'data-[state=on]:bg-primary data-[state=on]:text-primary-foreground',
-  Mild: 'data-[state=on]:bg-primary data-[state=on]:text-primary-foreground',
-  Moderate: 'data-[state=on]:bg-warning data-[state=on]:text-warning-foreground',
-  Severe: 'data-[state=on]:bg-destructive data-[state=on]:text-destructive-foreground',
+  '0': 'data-[state=on]:bg-primary data-[state=on]:text-primary-foreground',
+  '2': 'data-[state=on]:bg-primary data-[state=on]:text-primary-foreground',
+  '3': 'data-[state=on]:bg-warning data-[state=on]:text-warning-foreground',
+  '5': 'data-[state=on]:bg-destructive data-[state=on]:text-destructive-foreground',
 };
 
 type StepSideEffectsProps = {
@@ -42,10 +48,11 @@ export function StepSideEffects({ stepData, updateStepData }: StepSideEffectsPro
   const sideEffects = stepData.sideEffects;
 
   const addEffect = () => {
-    updateStepData('sideEffects', [...sideEffects, { effectType: '', severity: 'Mild' }]);
+    const newEffect: SideEffectData = { effectType: '', severity: 2 }; // Default to Mild (2)
+    updateStepData('sideEffects', [...sideEffects, newEffect]);
   };
 
-  const updateEffect = (index: number, field: keyof SideEffectData, value: string) => {
+  const updateEffect = (index: number, field: keyof SideEffectData, value: string | number) => {
     const updated = [...sideEffects];
     updated[index] = { ...updated[index], [field]: value };
     updateStepData('sideEffects', updated);
@@ -110,18 +117,18 @@ export function StepSideEffects({ stepData, updateStepData }: StepSideEffectsPro
 
               <ToggleGroup
                 type="single"
-                value={effect.severity}
-                onValueChange={(v) => v && updateEffect(index, 'severity', v)}
+                value={String(effect.severity)}
+                onValueChange={(v) => v && updateEffect(index, 'severity', parseInt(v, 10))}
                 className="flex gap-2"
               >
-                {SEVERITY_LEVELS.map((severity) => (
+                {SEVERITY_CONFIG.map(({ label, value }) => (
                   <ToggleGroupItem
-                    key={severity}
-                    value={severity}
-                    aria-label={`Severity: ${severity}`}
-                    className={`flex-1 rounded-lg py-2 text-sm ${SEVERITY_STYLES[severity]}`}
+                    key={value}
+                    value={String(value)}
+                    aria-label={`Severity: ${label}`}
+                    className={`flex-1 rounded-lg py-2 text-sm ${SEVERITY_STYLES[String(value)]}`}
                   >
-                    {severity}
+                    {label}
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
