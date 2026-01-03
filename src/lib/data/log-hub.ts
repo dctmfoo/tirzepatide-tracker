@@ -4,9 +4,6 @@ import { cache } from 'react';
 import { db } from '@/lib/db';
 import {
   dailyLogs,
-  dietLogs,
-  activityLogs,
-  mentalLogs,
   weightEntries,
   injections,
 } from '@/lib/db/schema';
@@ -80,21 +77,24 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
   const startDate = formatDate(weekDates[0]);
   const endDate = formatDate(weekDates[weekDates.length - 1]);
 
-  // Fetch data in parallel
+  // Fetch data in parallel - use query builder with relations for today's log
   const [
-    todayLog,
+    todayLogWithRelations,
     latestWeight,
     weekWeights,
     weekInjections,
     weekLogs,
     streakData,
   ] = await Promise.all([
-    // Today's daily log
-    db
-      .select({ id: dailyLogs.id })
-      .from(dailyLogs)
-      .where(and(eq(dailyLogs.userId, userId), eq(dailyLogs.logDate, todayStr)))
-      .limit(1),
+    // Today's daily log with related data (single query with joins)
+    db.query.dailyLogs.findFirst({
+      where: and(eq(dailyLogs.userId, userId), eq(dailyLogs.logDate, todayStr)),
+      with: {
+        mentalLog: { columns: { id: true } },
+        dietLog: { columns: { id: true } },
+        activityLog: { columns: { id: true } },
+      },
+    }),
 
     // Latest weight entry
     db
@@ -175,31 +175,11 @@ export const getLogHubData = cache(async (userId: string): Promise<LogHubData> =
   });
   todayProgress.weight = !!todayWeightEntry;
 
-  // Check other sections if daily log exists
-  if (todayLog.length > 0) {
-    const logId = todayLog[0].id;
-
-    const [mentalCheck, dietCheck, activityCheck] = await Promise.all([
-      db
-        .select({ id: mentalLogs.id })
-        .from(mentalLogs)
-        .where(eq(mentalLogs.dailyLogId, logId))
-        .limit(1),
-      db
-        .select({ id: dietLogs.id })
-        .from(dietLogs)
-        .where(eq(dietLogs.dailyLogId, logId))
-        .limit(1),
-      db
-        .select({ id: activityLogs.id })
-        .from(activityLogs)
-        .where(eq(activityLogs.dailyLogId, logId))
-        .limit(1),
-    ]);
-
-    todayProgress.mood = mentalCheck.length > 0;
-    todayProgress.diet = dietCheck.length > 0;
-    todayProgress.activity = activityCheck.length > 0;
+  // Check other sections from the single query result
+  if (todayLogWithRelations) {
+    todayProgress.mood = !!todayLogWithRelations.mentalLog;
+    todayProgress.diet = !!todayLogWithRelations.dietLog;
+    todayProgress.activity = !!todayLogWithRelations.activityLog;
   }
 
   const completedCount = Object.values(todayProgress).filter(Boolean).length;
