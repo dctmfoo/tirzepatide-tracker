@@ -553,22 +553,33 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 4: Day Details Page
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Create `/log/[date]` route (replaces old log wizard route)
-- [ ] Build `DaySummaryCard` - Read-only view of day's data
-- [ ] Show weight entry with time and delta
-- [ ] Show injection if any (read from injections table)
-- [ ] Show check-in summary as tags
-- [ ] Show notes if any
-- [ ] Add "Edit" button linking to `/log/checkin/[date]`
-- [ ] Handle empty state gracefully
-- [ ] Test navigation from WeekStrip to day details
+- [x] Create `/log/[date]` route (replaces old log wizard route)
+- [x] Build `DaySummaryCard` - Read-only view of day's data
+- [x] Show weight entry with time and delta
+- [x] Show injection if any (read from injections table)
+- [x] Show check-in summary as tags
+- [x] Show notes if any
+- [x] Add "Edit" button linking to `/log/checkin/[date]`
+- [x] Handle empty state gracefully
+- [x] Test navigation from WeekStrip to day details
 
-**Components to create:**
-- `src/app/(app)/log/[date]/page.tsx`
-- `src/components/log-hub/DaySummaryCard.tsx`
+**Files created:**
+- `src/app/(app)/log/[date]/page.tsx` - Day details page with header, back nav, edit button
+- `src/components/log-hub/DaySummaryCard.tsx` - Day summary with weight, injection, check-in display
+- `src/lib/data/day-details.ts` - Data fetching function for day details
+- `src/components/log-hub/__tests__/DaySummaryCard.test.tsx` - 15 unit tests
+
+**Features:**
+- Weight entry displays value, time, and delta from previous day
+- Injection entry shows dose, site, and week number since treatment start
+- Check-in summary shows tags for mood, cravings, meals, activity, steps
+- Notes section collects and displays notes from all sources
+- Empty state with CTA to start/add check-in
+- "Complete" badge when day has sufficient data
+- Loading skeleton for better UX
 
 ---
 
@@ -631,9 +642,11 @@ Bottom Nav "Log" tap
 - [x] /log/checkin and /log/checkin/[date] routes
 - [x] Form state & save
 
-### Phase 4: Day Details
-- [ ] DaySummaryCard
-- [ ] Edit functionality
+### Phase 4: Day Details ✅
+- [x] DaySummaryCard
+- [x] Edit functionality
+- [x] getDayDetailsData
+- [x] Unit tests
 
 ### Phase 5: Full Calendar
 - [ ] Month view page
