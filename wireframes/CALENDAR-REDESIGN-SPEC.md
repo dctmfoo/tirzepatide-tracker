@@ -486,28 +486,32 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 2: Log Hub Components
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Build `LogHeroCard` - Today's progress ring + streak
-- [ ] Build `QuickLogActions` - Weight + Check-in action cards
-- [ ] Build `WeekStrip` - 7-day horizontal view with dots
-- [ ] Build `LogHeader` - Page title + calendar icon link
-- [ ] Create data fetching in page.tsx
-- [ ] Wire up weight modal (reuse existing LogWeightModal)
-- [ ] Test in browser - verify all components render
+- [x] Build `LogHeroCard` - Today's progress ring + streak
+- [x] Build `QuickLogActions` - Weight + Check-in action cards
+- [x] Build `WeekStrip` - 7-day horizontal view with dots
+- [x] Build `LogHeader` - Page title + calendar icon link (integrated into page)
+- [x] Create data fetching in page.tsx
+- [x] Wire up weight modal (reuse existing LogWeightModal)
+- [x] Test in browser - verify all components render
 
-**Components to create:**
-- `src/components/log-hub/LogHeroCard.tsx`
-- `src/components/log-hub/QuickLogActions.tsx`
-- `src/components/log-hub/WeekStrip.tsx`
-- `src/components/log-hub/LogHeader.tsx`
+**Files created:**
+- `src/components/log-hub/LogHeroCard.tsx` - Hero card with progress ring (X/4), status badges, streak
+- `src/components/log-hub/QuickLogActions.tsx` - Weight modal trigger + Check-in navigation
+- `src/components/log-hub/WeekStrip.tsx` - 7-day horizontal view with activity dots
+- `src/lib/data/log-hub.ts` - `getLogHubData()` function for aggregating hub data
 
-**Data requirements:**
-- Today's date, completed sections count
-- Streak calculation (consecutive days with any log)
-- Last 7 days with indicators (weight, check-in, injection)
-- Latest weight value
+**Data implemented:**
+- Today's date, completed sections count (Weight, Mood, Diet, Activity)
+- Streak calculation (consecutive days with any log or weight entry)
+- Last 7 days with indicators (weight=blue, check-in=green, injection=violet)
+- Latest weight value for display
+
+**Notes:**
+- LogHeader is inline in page.tsx (simple enough to not need separate component)
+- QuickLogActions links to `/log/{todayDate}` until Phase 3 adds `/log/checkin`
 
 ---
 
@@ -605,15 +609,16 @@ Bottom Nav "Log" tap
 ### Phase 0: Schema ✅
 - [x] Update sideEffects severity to integer
 
-### Phase 1: Routes
-- [ ] Create /log route
-- [ ] Redirect /calendar → /log
-- [ ] Update BottomNav
+### Phase 1: Routes ✅
+- [x] Create /log route
+- [x] Redirect /calendar → /log
+- [x] Update BottomNav
 
-### Phase 2: Hub Components
-- [ ] LogHeroCard
-- [ ] QuickLogActions
-- [ ] WeekStrip
+### Phase 2: Hub Components ✅
+- [x] LogHeroCard
+- [x] QuickLogActions
+- [x] WeekStrip
+- [x] Data fetching (getLogHubData)
 
 ### Phase 3: Check-in Page
 - [ ] Accordion sections
