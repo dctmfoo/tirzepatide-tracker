@@ -507,15 +507,17 @@ function PersonalInfoModal({
         <FormField label="Age">
           <input
             type="number"
+            min={1}
+            max={120}
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
             placeholder="Enter age"
           />
         </FormField>
 
         <FormField label="Gender">
-          <select value={gender} onChange={(e) => setGender(e.target.value)} className="input">
+          <select value={gender} onChange={(e) => setGender(e.target.value)} className={inputStyles}>
             <option value="">Select gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -526,10 +528,12 @@ function PersonalInfoModal({
         <FormField label="Height (cm)">
           <input
             type="number"
+            min={50}
+            max={300}
             step="0.1"
             value={heightCm}
             onChange={(e) => setHeightCm(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
             placeholder="Enter height in cm"
           />
         </FormField>
@@ -599,10 +603,12 @@ function GoalsModal({
         <FormField label={`Starting Weight (${weightUnit})`}>
           <input
             type="number"
+            min={20}
+            max={500}
             step="0.1"
             value={startingWeight}
             onChange={(e) => setStartingWeight(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
             placeholder="Enter starting weight"
           />
         </FormField>
@@ -610,10 +616,12 @@ function GoalsModal({
         <FormField label={`Goal Weight (${weightUnit})`}>
           <input
             type="number"
+            min={20}
+            max={500}
             step="0.1"
             value={goalWeight}
             onChange={(e) => setGoalWeight(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
             placeholder="Enter goal weight"
           />
         </FormField>
@@ -623,7 +631,7 @@ function GoalsModal({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
           />
         </FormField>
 
@@ -699,7 +707,7 @@ function InjectionScheduleModal({
     <Modal title="Injection Schedule" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Preferred Injection Day">
-          <select value={preferredDay} onChange={(e) => setPreferredDay(e.target.value)} className="input">
+          <select value={preferredDay} onChange={(e) => setPreferredDay(e.target.value)} className={inputStyles}>
             {days.map((d) => (
               <option key={d.value} value={d.value}>
                 {d.label}
@@ -712,7 +720,7 @@ function InjectionScheduleModal({
           <select
             value={reminderTiming}
             onChange={(e) => setReminderTiming(e.target.value)}
-            className="input"
+            className={inputStyles}
           >
             <option value="1_day_before">1 day before</option>
             <option value="2_days_before">2 days before</option>
@@ -778,7 +786,7 @@ function UnitsModal({
     <Modal title="Units" open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField label="Weight">
-          <select value={weightUnit} onChange={(e) => setWeightUnit(e.target.value)} className="input">
+          <select value={weightUnit} onChange={(e) => setWeightUnit(e.target.value)} className={inputStyles}>
             <option value="kg">Kilograms (kg)</option>
             <option value="lbs">Pounds (lbs)</option>
             <option value="stone">Stone</option>
@@ -786,14 +794,14 @@ function UnitsModal({
         </FormField>
 
         <FormField label="Height">
-          <select value={heightUnit} onChange={(e) => setHeightUnit(e.target.value)} className="input">
+          <select value={heightUnit} onChange={(e) => setHeightUnit(e.target.value)} className={inputStyles}>
             <option value="cm">Centimeters (cm)</option>
             <option value="ft-in">Feet & Inches</option>
           </select>
         </FormField>
 
         <FormField label="Date Format">
-          <select value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className="input">
+          <select value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className={inputStyles}>
             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
           </select>
@@ -1038,7 +1046,7 @@ function DeleteAccountModal({ open, onOpenChange }: { open: boolean; onOpenChang
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className={inputStyles}
             placeholder="Type DELETE"
           />
         </FormField>
@@ -1079,6 +1087,10 @@ function Modal({
     </ResponsiveModal>
   );
 }
+
+// Shared input styles for consistency
+const inputStyles =
+  'w-full rounded-lg border border-border bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring';
 
 // Reusable Form Field
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
