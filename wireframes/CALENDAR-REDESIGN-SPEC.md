@@ -516,34 +516,39 @@ Bottom Nav "Log" tap
 ---
 
 ### Phase 3: Daily Check-in Page (Single Page Form)
-**Status:** 🔲 Not Started
+**Status:** ✅ Complete (2026-01-03)
 
 **Tasks:**
-- [ ] Create `/log/checkin` route
-- [ ] Create `/log/checkin/[date]` route for editing past days
-- [ ] Build accordion wrapper component using shadcn Collapsible
-- [ ] Build `MoodSection` - Mood icons + cravings/energy toggles
-- [ ] Build `SideEffectsSection` - Sliders (0-5) with shadcn Slider
-- [ ] Build `DietSection` - Steppers for meals/protein/water + hunger toggle
-- [ ] Build `ActivitySection` - Steps/duration sliders + workout type toggle
-- [ ] Build `NotesSection` - Textarea
-- [ ] Build form state hook `useCheckinForm`
-- [ ] Wire up save functionality to existing API
-- [ ] Test all inputs work correctly
+- [x] Create `/log/checkin` route
+- [x] Create `/log/checkin/[date]` route for editing past days
+- [x] Build `MoodSection` - Mood icons + cravings/energy toggles
+- [x] Build `SideEffectsSection` - Sliders (0-5) with shadcn Slider
+- [x] Build `DietSection` - Steppers for meals/protein/water + hunger toggle
+- [x] Build `ActivitySection` - Steps/duration sliders + workout type toggle
+- [x] Build `NotesSection` - Textarea
+- [x] Build form state hook `useCheckinForm`
+- [x] Wire up save functionality to existing API
+- [x] Test all inputs work correctly
 
-**Components to create:**
-- `src/app/(app)/log/checkin/page.tsx`
-- `src/app/(app)/log/checkin/[date]/page.tsx`
-- `src/components/log-hub/checkin/MoodSection.tsx`
-- `src/components/log-hub/checkin/SideEffectsSection.tsx`
-- `src/components/log-hub/checkin/DietSection.tsx`
-- `src/components/log-hub/checkin/ActivitySection.tsx`
-- `src/components/log-hub/checkin/NotesSection.tsx`
-- `src/components/log-hub/checkin/useCheckinForm.ts`
+**Files created:**
+- `src/app/(app)/log/checkin/page.tsx` - Today's check-in page
+- `src/app/(app)/log/checkin/[date]/page.tsx` - Edit past day check-in
+- `src/components/log-hub/checkin/MoodSection.tsx` - Mood icons + cravings/energy toggles
+- `src/components/log-hub/checkin/SideEffectsSection.tsx` - 0-5 sliders per side effect
+- `src/components/log-hub/checkin/DietSection.tsx` - Stepper inputs + hunger toggle
+- `src/components/log-hub/checkin/ActivitySection.tsx` - Steps/duration sliders + workout type
+- `src/components/log-hub/checkin/NotesSection.tsx` - Textarea for notes
+- `src/components/log-hub/checkin/useCheckinForm.ts` - Form state management hook
+- `src/components/log-hub/checkin/CheckinPageContent.tsx` - Client component with form
+- `src/components/ui/slider.tsx` - shadcn Slider component
+- `src/components/ui/stepper.tsx` - Custom +/- stepper component
 
-**UI Components needed:**
-- `src/components/ui/stepper.tsx` - +/- number input
-- Reuse shadcn `Slider`, `Collapsible`
+**Notes:**
+- Used cards instead of accordion (cleaner UX, all sections visible)
+- Sections show "Done" badge when completed
+- Progress indicator shows "X of 4 sections" at top
+- Save button calls existing POST /api/daily-logs endpoint
+- Form loads existing data when editing past days
 
 ---
 
@@ -620,10 +625,11 @@ Bottom Nav "Log" tap
 - [x] WeekStrip
 - [x] Data fetching (getLogHubData)
 
-### Phase 3: Check-in Page
-- [ ] Accordion sections
-- [ ] All input components
-- [ ] Form state & save
+### Phase 3: Check-in Page ✅
+- [x] MoodSection, SideEffectsSection, DietSection, ActivitySection, NotesSection
+- [x] useCheckinForm hook
+- [x] /log/checkin and /log/checkin/[date] routes
+- [x] Form state & save
 
 ### Phase 4: Day Details
 - [ ] DaySummaryCard
