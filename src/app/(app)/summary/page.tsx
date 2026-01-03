@@ -1,97 +1,97 @@
 import { Suspense } from 'react';
+import { Bell } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
-import { eq, desc, and } from 'drizzle-orm';
-import { Section } from '@/components/ui';
+import { eq, desc, asc, and } from 'drizzle-orm';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  NextInjectionCard,
-  TodaysLogCard,
-  CurrentStateSection,
-  JourneyProgressSection,
-  RecentActivitySection,
+  HeroStatusCard,
+  JourneyProgressCard,
+  PhaseCard,
+  StreakCard,
   EmptyState,
-} from '@/components/summary';
+  getPhaseFromDose,
+} from '@/components/journey';
 import { getSuggestedSite } from '@/lib/utils/injection-logic';
 
-function getTodayString(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-
-async function getSummaryData(userId: string) {
-  const today = getTodayString();
-
+async function getJourneyData(userId: string) {
   // Fetch all independent data in parallel for better performance
-  const [
-    profile,
-    preferences,
-    recentWeightEntries,
-    latestInjection,
-    allInjections,
-    todayLog,
-  ] = await Promise.all([
-    // Profile for starting weight and goal
-    db.query.profiles.findFirst({
-      where: eq(schema.profiles.userId, userId),
-    }),
-    // User preferences for unit display
-    db.query.userPreferences.findFirst({
-      where: eq(schema.userPreferences.userId, userId),
-    }),
-    // Recent weight entries (for current, previous, and activity list)
-    db
-      .select()
-      .from(schema.weightEntries)
-      .where(eq(schema.weightEntries.userId, userId))
-      .orderBy(desc(schema.weightEntries.recordedAt))
-      .limit(3),
-    // Latest injection
-    db.query.injections.findFirst({
-      where: eq(schema.injections.userId, userId),
-      orderBy: [desc(schema.injections.injectionDate)],
-    }),
-    // All injections (for count and activity list)
-    db
-      .select()
+  const [profile, preferences, recentWeightEntries, latestInjection, allInjections] =
+    await Promise.all([
+      // Profile for starting weight and goal
+      db.query.profiles.findFirst({
+        where: eq(schema.profiles.userId, userId),
+      }),
+      // User preferences for unit display
+      db.query.userPreferences.findFirst({
+        where: eq(schema.userPreferences.userId, userId),
+      }),
+      // Recent weight entries
+      db
+        .select()
+        .from(schema.weightEntries)
+        .where(eq(schema.weightEntries.userId, userId))
+        .orderBy(desc(schema.weightEntries.recordedAt))
+        .limit(3),
+      // Latest injection
+      db.query.injections.findFirst({
+        where: eq(schema.injections.userId, userId),
+        orderBy: [desc(schema.injections.injectionDate)],
+      }),
+      // All injections for phase calculation
+      db
+        .select()
+        .from(schema.injections)
+        .where(eq(schema.injections.userId, userId))
+        .orderBy(desc(schema.injections.injectionDate))
+        .limit(20),
+    ]);
+
+  // Get current dose and find when this phase started
+  const currentDose = latestInjection ? Number(latestInjection.doseMg) : null;
+  let phaseStartDate: string | null = null;
+
+  if (currentDose && allInjections.length > 0) {
+    // Find first injection at current dose (phase start)
+    const firstAtCurrentDose = await db
+      .select({ injectionDate: schema.injections.injectionDate })
       .from(schema.injections)
-      .where(eq(schema.injections.userId, userId))
-      .orderBy(desc(schema.injections.injectionDate))
-      .limit(10),
-    // Today's log with relations
-    db.query.dailyLogs.findFirst({
-      where: and(
-        eq(schema.dailyLogs.userId, userId),
-        eq(schema.dailyLogs.logDate, today)
-      ),
-      with: {
-        sideEffects: true,
-        activityLog: true,
-        mentalLog: true,
-        dietLog: true,
-      },
-    }),
-  ]);
+      .where(
+        and(
+          eq(schema.injections.userId, userId),
+          eq(schema.injections.doseMg, currentDose.toString())
+        )
+      )
+      .orderBy(asc(schema.injections.injectionDate))
+      .limit(1);
 
-  // Extract latest and previous weight from recentWeightEntries
-  const latestWeight = recentWeightEntries[0] || null;
-  const previousWeight = recentWeightEntries[1] || null;
+    if (firstAtCurrentDose.length > 0) {
+      phaseStartDate = firstAtCurrentDose[0].injectionDate.toISOString();
+    }
+  }
 
-  // Calculate next injection due
-  let nextInjectionDue = null;
-  let daysUntilInjection = null;
-  let injectionStatus = 'not_started';
+  // Calculate next injection status
+  let daysUntilInjection: number | null = null;
+  let injectionStatus: 'on_track' | 'due_soon' | 'due_today' | 'overdue' | 'not_started' =
+    'not_started';
+  let cycleProgress = 0;
 
   if (latestInjection) {
     const lastDate = new Date(latestInjection.injectionDate);
     const nextDate = new Date(lastDate);
     nextDate.setDate(nextDate.getDate() + 7);
-    nextInjectionDue = nextDate.toISOString();
 
     const now = new Date();
     daysUntilInjection = Math.ceil(
       (nextDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     );
+
+    // Calculate cycle progress (0-100)
+    const daysSinceLast = Math.floor(
+      (now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    cycleProgress = Math.min(100, Math.max(0, (daysSinceLast / 7) * 100));
 
     if (daysUntilInjection < 0) {
       injectionStatus = 'overdue';
@@ -105,6 +105,7 @@ async function getSummaryData(userId: string) {
   }
 
   // Calculate weight stats
+  const latestWeight = recentWeightEntries[0] || null;
   const startingWeight = profile
     ? Number(profile.startingWeightKg)
     : latestWeight
@@ -113,8 +114,8 @@ async function getSummaryData(userId: string) {
   const currentWeight = latestWeight ? Number(latestWeight.weightKg) : null;
   const goalWeight = profile ? Number(profile.goalWeightKg) : null;
 
-  let remainingToGoal = null;
-  let progressPercent = null;
+  let remainingToGoal: number | null = null;
+  let progressPercent: number | null = null;
 
   if (goalWeight && currentWeight) {
     remainingToGoal = currentWeight - goalWeight;
@@ -126,213 +127,159 @@ async function getSummaryData(userId: string) {
     progressPercent = totalToLose > 0 ? (lostSoFar / totalToLose) * 100 : 0;
   }
 
-  // Calculate weight change since last entry
-  const lastWeightChange =
-    latestWeight && previousWeight
-      ? Number(latestWeight.weightKg) - Number(previousWeight.weightKg)
-      : null;
-
   // Treatment duration
-  let treatmentDays = null;
-  let treatmentWeeks = null;
+  let treatmentWeeks = 1;
   if (profile?.treatmentStartDate) {
     const startDate = new Date(profile.treatmentStartDate);
     const now = new Date();
-    treatmentDays = Math.floor(
+    const treatmentDays = Math.floor(
       (now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
-    treatmentWeeks = Math.floor(treatmentDays / 7);
+    treatmentWeeks = Math.max(1, Math.floor(treatmentDays / 7) + 1);
   }
 
   // Next milestone (every 5kg)
-  let nextMilestone = null;
+  let nextMilestone: { weight: number; remaining: number } | null = null;
   if (currentWeight && goalWeight) {
-    const milestones = [];
     for (let m = Math.floor(currentWeight / 5) * 5; m >= goalWeight; m -= 5) {
       if (m < currentWeight) {
-        milestones.push(m);
+        nextMilestone = {
+          weight: m,
+          remaining: currentWeight - m,
+        };
         break;
       }
     }
-    if (milestones.length > 0) {
-      nextMilestone = {
-        weight: milestones[0],
-        remaining: currentWeight - milestones[0],
-      };
-    }
   }
-
-  // Build recent activities from already-fetched data
-  const activities: Array<{
-    id: string;
-    type: 'weight' | 'injection' | 'log';
-    date: string;
-    details: string;
-  }> = [];
-
-  // Add recent weights (already fetched)
-  recentWeightEntries.forEach((w) => {
-    activities.push({
-      id: `weight-${w.id}`,
-      type: 'weight',
-      date: w.recordedAt.toISOString(),
-      details: `${Number(w.weightKg).toFixed(1)}kg`,
-    });
-  });
-
-  // Add recent injections (use first 3 from allInjections)
-  allInjections.slice(0, 3).forEach((inj) => {
-    activities.push({
-      id: `injection-${inj.id}`,
-      type: 'injection',
-      date: inj.injectionDate.toISOString(),
-      details: `${Number(inj.doseMg)}mg (${inj.injectionSite})`,
-    });
-  });
-
-  // Sort activities by date
-  activities.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
 
   // Get suggested injection site
   const suggestedSite = latestInjection
     ? getSuggestedSite(latestInjection.injectionSite)
     : 'Abdomen - Left';
 
+  // TODO: Calculate actual logging streak from dailyLogs
+  const loggingStreak = 0;
+
   return {
     hasWeight: recentWeightEntries.length > 0,
     hasInjection: allInjections.length > 0,
     weightUnit: preferences?.weightUnit || 'kg',
+    weekNumber: treatmentWeeks,
     injection: {
-      nextDue: nextInjectionDue,
       daysUntil: daysUntilInjection,
-      currentDose: latestInjection ? Number(latestInjection.doseMg) : null,
-      status: injectionStatus,
+      currentDose,
       suggestedSite,
+      status: injectionStatus,
     },
-    today: {
-      hasLog: !!todayLog,
-      hasDiet: !!todayLog?.dietLog,
-      hasActivity: !!todayLog?.activityLog,
-      hasMental: !!todayLog?.mentalLog,
-      sideEffectsCount: todayLog?.sideEffects?.length || 0,
-    },
-    currentState: {
-      currentWeight,
-      lastWeightChange,
-      lastWeightDate: latestWeight?.recordedAt.toISOString() || null,
-    },
+    cycleProgress,
     journey: {
       startWeight: startingWeight,
       currentWeight,
       goalWeight,
       progressPercent,
       remainingToGoal,
-      treatmentStartDate: profile?.treatmentStartDate || null,
-      treatmentDays,
-      treatmentWeeks,
-      currentDose: latestInjection ? Number(latestInjection.doseMg) : null,
       nextMilestone,
     },
-    activities: activities.slice(0, 5),
+    phase: {
+      number: getPhaseFromDose(currentDose),
+      startDate: phaseStartDate,
+      currentDose,
+    },
+    loggingStreak,
   };
 }
 
-function SummarySkeleton() {
+function JourneySkeleton() {
   return (
     <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
-      <Skeleton className="h-8 w-32" />
-      {/* Action Required skeleton */}
-      <div className="space-y-3">
-        <Skeleton className="h-28 rounded-xl" />
-        <Skeleton className="h-24 rounded-xl" />
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-10 w-10 rounded-full" />
       </div>
-      {/* Current State skeleton */}
+
+      {/* Hero Card */}
+      <Skeleton className="h-48 rounded-[1.25rem]" />
+
+      {/* Journey Progress */}
+      <Skeleton className="h-56 rounded-[1.25rem]" />
+
+      {/* Phase & Streak */}
       <div className="grid grid-cols-2 gap-3">
-        <Skeleton className="h-20 rounded-lg" />
-        <Skeleton className="h-20 rounded-lg" />
-      </div>
-      {/* Journey Progress skeleton */}
-      <Skeleton className="h-28 rounded-xl" />
-      <Skeleton className="h-20 rounded-xl" />
-      <div className="grid grid-cols-2 gap-3">
-        <Skeleton className="h-20 rounded-lg" />
-        <Skeleton className="h-20 rounded-lg" />
+        <Skeleton className="h-24 rounded-[1.25rem]" />
+        <Skeleton className="h-24 rounded-[1.25rem]" />
       </div>
     </div>
   );
 }
 
-async function SummaryContent() {
+async function JourneyContent() {
   const session = await auth();
   if (!session?.user?.id) return null;
 
-  const data = await getSummaryData(session.user.id);
+  const data = await getJourneyData(session.user.id);
 
   // Show empty state for new users
   if (!data.hasWeight && !data.hasInjection) {
-    return <EmptyState hasWeight={data.hasWeight} hasInjection={data.hasInjection} />;
+    return (
+      <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
+        <EmptyState hasWeight={data.hasWeight} hasInjection={data.hasInjection} />
+      </div>
+    );
   }
 
   return (
     <div className="flex min-h-[calc(100svh-140px)] flex-col gap-4 overflow-x-hidden p-4">
       {/* Header */}
-      <h1 className="text-xl font-bold text-foreground">Summary</h1>
+      <header className="flex items-center justify-between">
+        <h1 className="text-[1.625rem] font-bold tracking-tight text-foreground">
+          Journey
+        </h1>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Bell className="h-6 w-6 text-muted-foreground" />
+        </Button>
+      </header>
 
-      {/* Action Required Section */}
-      <Section title="Action Required">
-        <div className="space-y-3">
-          <NextInjectionCard
-            nextDue={data.injection.nextDue}
-            daysUntil={data.injection.daysUntil}
-            currentDose={data.injection.currentDose}
-            status={data.injection.status}
-            suggestedSite={data.injection.suggestedSite}
-          />
-          <TodaysLogCard
-            hasLog={data.today.hasLog}
-            hasDiet={data.today.hasDiet}
-            hasActivity={data.today.hasActivity}
-            hasMental={data.today.hasMental}
-            sideEffectsCount={data.today.sideEffectsCount}
-          />
-        </div>
-      </Section>
-
-      {/* Current State Section */}
-      <CurrentStateSection
-        currentWeight={data.currentState.currentWeight}
-        lastWeightChange={data.currentState.lastWeightChange}
-        lastWeightDate={data.currentState.lastWeightDate}
-        weightUnit={data.weightUnit}
+      {/* Hero Status Card */}
+      <HeroStatusCard
+        weekNumber={data.weekNumber}
+        nextInjection={{
+          daysUntil: data.injection.daysUntil,
+          currentDose: data.injection.currentDose,
+          suggestedSite: data.injection.suggestedSite,
+          status: data.injection.status,
+        }}
+        cycleProgress={data.cycleProgress}
       />
 
-      {/* Journey Progress Section */}
-      <JourneyProgressSection
+      {/* Journey Progress Card */}
+      <JourneyProgressCard
         startWeight={data.journey.startWeight}
         currentWeight={data.journey.currentWeight}
         goalWeight={data.journey.goalWeight}
         progressPercent={data.journey.progressPercent}
         remainingToGoal={data.journey.remainingToGoal}
-        treatmentStartDate={data.journey.treatmentStartDate}
-        treatmentDays={data.journey.treatmentDays}
-        treatmentWeeks={data.journey.treatmentWeeks}
-        currentDose={data.journey.currentDose}
-        nextMilestone={data.journey.nextMilestone ?? undefined}
+        nextMilestone={data.journey.nextMilestone}
         weightUnit={data.weightUnit}
       />
 
-      {/* Recent Activity Section */}
-      <RecentActivitySection activities={data.activities} />
+      {/* Phase & Streak Cards */}
+      <div className="grid grid-cols-2 gap-3">
+        <PhaseCard
+          phase={data.phase.number}
+          startDate={data.phase.startDate}
+          currentDose={data.phase.currentDose}
+        />
+        <StreakCard streak={data.loggingStreak} />
+      </div>
     </div>
   );
 }
 
 export default function SummaryPage() {
   return (
-    <Suspense fallback={<SummarySkeleton />}>
-      <SummaryContent />
+    <Suspense fallback={<JourneySkeleton />}>
+      <JourneyContent />
     </Suspense>
   );
 }
