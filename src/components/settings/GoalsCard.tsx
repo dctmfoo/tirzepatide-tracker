@@ -18,7 +18,7 @@ export function GoalsCard({
   const formatWeight = (kg: number | null): string => {
     if (!kg) return '—';
     if (weightUnit === 'lbs') {
-      return (kg * 2.205).toFixed(0);
+      return (kg * 2.205).toFixed(1);
     }
     if (weightUnit === 'stone') {
       const totalLbs = kg * 2.205;
@@ -26,7 +26,7 @@ export function GoalsCard({
       const lbs = Math.round(totalLbs % 14);
       return `${stone}st ${lbs}`;
     }
-    return kg.toFixed(0);
+    return kg.toFixed(1);
   };
 
   const getUnitLabel = (): string => {
