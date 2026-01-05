@@ -89,7 +89,7 @@ describe('GET /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '7.5',
-      injectionSite: 'thigh_left',
+      injectionSite: 'Thigh - Left',
       injectionDate: new Date('2025-01-15T10:00:00Z'),
       batchNumber: 'BATCH001',
       notes: 'Weekly injection',
@@ -105,7 +105,7 @@ describe('GET /api/injections/[id]', () => {
     expect(response.status).toBe(200);
     expect(data.id).toBe('inj-1');
     expect(data.doseMg).toBe(7.5);
-    expect(data.injectionSite).toBe('thigh_left');
+    expect(data.injectionSite).toBe('Thigh - Left');
     expect(data.batchNumber).toBe('BATCH001');
     expect(data.notes).toBe('Weekly injection');
   });
@@ -185,7 +185,7 @@ describe('PUT /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date('2025-01-15'),
       batchNumber: null,
       notes: null,
@@ -220,7 +220,7 @@ describe('PUT /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date('2025-01-15'),
       batchNumber: null,
       notes: null,
@@ -231,7 +231,7 @@ describe('PUT /api/injections/[id]', () => {
 
     const updatedInjection = {
       ...existingInjection,
-      injectionSite: 'thigh_right',
+      injectionSite: 'Thigh - Right',
       updatedAt: new Date(),
     };
     mockReturning.mockResolvedValue([updatedInjection]);
@@ -239,13 +239,13 @@ describe('PUT /api/injections/[id]', () => {
     const request = new NextRequest('http://localhost:3000/api/injections/inj-1', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ injectionSite: 'thigh_right' }),
+      body: JSON.stringify({ injectionSite: 'Thigh - Right' }),
     });
     const response = await PUT(request, createContext('inj-1'));
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.injectionSite).toBe('thigh_right');
+    expect(data.injectionSite).toBe('Thigh - Right');
   });
 
   it('updates injection with multiple fields', async () => {
@@ -255,7 +255,7 @@ describe('PUT /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date('2025-01-15'),
       batchNumber: null,
       notes: null,
@@ -267,7 +267,7 @@ describe('PUT /api/injections/[id]', () => {
     const updatedInjection = {
       ...existingInjection,
       doseMg: '7.5',
-      injectionSite: 'arm_left',
+      injectionSite: 'Upper Arm - Left',
       batchNumber: 'NEW-BATCH',
       notes: 'Updated notes',
       updatedAt: new Date(),
@@ -279,7 +279,7 @@ describe('PUT /api/injections/[id]', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         doseMg: '7.5',
-        injectionSite: 'arm_left',
+        injectionSite: 'Upper Arm - Left',
         batchNumber: 'NEW-BATCH',
         notes: 'Updated notes',
       }),
@@ -289,7 +289,7 @@ describe('PUT /api/injections/[id]', () => {
 
     expect(response.status).toBe(200);
     expect(data.doseMg).toBe(7.5);
-    expect(data.injectionSite).toBe('arm_left');
+    expect(data.injectionSite).toBe('Upper Arm - Left');
     expect(data.batchNumber).toBe('NEW-BATCH');
     expect(data.notes).toBe('Updated notes');
   });
@@ -301,7 +301,7 @@ describe('PUT /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date('2025-01-15'),
       batchNumber: 'OLD-BATCH',
       notes: 'Old notes',
@@ -406,7 +406,7 @@ describe('DELETE /api/injections/[id]', () => {
       id: 'inj-1',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date(),
       batchNumber: null,
       notes: null,
