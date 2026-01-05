@@ -20,7 +20,6 @@ import {
   GENDER_LABELS,
   VALID_DOSES,
   INJECTION_SITES,
-  INJECTION_SITE_LABELS,
 } from '@/lib/validations/onboarding';
 
 type FormErrors = Partial<Record<keyof OnboardingFormData | 'firstInjection.doseMg' | 'firstInjection.injectionSite' | 'firstInjection.injectionDate', string>>;
@@ -88,7 +87,7 @@ export function OnboardingForm() {
         treatmentStartDate,
         firstInjection: {
           doseMg: doseMg ?? 0,
-          injectionSite: injectionSite ?? 'abdomen_left',
+          injectionSite: injectionSite ?? INJECTION_SITES[0],
           injectionDate: new Date(injectionDate).toISOString(),
         },
       };
@@ -357,7 +356,7 @@ export function OnboardingForm() {
                 </option>
                 {INJECTION_SITES.map((s) => (
                   <option key={s} value={s}>
-                    {INJECTION_SITE_LABELS[s]}
+                    {s}
                   </option>
                 ))}
               </select>

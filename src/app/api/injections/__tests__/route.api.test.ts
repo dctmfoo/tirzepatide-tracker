@@ -376,6 +376,33 @@ describe('POST /api/injections', () => {
     }
   });
 
+  it('rejects old format injection sites', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
+
+    const oldFormatSites = [
+      'abdomen',
+      'abdomen_left',
+      'abdomen_right',
+      'thigh_left',
+      'thigh_right',
+      'arm_left',
+      'arm_right',
+    ];
+
+    for (const site of oldFormatSites) {
+      const request = new Request('http://localhost:3000/api/injections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doseMg: '5', injectionSite: site }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.error).toBe('Validation failed');
+    }
+  });
+
   it('uses current time when injectionDate not provided', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
 

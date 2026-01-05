@@ -3,17 +3,15 @@ import { auth } from '@/lib/auth';
 import { db, schema } from '@/lib/db';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
+import { INJECTION_SITES } from '@/lib/utils/injection-logic';
 
 // Valid Mounjaro doses in mg
 const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
 
-// Valid injection sites
-const VALID_SITES = ['abdomen', 'thigh_left', 'thigh_right', 'arm_left', 'arm_right'] as const;
-
 // Validation schema for updating injection
 const updateInjectionSchema = z.object({
   doseMg: z.enum(VALID_DOSES).optional(),
-  injectionSite: z.enum(VALID_SITES).optional(),
+  injectionSite: z.enum(INJECTION_SITES).optional(),
   injectionDate: z.string().datetime().optional(),
   batchNumber: z.string().max(100).nullable().optional(),
   notes: z.string().max(500).nullable().optional(),

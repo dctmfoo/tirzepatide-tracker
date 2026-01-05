@@ -6,6 +6,7 @@ import {
   INJECTION_SITES,
   getInjectionSiteOptions,
   getSuggestedSite,
+  type InjectionSite,
 } from '@/lib/utils/injection-logic';
 
 const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
@@ -13,8 +14,8 @@ const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
 export default function NewInjectionPage() {
   const router = useRouter();
   const [doseMg, setDoseMg] = useState('2.5');
-  const [site, setSite] = useState(INJECTION_SITES[0]);
-  const [suggestedSite, setSuggestedSite] = useState(INJECTION_SITES[0]);
+  const [site, setSite] = useState<InjectionSite>(INJECTION_SITES[0]);
+  const [suggestedSite, setSuggestedSite] = useState<InjectionSite>(INJECTION_SITES[0]);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 16));
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -131,7 +132,7 @@ export default function NewInjectionPage() {
           </label>
           <select
             value={site}
-            onChange={(e) => setSite(e.target.value)}
+            onChange={(e) => setSite(e.target.value as InjectionSite)}
             className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             {getInjectionSiteOptions().map((s) => (
