@@ -11,6 +11,7 @@ type HeroStatusCardProps = {
   statusMessage?: string;
   nextInjection: {
     daysUntil: number | null;
+    nextDate: Date | null;
     currentDose: number | null;
     suggestedSite: string;
     status: 'on_track' | 'due_soon' | 'due_today' | 'overdue' | 'not_started';
@@ -72,12 +73,28 @@ function getStatusConfig(status: string, daysUntil: number | null) {
   }
 }
 
-function formatDaysUntil(days: number | null): string {
-  if (days === null) return 'Not scheduled';
-  if (days < 0) return `${Math.abs(days)} days overdue`;
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Tomorrow';
-  return `In ${days} days`;
+function formatNextInjectionDate(
+  date: Date | null,
+  daysUntil: number | null
+): string {
+  if (!date || daysUntil === null) return 'Not scheduled';
+
+  // Format: "Wed, Jan 15"
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+
+  return formatted;
+}
+
+function formatDaysContext(days: number | null): string {
+  if (days === null) return '';
+  if (days < 0) return `(${Math.abs(days)} days overdue)`;
+  if (days === 0) return '(Today)';
+  if (days === 1) return '(Tomorrow)';
+  return `(in ${days} days)`;
 }
 
 export function HeroStatusCard({
@@ -113,7 +130,8 @@ export function HeroStatusCard({
               Next Injection
             </h3>
             <p className="mt-0.5 text-[0.9375rem] text-muted-foreground">
-              {formatDaysUntil(nextInjection.daysUntil)}
+              {formatNextInjectionDate(nextInjection.nextDate, nextInjection.daysUntil)}{' '}
+              {formatDaysContext(nextInjection.daysUntil)}
               {nextInjection.currentDose && ` · ${nextInjection.currentDose} mg`}
             </p>
 

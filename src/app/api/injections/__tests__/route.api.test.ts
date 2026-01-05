@@ -79,7 +79,7 @@ describe('GET /api/injections', () => {
         id: 'inj-1',
         userId: 'test-user-id',
         doseMg: '5',
-        injectionSite: 'abdomen',
+        injectionSite: 'Abdomen - Left',
         injectionDate: new Date('2025-01-15'),
         batchNumber: 'ABC123',
         notes: 'First injection',
@@ -90,7 +90,7 @@ describe('GET /api/injections', () => {
         id: 'inj-2',
         userId: 'test-user-id',
         doseMg: '5',
-        injectionSite: 'thigh_left',
+        injectionSite: 'Thigh - Left',
         injectionDate: new Date('2025-01-08'),
         batchNumber: null,
         notes: null,
@@ -107,7 +107,7 @@ describe('GET /api/injections', () => {
     expect(response.status).toBe(200);
     expect(data.injections).toHaveLength(2);
     expect(data.injections[0].doseMg).toBe(5);
-    expect(data.injections[0].injectionSite).toBe('abdomen');
+    expect(data.injections[0].injectionSite).toBe('Abdomen - Left');
     expect(data.injections[0].batchNumber).toBe('ABC123');
     expect(data.pagination).toBeDefined();
     expect(data.pagination.limit).toBe(50);
@@ -155,7 +155,7 @@ describe('GET /api/injections', () => {
       id: `inj-${i}`,
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date(),
       batchNumber: null,
       notes: null,
@@ -178,7 +178,7 @@ describe('GET /api/injections', () => {
       id: `inj-${i}`,
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date(),
       batchNumber: null,
       notes: null,
@@ -208,7 +208,7 @@ describe('POST /api/injections', () => {
     const request = new Request('http://localhost:3000/api/injections', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ doseMg: '5', injectionSite: 'abdomen' }),
+      body: JSON.stringify({ doseMg: '5', injectionSite: 'Abdomen - Left' }),
     });
     const response = await POST(request);
     const data = await response.json();
@@ -223,7 +223,7 @@ describe('POST /api/injections', () => {
     const request = new Request('http://localhost:3000/api/injections', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ injectionSite: 'abdomen' }),
+      body: JSON.stringify({ injectionSite: 'Abdomen - Left' }),
     });
     const response = await POST(request);
     const data = await response.json();
@@ -251,7 +251,7 @@ describe('POST /api/injections', () => {
     const request = new Request('http://localhost:3000/api/injections', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ doseMg: '20', injectionSite: 'abdomen' }),
+      body: JSON.stringify({ doseMg: '20', injectionSite: 'Abdomen - Left' }),
     });
     const response = await POST(request);
 
@@ -278,7 +278,7 @@ describe('POST /api/injections', () => {
       id: 'new-inj-id',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date('2025-01-15T10:00:00Z'),
       batchNumber: 'ABC123',
       notes: 'Morning injection',
@@ -292,7 +292,7 @@ describe('POST /api/injections', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         doseMg: '5',
-        injectionSite: 'abdomen',
+        injectionSite: 'Abdomen - Left',
         injectionDate: '2025-01-15T10:00:00Z',
         batchNumber: 'ABC123',
         notes: 'Morning injection',
@@ -304,7 +304,7 @@ describe('POST /api/injections', () => {
     expect(response.status).toBe(201);
     expect(data.id).toBe('new-inj-id');
     expect(data.doseMg).toBe(5);
-    expect(data.injectionSite).toBe('abdomen');
+    expect(data.injectionSite).toBe('Abdomen - Left');
     expect(data.batchNumber).toBe('ABC123');
     expect(data.notes).toBe('Morning injection');
   });
@@ -319,7 +319,7 @@ describe('POST /api/injections', () => {
         id: `inj-${dose}`,
         userId: 'test-user-id',
         doseMg: dose,
-        injectionSite: 'abdomen',
+        injectionSite: 'Abdomen - Left',
         injectionDate: new Date(),
         batchNumber: null,
         notes: null,
@@ -331,7 +331,7 @@ describe('POST /api/injections', () => {
       const request = new Request('http://localhost:3000/api/injections', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ doseMg: dose, injectionSite: 'abdomen' }),
+        body: JSON.stringify({ doseMg: dose, injectionSite: 'Abdomen - Left' }),
       });
       const response = await POST(request);
 
@@ -342,7 +342,14 @@ describe('POST /api/injections', () => {
   it('creates injection with all valid injection sites', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'test-user-id' } });
 
-    const validSites = ['abdomen', 'thigh_left', 'thigh_right', 'arm_left', 'arm_right'];
+    const validSites = [
+      'Abdomen - Left',
+      'Abdomen - Right',
+      'Thigh - Left',
+      'Thigh - Right',
+      'Upper Arm - Left',
+      'Upper Arm - Right',
+    ];
 
     for (const site of validSites) {
       const createdInjection = {
@@ -376,7 +383,7 @@ describe('POST /api/injections', () => {
       id: 'new-inj-id',
       userId: 'test-user-id',
       doseMg: '5',
-      injectionSite: 'abdomen',
+      injectionSite: 'Abdomen - Left',
       injectionDate: new Date(),
       batchNumber: null,
       notes: null,
@@ -388,7 +395,7 @@ describe('POST /api/injections', () => {
     const request = new Request('http://localhost:3000/api/injections', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ doseMg: '5', injectionSite: 'abdomen' }),
+      body: JSON.stringify({ doseMg: '5', injectionSite: 'Abdomen - Left' }),
     });
     const response = await POST(request);
 
@@ -404,7 +411,7 @@ describe('POST /api/injections', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         doseMg: '5',
-        injectionSite: 'abdomen',
+        injectionSite: 'Abdomen - Left',
         batchNumber: longBatchNumber,
       }),
     });
@@ -422,7 +429,7 @@ describe('POST /api/injections', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         doseMg: '5',
-        injectionSite: 'abdomen',
+        injectionSite: 'Abdomen - Left',
         notes: longNotes,
       }),
     });

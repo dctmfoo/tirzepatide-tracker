@@ -2,6 +2,7 @@ import 'server-only';
 import { db, schema } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 import { cache } from 'react';
+import { getSuggestedSite } from '@/lib/utils/injection-logic';
 
 export type InjectionEntry = {
   id: string;
@@ -98,10 +99,8 @@ export const getJabsData = cache(async (userId: string): Promise<JabsData> => {
   }
 
   // Calculate suggested site (rotate through sites)
-  const sites = ['abdomen', 'thigh_left', 'thigh_right', 'arm_left', 'arm_right'];
-  const lastSite = formattedInjections[0]?.injectionSite ?? 'abdomen';
-  const lastIndex = sites.indexOf(lastSite);
-  const suggestedSite = lastIndex === -1 ? sites[0] : sites[(lastIndex + 1) % sites.length];
+  const lastSite = formattedInjections[0]?.injectionSite ?? 'Abdomen - Left';
+  const suggestedSite = getSuggestedSite(lastSite);
 
   // Calculate treatment start date (first injection)
   const treatmentStartDate =

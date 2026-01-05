@@ -2,29 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  INJECTION_SITES,
+  getInjectionSiteOptions,
+  getSuggestedSite,
+} from '@/lib/utils/injection-logic';
 
 const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
-const VALID_SITES = [
-  { value: 'abdomen', label: 'Abdomen' },
-  { value: 'thigh_left', label: 'Thigh - Left' },
-  { value: 'thigh_right', label: 'Thigh - Right' },
-  { value: 'arm_left', label: 'Arm - Left' },
-  { value: 'arm_right', label: 'Arm - Right' },
-] as const;
-
-function getSuggestedSite(lastSite: string | undefined): string {
-  if (!lastSite) return 'abdomen';
-  const sites = ['abdomen', 'thigh_left', 'thigh_right', 'arm_left', 'arm_right'];
-  const currentIndex = sites.indexOf(lastSite);
-  if (currentIndex === -1) return sites[0];
-  return sites[(currentIndex + 1) % sites.length];
-}
 
 export default function NewInjectionPage() {
   const router = useRouter();
   const [doseMg, setDoseMg] = useState('2.5');
-  const [site, setSite] = useState('abdomen');
-  const [suggestedSite, setSuggestedSite] = useState('abdomen');
+  const [site, setSite] = useState(INJECTION_SITES[0]);
+  const [suggestedSite, setSuggestedSite] = useState(INJECTION_SITES[0]);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 16));
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -144,7 +134,7 @@ export default function NewInjectionPage() {
             onChange={(e) => setSite(e.target.value)}
             className="w-full rounded-lg bg-card px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            {VALID_SITES.map((s) => (
+            {getInjectionSiteOptions().map((s) => (
               <option key={s.value} value={s.value}>
                 {s.label}
                 {s.value === suggestedSite ? ' (Suggested)' : ''}
