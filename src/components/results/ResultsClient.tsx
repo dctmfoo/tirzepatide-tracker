@@ -228,7 +228,7 @@ export function ResultsClient({ data }: Props) {
           icon={Flag}
           iconColor="violet"
           label="Starting"
-          value={data.profile?.startingWeightKg?.toFixed(0) ?? null}
+          value={data.profile?.startingWeightKg?.toFixed(1) ?? null}
           unit="kg"
         />
       </div>

@@ -35,7 +35,7 @@ export function QuickLogActions({
             </div>
             <h4 className="font-semibold">Weight</h4>
             <p className="mt-0.5 text-[0.75rem] text-muted-foreground">
-              {lastWeightValue ? `Last: ${lastWeightValue} kg` : 'Log weight'}
+              {lastWeightValue ? `Last: ${Number(lastWeightValue).toFixed(1)} kg` : 'Log weight'}
             </p>
           </button>
 
