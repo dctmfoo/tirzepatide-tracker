@@ -36,7 +36,6 @@ import {
   type InjectionSite,
   VALID_DOSES,
   INJECTION_SITES,
-  INJECTION_SITE_LABELS,
   feetInchesToCm,
   lbsToKg,
 } from '@/lib/validations/onboarding';
@@ -215,7 +214,7 @@ export function OnboardingCardFlow() {
       treatmentStartDate,
       firstInjection: {
         doseMg: doseMg ?? 0,
-        injectionSite: injectionSite ?? 'abdomen_left',
+        injectionSite: injectionSite ?? INJECTION_SITES[0],
         injectionDate: new Date(injectionDate).toISOString(),
       },
     };
@@ -652,8 +651,13 @@ export function OnboardingCardFlow() {
           'site',
           <div className="grid grid-cols-2 gap-2">
             {INJECTION_SITES.map((site) => {
-              const isLeft = site.includes('left');
-              const bodyPart = site.split('_')[0];
+              const isLeft = site.includes('Left');
+              // Determine body part for color coding based on site name
+              const bodyPart = site.includes('Abdomen')
+                ? 'abdomen'
+                : site.includes('Thigh')
+                  ? 'thigh'
+                  : 'arm';
               const colorClass =
                 bodyPart === 'abdomen'
                   ? 'bg-violet-500/15 text-violet-500'
@@ -677,7 +681,7 @@ export function OnboardingCardFlow() {
                   <div className={cn('flex h-8 w-8 items-center justify-center rounded-full', colorClass)}>
                     {isLeft ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
                   </div>
-                  <span className="text-sm font-medium">{INJECTION_SITE_LABELS[site]}</span>
+                  <span className="text-sm font-medium">{site}</span>
                 </button>
               );
             })}

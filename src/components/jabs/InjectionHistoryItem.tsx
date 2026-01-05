@@ -21,8 +21,8 @@ function formatSite(site: string): string {
     abdomen_right: 'Abdomen - Right',
     thigh_left: 'Thigh - Left',
     thigh_right: 'Thigh - Right',
-    arm_left: 'Arm - Left',
-    arm_right: 'Arm - Right',
+    arm_left: 'Upper Arm - Left',
+    arm_right: 'Upper Arm - Right',
   };
   return siteMap[site] || site;
 }

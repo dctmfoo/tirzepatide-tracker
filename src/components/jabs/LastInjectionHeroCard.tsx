@@ -12,18 +12,19 @@ type Props = {
   suggestedSite: string;
 };
 
-// Map API site names to display names
+// Site names are now stored in proper format (e.g., "Abdomen - Left")
+// This function is kept for backward compatibility with any old data
 function formatSite(site: string): string {
-  const siteMap: Record<string, string> = {
+  const legacySiteMap: Record<string, string> = {
     abdomen: 'Abdomen',
     abdomen_left: 'Abdomen - Left',
     abdomen_right: 'Abdomen - Right',
     thigh_left: 'Thigh - Left',
     thigh_right: 'Thigh - Right',
-    arm_left: 'Arm - Left',
-    arm_right: 'Arm - Right',
+    arm_left: 'Upper Arm - Left',
+    arm_right: 'Upper Arm - Right',
   };
-  return siteMap[site] || site;
+  return legacySiteMap[site.toLowerCase()] || site;
 }
 
 function formatDate(date: Date): string {

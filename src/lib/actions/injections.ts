@@ -4,15 +4,15 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { verifySession } from '@/lib/dal';
 import { db, schema } from '@/lib/db';
+import { INJECTION_SITES } from '@/lib/utils/injection-logic';
 
 const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
-const VALID_SITES = ['abdomen', 'thigh_left', 'thigh_right', 'arm_left', 'arm_right'] as const;
 
 const createInjectionSchema = z.object({
   doseMg: z.string().refine((val) => VALID_DOSES.includes(val as typeof VALID_DOSES[number]), {
     message: 'Invalid dose',
   }),
-  injectionSite: z.enum(VALID_SITES),
+  injectionSite: z.enum(INJECTION_SITES),
   injectionDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Invalid date',
   }),

@@ -9,15 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  INJECTION_SITES,
+  getInjectionSiteOptions,
+} from '@/lib/utils/injection-logic';
 
 const VALID_DOSES = ['2.5', '5', '7.5', '10', '12.5', '15'] as const;
-const VALID_SITES = [
-  { value: 'abdomen', label: 'Abdomen' },
-  { value: 'thigh_left', label: 'Thigh - Left' },
-  { value: 'thigh_right', label: 'Thigh - Right' },
-  { value: 'arm_left', label: 'Arm - Left' },
-  { value: 'arm_right', label: 'Arm - Right' },
-] as const;
 
 type Props = {
   open: boolean;
@@ -38,7 +35,7 @@ export function LogInjectionModal({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [doseMg, setDoseMg] = useState(lastDose?.toString() || '2.5');
-  const [site, setSite] = useState(suggestedSite || 'abdomen');
+  const [site, setSite] = useState(suggestedSite || INJECTION_SITES[0]);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 16));
   const [notes, setNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +65,7 @@ export function LogInjectionModal({
           onOpenChange(false);
           // Reset form
           setDoseMg(lastDose?.toString() || '2.5');
-          setSite(suggestedSite || 'abdomen');
+          setSite(suggestedSite || INJECTION_SITES[0]);
           setNotes('');
         }
       } catch (err) {
@@ -120,7 +117,7 @@ export function LogInjectionModal({
               disabled={isPending}
               className="w-full rounded-xl border border-border/40 bg-secondary/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              {VALID_SITES.map((s) => (
+              {getInjectionSiteOptions().map((s) => (
                 <option key={s.value} value={s.value}>
                   {s.label}
                   {s.value === suggestedSite ? ' (Suggested)' : ''}

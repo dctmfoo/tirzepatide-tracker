@@ -1,29 +1,13 @@
 import { z } from 'zod';
+import { INJECTION_SITES as INJECTION_SITES_FROM_LOGIC } from '@/lib/utils/injection-logic';
+
+// Re-export for backward compatibility with components
+export { INJECTION_SITES_FROM_LOGIC as INJECTION_SITES };
+export type { InjectionSite } from '@/lib/utils/injection-logic';
 
 // Valid dose values for Mounjaro
 export const VALID_DOSES = [2.5, 5, 7.5, 10, 12.5, 15] as const;
 export type DoseValue = (typeof VALID_DOSES)[number];
-
-// Valid injection sites
-export const INJECTION_SITES = [
-  'abdomen_left',
-  'abdomen_right',
-  'thigh_left',
-  'thigh_right',
-  'arm_left',
-  'arm_right',
-] as const;
-export type InjectionSite = (typeof INJECTION_SITES)[number];
-
-// Display labels for injection sites
-export const INJECTION_SITE_LABELS: Record<InjectionSite, string> = {
-  abdomen_left: 'Abdomen - Left',
-  abdomen_right: 'Abdomen - Right',
-  thigh_left: 'Thigh - Left',
-  thigh_right: 'Thigh - Right',
-  arm_left: 'Arm - Left',
-  arm_right: 'Arm - Right',
-};
 
 // Gender options
 export const GENDERS = ['male', 'female', 'other'] as const;
@@ -47,7 +31,7 @@ export const firstInjectionSchema = z.object({
   doseMg: z.number().refine((d) => VALID_DOSES.includes(d as DoseValue), {
     message: 'Please select a valid dose',
   }),
-  injectionSite: z.enum(INJECTION_SITES, {
+  injectionSite: z.enum(INJECTION_SITES_FROM_LOGIC, {
     message: 'Please select an injection site',
   }),
   injectionDate: z.string().min(1, 'Please select an injection date'),

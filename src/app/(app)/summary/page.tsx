@@ -73,6 +73,7 @@ async function getJourneyData(userId: string) {
 
   // Calculate next injection status
   let daysUntilInjection: number | null = null;
+  let nextInjectionDate: Date | null = null;
   let injectionStatus: 'on_track' | 'due_soon' | 'due_today' | 'overdue' | 'not_started' =
     'not_started';
   let cycleProgress = 0;
@@ -81,6 +82,7 @@ async function getJourneyData(userId: string) {
     const lastDate = new Date(latestInjection.injectionDate);
     const nextDate = new Date(lastDate);
     nextDate.setDate(nextDate.getDate() + 7);
+    nextInjectionDate = nextDate; // Store for component display
 
     const now = new Date();
     daysUntilInjection = Math.ceil(
@@ -167,6 +169,7 @@ async function getJourneyData(userId: string) {
     weekNumber: treatmentWeeks,
     injection: {
       daysUntil: daysUntilInjection,
+      nextDate: nextInjectionDate,
       currentDose,
       suggestedSite,
       status: injectionStatus,
@@ -245,6 +248,7 @@ async function JourneyContent() {
         weekNumber={data.weekNumber}
         nextInjection={{
           daysUntil: data.injection.daysUntil,
+          nextDate: data.injection.nextDate,
           currentDose: data.injection.currentDose,
           suggestedSite: data.injection.suggestedSite,
           status: data.injection.status,

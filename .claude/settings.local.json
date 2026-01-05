@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "WebSearch",
-      "WebFetch(domain:vercel.com)",
-      "WebFetch(domain:github.com)"
-    ]
-  }
-}
