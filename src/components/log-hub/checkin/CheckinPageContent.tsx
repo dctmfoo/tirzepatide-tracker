@@ -48,6 +48,7 @@ export function CheckinPageContent({
     const success = await save(date);
     if (success) {
       router.push('/log');
+      router.refresh();
     }
   };
 
